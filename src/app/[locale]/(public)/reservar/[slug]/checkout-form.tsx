@@ -60,7 +60,7 @@ export function CheckoutForm(props: Props) {
         special_requests: customer.requests || null,
       });
       if ("error" in result) {
-        setError(result.error);
+        setError(result.error ?? "Error al procesar la reserva");
         return;
       }
       router.push(`/reservar/confirmacion?code=${result.code}`);
