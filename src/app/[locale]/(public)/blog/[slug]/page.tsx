@@ -1,0 +1,180 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { Calendar, Clock, ChevronLeft } from "lucide-react";
+import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
+import { t } from "@/types/database";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbSchema } from "@/lib/seo/schema";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) return {};
+
+  const title = t(post.meta_title) || t(post.title);
+  const description = t(post.meta_description) || t(post.excerpt);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `/blog/${post.slug}`,
+      images: post.cover_image ? [{ url: post.cover_image, width: 1600, height: 900 }] : undefined,
+      publishedTime: post.published_at ?? post.created_at,
+    },
+  };
+}
+
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) notFound();
+
+  const related = await getRelatedPosts(slug, 3);
+  const body = t(post.body_md);
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: t(post.title),
+    description: t(post.excerpt),
+    image: post.cover_image,
+    datePublished: post.published_at ?? post.created_at,
+    author: { "@type": "Person", name: post.author_name ?? "Danfer Tours Cusco" },
+    publisher: { "@id": `${SITE}/#organization` },
+  };
+
+  return (
+    <div className="pt-28 pb-24">
+      <JsonLd
+        data={[
+          articleSchema,
+          breadcrumbSchema([
+            { name: "Inicio", url: "/" },
+            { name: "Blog", url: "/blog" },
+            { name: t(post.title), url: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
+
+      <article className="max-w-3xl mx-auto px-6">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-1.5 text-night/60 hover:text-gold text-sm mb-6 transition"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Blog
+        </Link>
+
+        {post.tags.length > 0 && (
+          <div className="flex gap-1.5 mb-4">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] uppercase tracking-widest text-gold bg-gold/10 px-2.5 py-1 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <h1 className="font-display text-5xl md:text-6xl text-night leading-[1.05]">
+          {t(post.title)}
+        </h1>
+
+        <div className="mt-6 flex items-center gap-5 text-sm text-night/60">
+          {post.author_name && (
+            <div className="flex items-center gap-2">
+              {post.author_avatar && (
+                <Image
+                  src={post.author_avatar}
+                  alt={post.author_name}
+                  width={28}
+                  height={28}
+                  className="rounded-full"
+                />
+              )}
+              <span className="text-night font-medium">{post.author_name}</span>
+            </div>
+          )}
+          {post.published_at && (
+            <span className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
+              {new Date(post.published_at).toLocaleDateString("es-PE", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          )}
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5" />
+            {post.read_minutes} min de lectura
+          </span>
+        </div>
+
+        {post.cover_image && (
+          <div className="relative aspect-[16/9] mt-10 rounded-3xl overflow-hidden">
+            <Image
+              src={post.cover_image}
+              alt={t(post.title)}
+              fill
+              priority
+              sizes="(min-width:768px) 768px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
+
+        <div className="mt-10 prose prose-neutral max-w-none prose-lg [&_h2]:font-display [&_h2]:text-3xl [&_h2]:text-night [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-display [&_h3]:text-2xl [&_h3]:text-night [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-night/80 [&_p]:leading-relaxed [&_p]:my-4 [&_ul]:my-4 [&_ul]:pl-5 [&_li]:list-disc [&_li]:my-1 [&_li]:text-night/80 [&_a]:text-gold [&_a]:underline [&_strong]:text-night [&_blockquote]:border-l-4 [&_blockquote]:border-gold [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-night/70">
+          {body && <MDXRemote source={body} />}
+        </div>
+      </article>
+
+      {related.length > 0 && (
+        <section className="max-w-5xl mx-auto px-6 mt-24 pt-16 border-t border-night/8">
+          <h2 className="font-display text-3xl text-night mb-8">Sigue leyendo</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {related.map((p) => (
+              <Link
+                key={p.id}
+                href={`/blog/${p.slug}`}
+                className="group block bg-white border border-night/8 rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition"
+              >
+                {p.cover_image && (
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={p.cover_image}
+                      alt={t(p.title)}
+                      fill
+                      sizes="33vw"
+                      className="object-cover group-hover:scale-105 transition duration-700"
+                    />
+                  </div>
+                )}
+                <div className="p-5">
+                  <h3 className="font-display text-lg text-night group-hover:text-gold transition">
+                    {t(p.title)}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

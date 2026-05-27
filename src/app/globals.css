@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  /* Cusco brand palette */
+  --color-night: #0B1929;
+  --color-night-deep: #060F1C;
+  --color-gold: #C8901E;
+  --color-gold-bright: #E8B043;
+  --color-turquoise: #0077B6;
+  --color-turquoise-deep: #023E8A;
+  --color-terracotta: #C25A3E;
+  --color-cream: #FAF7F2;
+  --color-paper: #FFFFFF;
+  --color-stone: #F5F3EE;
+
+  --color-background: #FFFFFF;
+  --color-foreground: #0B1929;
+  --color-muted: #6B7280;
+  --color-border: rgba(11, 25, 41, 0.1);
+
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-inter);
+  --font-hand: var(--font-caveat);
+
+  --shadow-glow: 0 0 60px -10px rgba(200, 144, 30, 0.45);
+  --shadow-card: 0 30px 60px -25px rgba(11, 25, 41, 0.25);
+  --shadow-soft: 0 10px 30px -10px rgba(11, 25, 41, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-stone); }
+::-webkit-scrollbar-thumb {
+  background: rgba(11, 25, 41, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+/* Utility: gradient gold text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #C8901E 0%, #E8B043 50%, #C25A3E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glass effects — dark variant (for use over images) */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Glass — light variant (over light backgrounds) */
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(11, 25, 41, 0.08);
+}
+
+/* Polaroid */
+.polaroid {
+  background: #fff;
+  padding: 12px 12px 40px;
+  box-shadow: var(--shadow-card);
+}
