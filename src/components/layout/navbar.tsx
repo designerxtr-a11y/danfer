@@ -50,7 +50,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
         <Link href="/" className="font-display text-2xl font-bold tracking-wider">
           <span className="text-gradient-gold">DANFER</span>
-          <span className="text-night">TOURS</span>
+          <span className={scrolled ? "text-night" : "text-white"}>TOURS</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -58,17 +58,27 @@ export function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm text-night/70 hover:text-gold transition-colors"
+              className={`text-sm transition-colors hover:text-gold ${
+                scrolled ? "text-night/70" : "text-white/85"
+              }`}
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4 text-night/70">
+        <div
+          className={`flex items-center gap-4 ${
+            scrolled ? "text-night/70" : "text-white/85"
+          }`}
+        >
           <button
             onClick={() => setLocale(locale === "es" ? "en" : "es")}
-            className="text-xs font-semibold tracking-widest border border-night/15 hover:border-gold hover:text-gold rounded-full px-3 py-1 transition uppercase"
+            className={`text-xs font-semibold tracking-widest rounded-full px-3 py-1 transition uppercase hover:text-gold hover:border-gold ${
+              scrolled
+                ? "border border-night/15"
+                : "border border-white/30"
+            }`}
           >
             {locale === "es" ? "EN" : "ES"}
           </button>
