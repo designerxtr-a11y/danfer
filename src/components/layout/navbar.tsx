@@ -23,6 +23,29 @@ const TikTokIcon = (p: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const PeruFlag = (p: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 6 4" {...p}>
+    <rect width="2" height="4" fill="#D91023" />
+    <rect x="2" width="2" height="4" fill="#fff" />
+    <rect x="4" width="2" height="4" fill="#D91023" />
+  </svg>
+);
+
+const USFlag = (p: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 7 5" {...p}>
+    {Array.from({ length: 13 }).map((_, i) => (
+      <rect
+        key={i}
+        y={(i * 5) / 13}
+        width="7"
+        height={5 / 13}
+        fill={i % 2 ? "#fff" : "#B22234"}
+      />
+    ))}
+    <rect width="3" height={(5 * 7) / 13} fill="#3C3B6E" />
+  </svg>
+);
+
 export function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
@@ -72,16 +95,34 @@ export function Navbar() {
             scrolled ? "text-night/70" : "text-white/85"
           }`}
         >
-          <button
-            onClick={() => setLocale(locale === "es" ? "en" : "es")}
-            className={`text-xs font-semibold tracking-widest rounded-full px-3 py-1 transition uppercase hover:text-gold hover:border-gold ${
-              scrolled
-                ? "border border-night/15"
-                : "border border-white/30"
+          <div
+            className={`flex items-center gap-0.5 rounded-full p-0.5 border transition ${
+              scrolled ? "border-night/15" : "border-white/30"
             }`}
           >
-            {locale === "es" ? "EN" : "ES"}
-          </button>
+            <button
+              onClick={() => locale !== "es" && setLocale("es")}
+              aria-label="Español"
+              className={`grid place-items-center w-7 h-7 rounded-full transition ${
+                locale === "es"
+                  ? "ring-2 ring-gold"
+                  : "opacity-50 hover:opacity-100"
+              }`}
+            >
+              <PeruFlag className="w-4 h-3 rounded-sm" />
+            </button>
+            <button
+              onClick={() => locale !== "en" && setLocale("en")}
+              aria-label="English"
+              className={`grid place-items-center w-7 h-7 rounded-full transition ${
+                locale === "en"
+                  ? "ring-2 ring-gold"
+                  : "opacity-50 hover:opacity-100"
+              }`}
+            >
+              <USFlag className="w-4 h-3 rounded-sm" />
+            </button>
+          </div>
           <TikTokIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
           <FacebookIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
           <InstagramIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
