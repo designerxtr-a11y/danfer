@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 
 const InstagramIcon = (p: React.SVGProps<SVGSVGElement>) => (
@@ -49,8 +50,18 @@ const USFlag = (p: React.SVGProps<SVGSVGElement>) => (
 export function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 30));
   const { m, locale, setLocale } = useI18n();
+
+  // Bloquea scroll del body cuando el menú móvil está abierto
+  useEffect(() => {
+    if (mobileOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const links = [
     { label: m.nav.tours, href: "/tours" },
@@ -96,7 +107,7 @@ export function Navbar() {
           }`}
         >
           <div
-            className={`flex items-center gap-0.5 rounded-full p-0.5 border transition ${
+            className={`hidden md:flex items-center gap-0.5 rounded-full p-0.5 border transition ${
               scrolled ? "border-night/15" : "border-white/30"
             }`}
           >
@@ -123,11 +134,119 @@ export function Navbar() {
               <USFlag className="w-4 h-3 rounded-sm" />
             </button>
           </div>
-          <TikTokIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
-          <FacebookIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
-          <InstagramIcon className="w-4 h-4 hover:text-gold cursor-pointer transition" />
+          <TikTokIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
+          <FacebookIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
+          <InstagramIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileOpen(true)}
+            aria-label="Abrir menú"
+            className={`md:hidden grid place-items-center w-10 h-10 rounded-full border transition ${
+              scrolled
+                ? "border-night/15 text-night"
+                : "border-white/30 text-white"
+            }`}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] bg-night/95 backdrop-blur-md md:hidden flex flex-col"
+          >
+            {/* Top bar inside menu */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="font-display text-2xl font-bold tracking-wider"
+              >
+                <span className="text-gradient-gold">DANFER</span>
+                <span className="text-white">TOURS</span>
+              </Link>
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="Cerrar menú"
+                className="grid place-items-center w-10 h-10 rounded-full border border-white/20 text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Links */}
+            <motion.nav
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="flex-1 flex flex-col justify-center px-8 gap-2"
+            >
+              {links.map((l, i) => (
+                <motion.div
+                  key={l.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 + i * 0.06 }}
+                >
+                  <Link
+                    href={l.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block font-display text-4xl text-white hover:text-gold transition py-3 border-b border-white/10"
+                  >
+                    {l.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.nav>
+
+            {/* Footer of mobile menu: lang + social */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="px-8 py-6 border-t border-white/10 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-1.5 rounded-full p-0.5 border border-white/20">
+                <button
+                  onClick={() => locale !== "es" && setLocale("es")}
+                  aria-label="Español"
+                  className={`grid place-items-center w-8 h-8 rounded-full transition ${
+                    locale === "es"
+                      ? "ring-2 ring-gold"
+                      : "opacity-50"
+                  }`}
+                >
+                  <PeruFlag className="w-5 h-3.5 rounded-sm" />
+                </button>
+                <button
+                  onClick={() => locale !== "en" && setLocale("en")}
+                  aria-label="English"
+                  className={`grid place-items-center w-8 h-8 rounded-full transition ${
+                    locale === "en"
+                      ? "ring-2 ring-gold"
+                      : "opacity-50"
+                  }`}
+                >
+                  <USFlag className="w-5 h-3.5 rounded-sm" />
+                </button>
+              </div>
+              <div className="flex items-center gap-5 text-white/80">
+                <TikTokIcon className="w-5 h-5 hover:text-gold transition" />
+                <FacebookIcon className="w-5 h-5 hover:text-gold transition" />
+                <InstagramIcon className="w-5 h-5 hover:text-gold transition" />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
