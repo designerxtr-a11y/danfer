@@ -1,0 +1,174 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { updateSettingsForm } from "./actions";
+import type { SiteSettings } from "@/lib/queries/settings";
+
+export function SettingsForm({ initial }: { initial: SiteSettings }) {
+  const [pending, startTransition] = useTransition();
+  const [status, setStatus] = useState<
+    | { type: "idle" }
+    | { type: "ok" }
+    | { type: "error"; message: string }
+  >({ type: "idle" });
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    setStatus({ type: "idle" });
+    startTransition(async () => {
+      const result = await updateSettingsForm(formData);
+      if ("error" in result) {
+        setStatus({ type: "error", message: result.error });
+      } else {
+        setStatus({ type: "ok" });
+        setTimeout(() => setStatus({ type: "idle" }), 3500);
+      }
+    });
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-8">
+      <Section title="Marca y contacto">
+        <Field label="Nombre del sitio" name="site_name" defaultValue={initial.site_name} />
+        <Field
+          label="Tagline (español)"
+          name="tagline_es"
+          defaultValue={initial.site_tagline?.es ?? ""}
+        />
+        <Field
+          label="Tagline (inglés)"
+          name="tagline_en"
+          defaultValue={initial.site_tagline?.en ?? ""}
+        />
+        <Field
+          label="Email de contacto"
+          name="contact_email"
+          type="email"
+          defaultValue={initial.contact_email}
+        />
+        <Field
+          label="Teléfono (visible al público)"
+          name="contact_phone"
+          defaultValue={initial.contact_phone}
+          hint="Formato libre, ej: +51 984 123 456"
+        />
+        <Field
+          label="WhatsApp (botón flotante)"
+          name="whatsapp"
+          defaultValue={initial.whatsapp}
+          hint="Con código de país. Ej: +51 984 123 456 — solo números se usan para el link wa.me"
+        />
+      </Section>
+
+      <Section title="Dirección">
+        <Field
+          label="Dirección (español)"
+          name="address_es"
+          defaultValue={initial.address?.es ?? ""}
+        />
+        <Field
+          label="Dirección (inglés)"
+          name="address_en"
+          defaultValue={initial.address?.en ?? ""}
+        />
+      </Section>
+
+      <Section title="Redes sociales">
+        <Field
+          label="Instagram (usuario)"
+          name="social_instagram"
+          defaultValue={initial.social?.instagram ?? ""}
+          hint="Sin la @, ej: danfertourscusco"
+        />
+        <Field
+          label="Facebook (usuario o slug)"
+          name="social_facebook"
+          defaultValue={initial.social?.facebook ?? ""}
+        />
+        <Field
+          label="TikTok (usuario)"
+          name="social_tiktok"
+          defaultValue={initial.social?.tiktok ?? ""}
+        />
+      </Section>
+
+      <div className="flex items-center gap-4 sticky bottom-4 bg-white/80 backdrop-blur p-3 rounded-2xl border border-night/8 shadow-card">
+        <button
+          type="submit"
+          disabled={pending}
+          className="inline-flex items-center gap-2 bg-night text-white px-6 py-3 rounded-full font-semibold hover:bg-gold transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {pending ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Guardando…
+            </>
+          ) : (
+            "Guardar cambios"
+          )}
+        </button>
+
+        {status.type === "ok" && (
+          <span className="inline-flex items-center gap-2 text-emerald-600 text-sm">
+            <CheckCircle2 className="w-4 h-4" />
+            Guardado · el sitio se actualizará en segundos
+          </span>
+        )}
+        {status.type === "error" && (
+          <span className="inline-flex items-center gap-2 text-rose-600 text-sm">
+            <AlertCircle className="w-4 h-4" />
+            {status.message}
+          </span>
+        )}
+      </div>
+    </form>
+  );
+}
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset className="bg-white border border-night/8 rounded-2xl p-6 space-y-4">
+      <legend className="font-display text-lg text-night px-2 -ml-2">
+        {title}
+      </legend>
+      <div className="grid md:grid-cols-2 gap-4">{children}</div>
+    </fieldset>
+  );
+}
+
+function Field({
+  label,
+  name,
+  defaultValue,
+  type = "text",
+  hint,
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string;
+  type?: string;
+  hint?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-medium text-night/70 uppercase tracking-wider">
+        {label}
+      </span>
+      <input
+        name={name}
+        type={type}
+        defaultValue={defaultValue}
+        className="mt-1.5 block w-full bg-stone border border-night/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold focus:bg-white transition"
+      />
+      {hint && <span className="mt-1 block text-[11px] text-night/45">{hint}</span>}
+    </label>
+  );
+}

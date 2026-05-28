@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
-const PHONE = "51984123456"; // sin el +, formato WhatsApp wa.me
 const DEFAULT_MESSAGE =
   "Hola Danfer Tours! 👋 Quiero información sobre un tour en Cusco.";
 
@@ -14,7 +13,7 @@ const WhatsAppIcon = (p: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export function WhatsAppButton() {
+export function WhatsAppButton({ phone }: { phone: string }) {
   const [open, setOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -31,7 +30,7 @@ export function WhatsAppButton() {
   }, [dismissed]);
 
   const openChat = (message: string) => {
-    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank", "noopener,noreferrer");
     setOpen(false);
   };
