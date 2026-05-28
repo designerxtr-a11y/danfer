@@ -3,7 +3,7 @@ export const messages = {
     nav: {
       tours: "Tours",
       destinations: "Destinos",
-      experiences: "Experiencias",
+      blog: "Blog",
       reviews: "Reseñas",
     },
     hero: {
@@ -69,7 +69,7 @@ export const messages = {
     nav: {
       tours: "Tours",
       destinations: "Destinations",
-      experiences: "Experiences",
+      blog: "Blog",
       reviews: "Reviews",
     },
     hero: {

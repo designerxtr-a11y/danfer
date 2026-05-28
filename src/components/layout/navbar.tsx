@@ -54,8 +54,8 @@ export function Navbar() {
 
   const links = [
     { label: m.nav.tours, href: "/tours" },
-    { label: m.nav.destinations, href: "/#destinations" },
-    { label: m.nav.experiences, href: "/#tours" },
+    { label: m.nav.destinations, href: "/destinos" },
+    { label: m.nav.blog, href: "/blog" },
     { label: m.nav.reviews, href: "/#reviews" },
   ];
 
