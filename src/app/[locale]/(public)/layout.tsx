@@ -1,6 +1,7 @@
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { I18nProvider } from "@/lib/i18n/provider";
 import { getServerLocale } from "@/lib/i18n/server";
 
@@ -17,6 +18,7 @@ export default async function PublicLayout({
         <main className="flex-1">{children}</main>
         <Footer />
       </SmoothScroll>
+      <WhatsAppButton />
     </I18nProvider>
   );
 }
