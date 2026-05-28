@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { PostForm } from "../post-form";
+import { NewPostClient } from "./new-client";
 
 export default function NewPostPage() {
   return (
@@ -14,10 +14,10 @@ export default function NewPostPage() {
       </Link>
       <h1 className="font-display text-4xl text-night mb-2">Nuevo post</h1>
       <p className="text-night/60 mb-8">
-        Crea un nuevo artículo. Marca &quot;Publicado&quot; cuando esté listo —
-        si no, queda como borrador.
+        Crea un artículo desde cero, o importa contenido de cualquier URL como
+        base inicial. Marca &quot;Publicado&quot; cuando esté listo.
       </p>
-      <PostForm mode="create" />
+      <NewPostClient />
     </div>
   );
 }

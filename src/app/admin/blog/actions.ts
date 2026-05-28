@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { scrapeBlogUrl, type ScrapedBlogPost } from "@/lib/scrapers/blog-scraper";
 
 type Localized = { es: string; en?: string };
 
@@ -159,6 +160,21 @@ export async function deletePost(
   revalidatePath("/blog");
   revalidatePath("/admin/blog");
   return { ok: true };
+}
+
+/**
+ * Trae el HTML de una URL externa, extrae el contenido del artículo y devuelve
+ * datos pre-procesados (markdown body, título, cover image, autor, tags).
+ * NO guarda en la BD — solo retorna para que el form lo muestre y el usuario
+ * pueda revisar/editar antes de crear.
+ */
+export async function scrapeUrl(
+  url: string
+): Promise<{ ok: true; data: ScrapedBlogPost } | { error: string }> {
+  if (!url || !/^https?:\/\//.test(url)) {
+    return { error: "URL inválida (debe empezar con http:// o https://)" };
+  }
+  return scrapeBlogUrl(url);
 }
 
 export async function togglePublished(
