@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.99.0",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.0",
     "@mdx-js/loader": "^3.1.1",
