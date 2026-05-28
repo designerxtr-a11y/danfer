@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
@@ -9,10 +9,12 @@ import {
   Trash2,
   Eye,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { createPost, updatePost, deletePost } from "./actions";
+import { improveBlogContent } from "./ai-actions";
 import type { BlogPost } from "@/lib/queries/blog";
 import { t } from "@/types/database";
 
@@ -30,6 +32,56 @@ export function PostForm({ post, mode }: Props) {
   >({ type: "idle" });
 
   const [coverImage, setCoverImage] = useState(post?.cover_image ?? "");
+  const bodyRef = useRef<HTMLTextAreaElement | null>(null);
+  const [aiPending, startAi] = useTransition();
+  const [aiInfo, setAiInfo] = useState<
+    | { type: "idle" }
+    | { type: "ok"; original: string; usage: { input: number; output: number; cached: number } }
+    | { type: "error"; msg: string }
+  >({ type: "idle" });
+
+  function improveWithAi() {
+    const textarea = bodyRef.current;
+    if (!textarea) return;
+    const current = textarea.value;
+    if (current.length < 100) {
+      setAiInfo({ type: "error", msg: "Escribe al menos 100 caracteres antes de mejorar." });
+      return;
+    }
+    if (
+      !confirm(
+        `Mejorar este texto con Claude AI?\n\n` +
+          `• Lo reescribirá completamente (anti-copyright)\n` +
+          `• Mejorará estructura SEO (H2/H3, listas, internal links)\n` +
+          `• Adaptará voz Danfer Tours\n\n` +
+          `Costo estimado: ~$0.02-0.05 USD\n` +
+          `Tu texto actual se guardará para deshacer si no te gusta.`
+      )
+    )
+      return;
+    setAiInfo({ type: "idle" });
+    startAi(async () => {
+      const result = await improveBlogContent({ input: current });
+      if ("error" in result) {
+        setAiInfo({ type: "error", msg: result.error });
+        return;
+      }
+      // Reemplaza el contenido del textarea conservando el original para undo
+      textarea.value = result.content;
+      // Dispara event input manual para que React/onChange reaccionen si hubiera handlers
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      setAiInfo({ type: "ok", original: current, usage: result.usage });
+    });
+  }
+
+  function undoAi() {
+    if (aiInfo.type !== "ok") return;
+    const textarea = bodyRef.current;
+    if (!textarea) return;
+    textarea.value = aiInfo.original;
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    setAiInfo({ type: "idle" });
+  }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -116,7 +168,60 @@ export function PostForm({ post, mode }: Props) {
             multiline={20}
             mono
             required
+            textareaRef={bodyRef}
+            actionSlot={
+              <div className="flex items-center gap-2">
+                {aiInfo.type === "ok" && (
+                  <button
+                    type="button"
+                    onClick={undoAi}
+                    className="text-[11px] text-night/55 hover:text-night underline transition"
+                  >
+                    Deshacer
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={improveWithAi}
+                  disabled={aiPending}
+                  className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold to-gold-bright text-night text-xs font-semibold px-3 py-1.5 rounded-full hover:shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {aiPending ? (
+                    <>
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Reescribiendo…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3 h-3" />
+                      Mejorar con AI
+                    </>
+                  )}
+                </button>
+              </div>
+            }
           />
+          {aiInfo.type === "error" && (
+            <div className="flex items-start gap-2 text-rose-600 text-xs bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">
+              <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <span>{aiInfo.msg}</span>
+            </div>
+          )}
+          {aiInfo.type === "ok" && (
+            <div className="flex items-start gap-2 text-emerald-700 text-xs bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
+              <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold">Reescrito con Claude.</span>{" "}
+                Revisa el resultado y ajusta lo que sea necesario.
+                <span className="block mt-0.5 text-emerald-600/70 text-[11px]">
+                  Tokens: {aiInfo.usage.input.toLocaleString()} input ·{" "}
+                  {aiInfo.usage.output.toLocaleString()} output
+                  {aiInfo.usage.cached > 0 &&
+                    ` · ${aiInfo.usage.cached.toLocaleString()} cached (~$0.002)`}
+                </span>
+              </div>
+            </div>
+          )}
           <Field
             label="Body en English — opcional"
             name="body_md_en"
@@ -310,6 +415,8 @@ function Field({
   required,
   maxLength,
   onChange,
+  textareaRef,
+  actionSlot,
 }: {
   label: string;
   name: string;
@@ -322,15 +429,21 @@ function Field({
   required?: boolean;
   maxLength?: number;
   onChange?: (v: string) => void;
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
+  actionSlot?: React.ReactNode;
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-medium text-night/70 uppercase tracking-wider">
-        {label}
-        {required && <span className="text-rose-500 ml-1">*</span>}
+      <span className="flex items-center justify-between gap-2">
+        <span className="text-xs font-medium text-night/70 uppercase tracking-wider">
+          {label}
+          {required && <span className="text-rose-500 ml-1">*</span>}
+        </span>
+        {actionSlot}
       </span>
       {multiline ? (
         <textarea
+          ref={textareaRef}
           name={name}
           defaultValue={defaultValue}
           placeholder={placeholder}
