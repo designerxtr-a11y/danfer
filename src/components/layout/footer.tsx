@@ -42,13 +42,12 @@ async function getFooterData() {
 }
 
 const destinations = [
-  { label: "Machu Picchu", href: "/tours?destino=machu-picchu" },
-  { label: "Valle Sagrado", href: "/tours?destino=valle-sagrado" },
-  { label: "Camino Inca", href: "/tours?destino=camino-inca" },
-  { label: "Rainbow Mountain", href: "/tours?destino=rainbow-mountain" },
-  { label: "Laguna Humantay", href: "/tours?destino=laguna-humantay" },
-  { label: "Choquequirao", href: "/tours?destino=choquequirao" },
-  { label: "Salkantay", href: "/tours?destino=salkantay" },
+  { label: "Machu Picchu", href: "/destinos/machu-picchu" },
+  { label: "Camino Inca", href: "/destinos/camino-inca" },
+  { label: "Valle Sagrado", href: "/destinos/valle-sagrado" },
+  { label: "Rainbow Mountain", href: "/destinos/rainbow-mountain" },
+  { label: "Laguna Humantay", href: "/destinos/laguna-humantay" },
+  { label: "Todos los destinos", href: "/destinos" },
 ];
 
 const company = [

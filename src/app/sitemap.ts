@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { listDestinations } from "@/lib/destinations-content";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
 
@@ -48,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     withLangs("/", 1.0, "daily"),
     withLangs("/tours", 0.9, "daily"),
+    withLangs("/destinos", 0.9, "weekly"),
     withLangs("/blog", 0.8, "weekly"),
     withLangs("/sobre-nosotros", 0.5, "monthly"),
     withLangs("/contacto", 0.4, "yearly"),
@@ -55,6 +57,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     withLangs("/privacidad", 0.3, "yearly"),
     withLangs("/cancelacion", 0.3, "yearly"),
   ];
+
+  const destinationPages: MetadataRoute.Sitemap = listDestinations().map((d) =>
+    withLangs(`/destinos/${d.slug}`, 0.85, "weekly")
+  );
 
   const tourPages: MetadataRoute.Sitemap = (tours ?? []).map((tour) =>
     withLangs(`/tours/${tour.slug}`, 0.8, "weekly", new Date(tour.updated_at))
@@ -73,5 +79,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
-  return [...staticPages, ...tourPages, ...categoryPages, ...blogPages];
+  return [
+    ...staticPages,
+    ...destinationPages,
+    ...tourPages,
+    ...categoryPages,
+    ...blogPages,
+  ];
 }
