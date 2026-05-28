@@ -9,6 +9,7 @@ import {
   categoryServiceSchema,
   breadcrumbSchema,
 } from "@/lib/seo/schema";
+import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 
 export const metadata = {
   title: "Todos los tours en Cusco",
@@ -55,6 +56,13 @@ export default async function ToursIndexPage() {
     <div className="pt-32">
       <JsonLd data={schemas} />
       <section className="max-w-7xl mx-auto px-6 mb-12">
+        <Breadcrumbs
+          items={[
+            { name: "Inicio", url: "/" },
+            { name: "Tours", url: "/tours" },
+          ]}
+          className="mb-4"
+        />
         <span className="font-hand text-gold text-2xl">
           {tours.length} experiencias
         </span>

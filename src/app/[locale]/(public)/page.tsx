@@ -10,6 +10,7 @@ import {
   heroVideoSchema,
   homepageFaqSchema,
   speakableSchema,
+  topDestinationsSchemas,
 } from "@/lib/seo/schema";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
           speakableSchema(),
           heroVideoSchema(),
           homepageFaqSchema(),
+          ...topDestinationsSchemas(),
         ]}
       />
       <Hero />

@@ -6,7 +6,8 @@ import { Calendar, Clock, ChevronLeft } from "lucide-react";
 import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
 import { t } from "@/types/database";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema } from "@/lib/seo/schema";
+import { breadcrumbSchema, blogPostingSchema } from "@/lib/seo/schema";
+import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -45,31 +46,33 @@ export default async function BlogPostPage({ params }: PageProps) {
   const related = await getRelatedPosts(slug, 3);
   const body = t(post.body_md);
 
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: t(post.title),
-    description: t(post.excerpt),
-    image: post.cover_image,
-    datePublished: post.published_at ?? post.created_at,
-    author: { "@type": "Person", name: post.author_name ?? "Danfer Tours Cusco" },
-    publisher: { "@id": `${SITE}/#organization` },
-  };
+  const articleSchema = blogPostingSchema({
+    slug: post.slug,
+    title: t(post.title),
+    excerpt: t(post.excerpt) || "",
+    bodyText: body,
+    coverImage: post.cover_image,
+    publishedAt: post.published_at ?? post.created_at,
+    updatedAt: post.published_at ?? post.created_at,
+    authorName: post.author_name,
+    authorAvatar: post.author_avatar,
+    readMinutes: post.read_minutes,
+    tags: post.tags,
+  });
+
+  const crumbs = [
+    { name: "Inicio", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: t(post.title), url: `/blog/${post.slug}` },
+  ];
 
   return (
     <div className="pt-28 pb-24">
-      <JsonLd
-        data={[
-          articleSchema,
-          breadcrumbSchema([
-            { name: "Inicio", url: "/" },
-            { name: "Blog", url: "/blog" },
-            { name: t(post.title), url: `/blog/${post.slug}` },
-          ]),
-        ]}
-      />
+      <JsonLd data={[articleSchema, breadcrumbSchema(crumbs)]} />
 
       <article className="max-w-3xl mx-auto px-6">
+        <Breadcrumbs items={crumbs} className="mb-6" />
+
         <Link
           href="/blog"
           className="inline-flex items-center gap-1.5 text-night/60 hover:text-gold text-sm mb-6 transition"

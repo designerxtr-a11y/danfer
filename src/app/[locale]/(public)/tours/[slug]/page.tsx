@@ -15,7 +15,13 @@ import { TourItinerary } from "@/components/tours/tour-itinerary";
 import { TourFaqs } from "@/components/tours/tour-faqs";
 import { TourMap } from "@/components/tours/tour-map";
 import { JsonLd } from "@/components/seo/json-ld";
-import { tourSchema, breadcrumbSchema, tourFaqsSchema } from "@/lib/seo/schema";
+import {
+  tourSchema,
+  breadcrumbSchema,
+  tourFaqsSchema,
+  courseSchema,
+} from "@/lib/seo/schema";
+import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { TourIncludes } from "@/components/tours/tour-includes";
 import { TourReviews } from "@/components/tours/tour-reviews";
 import { BookingWidget } from "@/components/tours/booking-widget";
@@ -101,22 +107,34 @@ export default async function TourDetailPage({ params }: PageProps) {
       : tour.price_usd;
 
   const faqLd = tourFaqsSchema(tour.faqs ?? []);
+  const courseLd = courseSchema(tour);
+  const crumbs = [
+    { name: "Inicio", url: "/" },
+    { name: "Tours", url: "/tours" },
+    ...(tour.category
+      ? [
+          {
+            name: t(tour.category.name),
+            url: `/tours?category=${tour.category.slug}`,
+          },
+        ]
+      : []),
+    { name: t(tour.title), url: `/tours/${tour.slug}` },
+  ];
   const schemas = [
     ...tourSchema(tour, reviews),
-    breadcrumbSchema([
-      { name: "Inicio", url: "/" },
-      { name: "Tours", url: "/tours" },
-      ...(tour.category
-        ? [{ name: t(tour.category.name), url: `/tours?category=${tour.category.slug}` }]
-        : []),
-      { name: t(tour.title), url: `/tours/${tour.slug}` },
-    ]),
+    breadcrumbSchema(crumbs),
     ...(faqLd ? [faqLd] : []),
+    ...(courseLd ? [courseLd] : []),
   ];
 
   return (
     <div className="pt-24">
       <JsonLd data={schemas} />
+      {/* Visible breadcrumbs (matches the BreadcrumbList schema above) */}
+      <div className="max-w-7xl mx-auto px-6 mb-3">
+        <Breadcrumbs items={crumbs} />
+      </div>
       {/* Hero with cover */}
         <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
           <Image
