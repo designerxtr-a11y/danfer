@@ -3,6 +3,9 @@ import { t } from "@/types/database";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
 const ORG_NAME = "Danfer Tours Cusco";
+// Teléfono real configurable por env. Si no está, NO se emite en el schema
+// (mejor omitir que declarar un número placeholder/falso a Google).
+const ORG_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
 
 export function organizationSchema() {
   return {
@@ -28,7 +31,7 @@ export function organizationSchema() {
       "@type": "Place",
       name: "Cusco, Perú",
     },
-    telephone: "+51-984-123-456",
+    ...(ORG_PHONE && { telephone: ORG_PHONE }),
     email: "hola@danfertourscusco.com",
     priceRange: "$$",
     currenciesAccepted: ["USD", "PEN", "EUR"],
@@ -106,26 +109,13 @@ export function organizationSchema() {
       "Inca civilization",
       "High-altitude trekking",
     ],
-    award: [
-      "TripAdvisor Travelers' Choice 2025",
-      "Certificación oficial DIRCETUR Cusco",
-    ],
-    memberOf: {
-      "@type": "Organization",
-      name: "Cámara Nacional de Turismo del Perú (CANATUR)",
-    },
-    hasCredential: {
-      "@type": "EducationalOccupationalCredential",
-      credentialCategory: "Operador Turístico Autorizado",
-      recognizedBy: {
-        "@type": "Organization",
-        name: "DIRCETUR Cusco / MINCETUR",
-      },
-    },
+    // award / memberOf / hasCredential eliminados: eran afirmaciones no
+    // acreditables (riesgo de acción manual por structured data engañoso).
+    // Re-añadir SOLO con credenciales reales (p.ej. nº de registro DIRCETUR/MINCETUR).
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "+51-984-123-456",
+        ...(ORG_PHONE && { telephone: ORG_PHONE }),
         contactType: "customer service",
         areaServed: ["PE", "US", "ES", "MX", "AR", "CL", "CO"],
         availableLanguage: ["Spanish", "English", "Quechua"],
@@ -172,7 +162,11 @@ export function breadcrumbSchema(
   };
 }
 
-export function tourSchema(tour: TourWithCategory, reviews: Review[] = []) {
+export function tourSchema(
+  tour: TourWithCategory,
+  reviews: Review[] = [],
+  reviewStats: { count: number; avg: number } = { count: 0, avg: 0 }
+) {
   const title = t(tour.title);
   const description = t(tour.description) || t(tour.short_desc) || "";
 
@@ -196,13 +190,18 @@ export function tourSchema(tour: TourWithCategory, reviews: Review[] = []) {
           : tour.price_usd.toFixed(2),
       availability: "https://schema.org/InStock",
       seller: { "@id": `${SITE}/#organization` },
-      validFrom: new Date().toISOString(),
+      priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
     },
-    ...(tour.reviews_count > 0 && {
+    // aggregateRating/review se calculan desde reseñas REALES de la BD
+    // (reviewStats viene de getTourReviewStats), NO desde tour.reviews_count
+    // del seed. Así el conteo siempre coincide con lo visible en la página y
+    // nunca se declara una reseña inexistente. Si no hay reseñas reales (count
+    // 0) no se emiten estrellas → cero riesgo de penalización.
+    ...(reviewStats.count > 0 && {
       aggregateRating: {
         "@type": "AggregateRating",
-        ratingValue: tour.rating.toFixed(1),
-        reviewCount: tour.reviews_count,
+        ratingValue: reviewStats.avg.toFixed(1),
+        reviewCount: reviewStats.count,
         bestRating: "5",
         worstRating: "1",
       },
@@ -271,6 +270,9 @@ export function heroVideoSchema(opts?: {
   contentUrl?: string;
   thumbnailUrl?: string;
 }) {
+  // No emitir VideoObject con material de stock (Pexels/Unsplash) declarado
+  // como propio: solo cuando haya un video y thumbnail REALES del operador.
+  if (!opts?.contentUrl || !opts?.thumbnailUrl) return null;
   return {
     "@context": "https://schema.org",
     "@type": "VideoObject",
@@ -278,14 +280,9 @@ export function heroVideoSchema(opts?: {
     name: "Danfer Tours Cusco · Viaja al corazón del Imperio Inca",
     description:
       "Sobrevuela los Andes peruanos y desciende a Machu Picchu, el Valle Sagrado y las rutas ancestrales del Imperio Inca con guías locales certificados.",
-    thumbnailUrl: [
-      opts?.thumbnailUrl ||
-        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1920&auto=format&fit=crop",
-    ],
+    thumbnailUrl: [opts.thumbnailUrl],
     uploadDate: "2026-01-01T00:00:00+00:00",
-    contentUrl:
-      opts?.contentUrl ||
-      "https://videos.pexels.com/video-files/2169307/2169307-hd_1920_1080_30fps.mp4",
+    contentUrl: opts.contentUrl,
     publisher: { "@id": `${SITE}/#organization` },
     inLanguage: "es-PE",
   };
@@ -433,8 +430,7 @@ export function topDestinationsSchemas() {
       name: "Machu Picchu",
       description:
         "Ciudadela inca del siglo XV, Patrimonio de la Humanidad por la UNESCO y una de las 7 Maravillas del Mundo Moderno. Ubicada a 2,430 msnm en la región Cusco, Perú.",
-      image:
-        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1600",
+      // image: añadir foto PROPIA (Supabase Storage) — no usar stock en schema.
       lat: -13.1631,
       lng: -72.545,
       altitude: 2430,
@@ -444,8 +440,7 @@ export function topDestinationsSchemas() {
       name: "Camino Inca a Machu Picchu",
       description:
         "Ruta trekking ancestral de 43 km que conecta Cusco con Machu Picchu a través de los Andes peruanos. Considerada una de las mejores caminatas del mundo.",
-      image:
-        "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1600",
+      // image: añadir foto PROPIA (Supabase Storage) — no usar stock en schema.
       lat: -13.4,
       lng: -72.5,
       altitude: 4215,

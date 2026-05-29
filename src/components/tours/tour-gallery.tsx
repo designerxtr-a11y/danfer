@@ -16,7 +16,7 @@ export function TourGallery({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[420px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-2 sm:gap-3 h-[280px] sm:h-[360px] md:h-[420px]">
         <button
           onClick={() => setLightbox(0)}
           className="relative col-span-2 row-span-2 rounded-2xl overflow-hidden group"

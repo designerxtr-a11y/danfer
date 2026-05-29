@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactLenis, useLenis } from "lenis/react";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,6 +10,23 @@ if (typeof window !== "undefined") {
 }
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
+  // Lenis solo en desktop con puntero fino y sin prefers-reduced-motion.
+  // En móvil/táctil el rAF por frame + intercepción de scroll degrada el INP
+  // (métrica Core Web Vitals) y produce scroll "pegajoso". Ahí usamos scroll nativo.
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(
+      "(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
+    );
+    setEnabled(mq.matches);
+    const onChange = () => setEnabled(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  if (!enabled) return <>{children}</>;
+
   return (
     <ReactLenis
       root

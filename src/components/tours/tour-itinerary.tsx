@@ -20,9 +20,9 @@ const mealLabel: Record<string, string> = {
 export function TourItinerary({ days }: { days: ItineraryDay[] }) {
   return (
     <div>
-      <h2 className="font-display text-4xl text-night mb-8">Itinerario día a día</h2>
+      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-8">Itinerario día a día</h2>
       <div className="relative">
-        <div className="absolute left-6 top-3 bottom-3 w-px bg-gradient-to-b from-gold via-gold/30 to-transparent" />
+        <div className="absolute left-5 sm:left-6 top-3 bottom-3 w-px bg-gradient-to-b from-gold via-gold/30 to-transparent" />
 
         <div className="space-y-8">
           {days.map((day, i) => (
@@ -32,14 +32,14 @@ export function TourItinerary({ days }: { days: ItineraryDay[] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="relative pl-20"
+              className="relative pl-14 sm:pl-20"
             >
-              <div className="absolute left-0 top-0 w-12 h-12 rounded-full bg-gold text-white font-display font-bold text-xl grid place-items-center shadow-glow">
+              <div className="absolute left-0 top-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gold text-white font-display font-bold text-lg sm:text-xl grid place-items-center shadow-glow">
                 {day.day_number}
               </div>
 
-              <div className="bg-white border border-night/8 shadow-soft rounded-2xl p-6 hover:border-gold/40 hover:shadow-card transition">
-                <h3 className="font-display text-2xl text-night">
+              <div className="bg-white border border-night/8 shadow-soft rounded-2xl p-4 sm:p-6 hover:border-gold/40 hover:shadow-card transition">
+                <h3 className="font-display text-xl sm:text-2xl text-night">
                   {t(day.title)}
                 </h3>
                 {day.description && (

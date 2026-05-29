@@ -50,7 +50,7 @@ export function BookingWidget({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white border border-night/8 rounded-3xl p-6 shadow-card"
+      className="bg-white border border-night/8 rounded-3xl p-4 sm:p-6 shadow-card"
     >
       <div className="flex items-baseline gap-3 pb-5 border-b border-night/8">
         {originalPrice && (
@@ -58,7 +58,7 @@ export function BookingWidget({
             US${originalPrice.toFixed(0)}
           </span>
         )}
-        <span className="font-display text-4xl text-gold font-bold">
+        <span className="font-display text-3xl sm:text-4xl text-gold font-bold">
           US${priceUsd.toFixed(0)}
         </span>
         <span className="text-night/60 text-sm">/ persona</span>

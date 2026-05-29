@@ -4,43 +4,83 @@ import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
+import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
+import type { Locale } from "@/types/database";
 
-export const metadata = {
-  title: "Contacto · Danfer Tours Cusco",
-  description:
-    "Contáctanos para diseñar tu viaje a Machu Picchu, Valle Sagrado o Camino Inca. Atención por WhatsApp, email o en nuestra oficina en Cusco.",
-  alternates: { canonical: "/contacto" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<import("next").Metadata> {
+  const { locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
+  const title =
+    lc === "en"
+      ? "Contact · Danfer Tours Cusco"
+      : "Contacto · Danfer Tours Cusco";
+  const description =
+    lc === "en"
+      ? "Contact us to plan your trip to Machu Picchu, the Sacred Valley or the Inca Trail. Reach us via WhatsApp, email or at our office in Cusco."
+      : "Contáctanos para diseñar tu viaje a Machu Picchu, Valle Sagrado o Camino Inca. Atención por WhatsApp, email o en nuestra oficina en Cusco.";
+  return {
+    title,
+    description,
+    alternates: buildAlternates("/contacto", lc),
+    openGraph: {
+      title,
+      description,
+      locale: ogLocale(lc),
+    },
+  };
+}
 
 export const revalidate = 300;
 
-export default async function ContactoPage() {
+export default async function ContactoPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
   const settings = await getSettings();
   const waNumber = normalizeWhatsApp(settings.whatsapp);
   const crumbs = [
-    { name: "Inicio", url: "/" },
-    { name: "Contacto", url: "/contacto" },
+    { name: lc === "en" ? "Home" : "Inicio", url: "/" },
+    { name: lc === "en" ? "Contact" : "Contacto", url: "/contacto" },
   ];
 
   return (
-    <div className="pt-32 pb-24">
+    <div className="pt-24 md:pt-32 pb-16 md:pb-24">
       <JsonLd data={[breadcrumbSchema(crumbs)]} />
 
-      <section className="max-w-6xl mx-auto px-6">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6">
         <Breadcrumbs items={crumbs} className="mb-4" />
-        <div className="text-center mb-14">
-          <span className="font-hand text-gold text-2xl">Hablemos</span>
-          <h1 className="mt-2 font-display text-5xl md:text-6xl text-night">
-            Diseñemos tu viaje{" "}
-            <span className="text-gradient-gold italic">juntos</span>
+        <div className="text-center mb-10 md:mb-14">
+          <span className="font-hand text-gold text-2xl">
+            {lc === "en" ? "Let's talk" : "Hablemos"}
+          </span>
+          <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-6xl text-night">
+            {lc === "en" ? (
+              <>
+                Let's plan your trip{" "}
+                <span className="text-gradient-gold italic">together</span>
+              </>
+            ) : (
+              <>
+                Diseñemos tu viaje{" "}
+                <span className="text-gradient-gold italic">juntos</span>
+              </>
+            )}
           </h1>
           <p className="mt-4 text-night/60 max-w-xl mx-auto">
-            Cuéntanos qué quieres vivir y te respondemos en menos de 24 horas —
-            o escríbenos por WhatsApp para respuesta inmediata.
+            {lc === "en"
+              ? "Tell us what you want to experience and we'll reply within 24 hours — or message us on WhatsApp for an instant response."
+              : "Cuéntanos qué quieres vivir y te respondemos en menos de 24 horas — o escríbenos por WhatsApp para respuesta inmediata."}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-[1fr_400px] gap-10">
+        <div className="grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-10">
           <ContactForm />
 
           <aside className="space-y-4">
@@ -49,9 +89,15 @@ export default async function ContactoPage() {
               title="WhatsApp"
               value={settings.contact_phone}
               href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
-                "Hola Danfer Tours! 👋 Quiero información sobre un tour."
+                lc === "en"
+                  ? "Hi Danfer Tours! 👋 I'd like information about a tour."
+                  : "Hola Danfer Tours! 👋 Quiero información sobre un tour."
               )}`}
-              hint="Respuesta inmediata · recomendado"
+              hint={
+                lc === "en"
+                  ? "Instant response · recommended"
+                  : "Respuesta inmediata · recomendado"
+              }
               highlight
             />
             <InfoCard
@@ -59,33 +105,43 @@ export default async function ContactoPage() {
               title="Email"
               value={settings.contact_email}
               href={`mailto:${settings.contact_email}`}
-              hint="Respondemos en <24h"
+              hint={lc === "en" ? "We reply in <24h" : "Respondemos en <24h"}
             />
             <InfoCard
               icon={Phone}
-              title="Teléfono"
+              title={lc === "en" ? "Phone" : "Teléfono"}
               value={settings.contact_phone}
               href={`tel:${normalizeWhatsApp(settings.contact_phone)}`}
             />
             <InfoCard
               icon={MapPin}
-              title="Oficina en Cusco"
-              value={settings.address?.es ?? "Av. El Sol 314, Cusco"}
-              hint="Atención presencial con cita"
+              title={lc === "en" ? "Office in Cusco" : "Oficina en Cusco"}
+              value={
+                (lc === "en" ? settings.address?.en : settings.address?.es) ??
+                settings.address?.es ??
+                "Av. El Sol 314, Cusco"
+              }
+              hint={
+                lc === "en"
+                  ? "In-person service by appointment"
+                  : "Atención presencial con cita"
+              }
             />
             <div className="bg-stone border border-night/8 rounded-2xl p-5 flex items-start gap-3">
               <Clock className="w-5 h-5 text-gold shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs uppercase tracking-wider text-night/50">
-                  Horario de atención
+                  {lc === "en" ? "Opening hours" : "Horario de atención"}
                 </div>
                 <div className="text-night/80 text-sm mt-1.5 space-y-0.5">
-                  <div>Lun – Vie · 8:00 – 20:00</div>
-                  <div>Sábado · 9:00 – 18:00</div>
-                  <div>Domingo · 9:00 – 14:00</div>
+                  <div>{lc === "en" ? "Mon – Fri" : "Lun – Vie"} · 8:00 – 20:00</div>
+                  <div>{lc === "en" ? "Saturday" : "Sábado"} · 9:00 – 18:00</div>
+                  <div>{lc === "en" ? "Sunday" : "Domingo"} · 9:00 – 14:00</div>
                 </div>
                 <div className="text-night/55 text-xs mt-2">
-                  Hora de Lima (GMT-5) · Soporte 24/7 durante tu tour
+                  {lc === "en"
+                    ? "Lima time (GMT-5) · 24/7 support during your tour"
+                    : "Hora de Lima (GMT-5) · Soporte 24/7 durante tu tour"}
                 </div>
               </div>
             </div>
@@ -93,10 +149,12 @@ export default async function ContactoPage() {
         </div>
 
         {/* Embedded Google Map */}
-        <div className="mt-16">
+        <div className="mt-12 md:mt-16">
           <div className="flex items-end justify-between mb-4">
             <div>
-              <span className="font-hand text-gold text-xl">Encuéntranos</span>
+              <span className="font-hand text-gold text-xl">
+                {lc === "en" ? "Find us" : "Encuéntranos"}
+              </span>
               <h2 className="font-display text-2xl md:text-3xl text-night mt-1">
                 Av. El Sol 314, Cusco
               </h2>
@@ -107,7 +165,7 @@ export default async function ContactoPage() {
               rel="noopener noreferrer"
               className="hidden md:inline-flex items-center gap-2 text-night/70 hover:text-gold text-sm transition"
             >
-              Abrir en Google Maps →
+              {lc === "en" ? "Open in Google Maps →" : "Abrir en Google Maps →"}
             </a>
           </div>
           <div className="rounded-3xl overflow-hidden ring-1 ring-night/10 shadow-soft">
@@ -119,7 +177,11 @@ export default async function ContactoPage() {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              title="Mapa de la oficina Danfer Tours Cusco"
+              title={
+                lc === "en"
+                  ? "Danfer Tours Cusco office map"
+                  : "Mapa de la oficina Danfer Tours Cusco"
+              }
             />
           </div>
         </div>

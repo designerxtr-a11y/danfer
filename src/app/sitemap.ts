@@ -6,11 +6,15 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
 
 type Entry = MetadataRoute.Sitemap[number];
 
+// Fecha estable para páginas sin updated_at propio (evita que cambie en cada build,
+// lo que volvía poco fiable la señal de frescura para Google).
+const STATIC_LASTMOD = new Date("2026-05-27");
+
 function withLangs(
   path: string,
   priority: number,
   changeFrequency: Entry["changeFrequency"] = "weekly",
-  lastModified: Date = new Date()
+  lastModified: Date = STATIC_LASTMOD
 ): Entry {
   return {
     url: `${SITE}${path}`,

@@ -3,6 +3,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { Link } from "@/i18n/navigation";
+import { useI18n } from "@/lib/i18n/provider";
 import {
   ArrowRight,
   Star,
@@ -22,6 +24,7 @@ const destinationCards = [
     country: "Perú",
     region: "Cusco",
     title: "Machu Picchu",
+    slug: "machu-picchu",
     rating: 4.9,
     reviews: 1840,
     days: "Full day",
@@ -32,6 +35,7 @@ const destinationCards = [
     country: "Perú",
     region: "Valle Sagrado",
     title: "Pisac & Ollanta",
+    slug: "valle-sagrado",
     rating: 4.8,
     reviews: 920,
     days: "Full day",
@@ -42,6 +46,7 @@ const destinationCards = [
     country: "Perú",
     region: "Cusco",
     title: "Rainbow Mountain",
+    slug: "rainbow-mountain",
     rating: 4.7,
     reviews: 640,
     days: "Full day",
@@ -50,9 +55,23 @@ const destinationCards = [
   },
 ];
 
+// Chips de destinos enlazados (anchor descriptivo + transfiere PageRank a /destinos)
+const destinationChips = [
+  { label: "Machu Picchu", slug: "machu-picchu" },
+  { label: "Valle Sagrado", slug: "valle-sagrado" },
+  { label: "Rainbow Mountain", slug: "rainbow-mountain" },
+  { label: "Camino Inca", slug: "camino-inca" },
+];
+
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { m, locale } = useI18n();
+  // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
+  const keyword =
+    locale === "en"
+      ? "Cusco & Machu Picchu Tours"
+      : "Tours en Cusco y Machu Picchu";
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -80,7 +99,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative h-screen min-h-[680px] max-h-[940px] w-full overflow-hidden bg-night"
+      className="relative h-screen min-h-[620px] sm:min-h-[680px] max-h-[940px] w-full overflow-hidden bg-night"
     >
       {/* Background video */}
       <video
@@ -103,73 +122,75 @@ export function Hero() {
       {/* Main content */}
       <motion.div
         style={{ y: contentY, opacity: overlayOpacity }}
-        className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10 h-full grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center pt-24 pb-32"
+        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 h-full grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center pt-20 sm:pt-24 pb-28 sm:pb-32"
       >
         {/* LEFT — text + CTA */}
         <div>
+          {/* Eyebrow con keyword visible (sin opacity:0 → pinta de inmediato, LCP) */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center gap-3 text-white/70 mb-4"
+            initial={{ y: 10 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex items-center gap-3 text-white/80 mb-4"
           >
             <span className="h-px w-8 bg-gold" />
             <span className="text-[11px] uppercase tracking-[0.3em]">
-              Cusco · Perú
+              {keyword}
             </span>
           </motion.div>
 
           <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.4 }}
             className="font-hand text-gold text-2xl md:text-3xl"
           >
-            Bienvenido al techo del mundo
+            {m.hero.eyebrow}
           </motion.span>
 
+          {/* H1: sin opacity:0 ni delay → es el LCP, debe pintar al primer frame */}
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 font-display font-bold leading-[0.95] text-white text-5xl md:text-6xl lg:text-7xl"
+            initial={{ y: 18 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3 font-display font-bold leading-[0.95] text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Viaja al{" "}
+            {m.hero.title_a}{" "}
             <span className="text-gradient-gold italic font-normal">
-              corazón
+              {m.hero.title_emphasis}
             </span>{" "}
-            del Imperio Inca
+            {m.hero.title_b}
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-6 max-w-xl text-white/75 leading-relaxed text-base md:text-lg"
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-5 sm:mt-6 max-w-xl text-white/80 leading-relaxed text-sm sm:text-base md:text-lg"
           >
-            Tours exclusivos por Machu Picchu, el Valle Sagrado y rutas
-            ancestrales. Guías locales certificados, grupos pequeños,
-            experiencias que cambian vidas.
+            {m.hero.subtitle}
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="mt-8 flex flex-wrap items-center gap-5"
+            transition={{ delay: 0.3 }}
+            className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4 sm:gap-5"
           >
-            <a
-              href="#tours"
-              className="group inline-flex items-center gap-3 rounded-full bg-gold px-7 py-3.5 text-night font-semibold transition hover:bg-gold-bright hover:shadow-glow"
+            <Link
+              href="/tours"
+              className="group inline-flex items-center gap-2 sm:gap-3 rounded-full bg-gold px-5 sm:px-7 py-3 sm:py-3.5 text-night font-semibold text-sm sm:text-base transition hover:bg-gold-bright hover:shadow-glow"
             >
-              Reservar tour
+              {m.hero.cta}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-            </a>
+            </Link>
             <button className="flex items-center gap-3 text-white/85 hover:text-gold transition group">
               <span className="grid place-items-center w-11 h-11 rounded-full bg-white/15 border border-white/20 group-hover:scale-110 transition">
                 <PlayCircle className="w-5 h-5 text-gold" />
               </span>
-              <span className="text-sm uppercase tracking-wider">Ver video</span>
+              <span className="text-sm uppercase tracking-wider">
+                {m.hero.videoCta}
+              </span>
             </button>
           </motion.div>
 
@@ -180,21 +201,17 @@ export function Hero() {
             className="mt-10 hidden md:flex items-center gap-5 flex-wrap"
           >
             <span className="text-white/45 text-[10px] uppercase tracking-[0.3em]">
-              Destinos
+              {m.sections.destinations.eyebrow}
             </span>
-            {[
-              "Machu Picchu",
-              "Valle Sagrado",
-              "Rainbow Mountain",
-              "Camino Inca",
-            ].map((d) => (
-              <span
-                key={d}
-                className="inline-flex items-center gap-1.5 text-white/75 text-xs hover:text-gold transition cursor-pointer"
+            {destinationChips.map((d) => (
+              <Link
+                key={d.slug}
+                href={`/destinos/${d.slug}`}
+                className="inline-flex items-center gap-1.5 text-white/75 text-xs hover:text-gold transition"
               >
                 <MapPin className="w-3 h-3 text-gold" />
-                {d}
-              </span>
+                {d.label}
+              </Link>
             ))}
           </motion.div>
         </div>
@@ -250,14 +267,17 @@ export function Hero() {
         transition={{ delay: 1.3, duration: 0.8 }}
         className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10 bg-night/85"
       >
-        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-4 flex items-center justify-between flex-wrap gap-3">
-          <BottomStat value="8,500+" label="Viajeros felices" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between flex-wrap gap-x-4 gap-y-2">
+          <BottomStat value="8,500+" label={m.hero.stats_travelers} />
           <span className="w-px h-7 bg-white/15 hidden sm:block" />
-          <BottomStat value="12+" label="Años de experiencia" />
+          <BottomStat value="12+" label={m.sections.stats.years} />
           <span className="w-px h-7 bg-white/15 hidden sm:block" />
-          <BottomStat value="35" label="Tours únicos" />
+          <BottomStat value="35" label={m.hero.stats_tours} />
           <span className="w-px h-7 bg-white/15 hidden md:block" />
-          <BottomStat value="100%" label="Guías certificados" />
+          <BottomStat
+            value="100%"
+            label={locale === "en" ? "Certified guides" : "Guías certificados"}
+          />
 
           <div className="hidden lg:flex items-center gap-2 text-white/50 text-[10px] uppercase tracking-widest">
             <span>Scroll</span>
@@ -276,10 +296,10 @@ export function Hero() {
 function BottomStat({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <div className="font-display text-xl font-bold text-white leading-tight">
+      <div className="font-display text-base sm:text-xl font-bold text-white leading-tight">
         {value}
       </div>
-      <div className="text-[10px] text-white/55 uppercase tracking-wider">
+      <div className="text-[9px] sm:text-[10px] text-white/55 uppercase tracking-wider">
         {label}
       </div>
     </div>
@@ -327,7 +347,11 @@ function FloatingCard({
       style={{ top: pos.top, left: pos.left, zIndex: pos.z }}
       className="absolute w-60 cursor-pointer group"
     >
-      <div className="relative w-full h-[340px] rounded-2xl overflow-hidden ring-1 ring-white/20 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)]">
+      <Link
+        href={`/destinos/${destination.slug}`}
+        aria-label={`${destination.title} — ${destination.region}, ${destination.country}`}
+        className="relative block w-full h-[340px] rounded-2xl overflow-hidden ring-1 ring-white/20 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)]"
+      >
         {/* Image */}
         <Image
           src={destination.img}
@@ -383,7 +407,7 @@ function FloatingCard({
 
         {/* Gold accent border that appears on hover */}
         <div className="absolute inset-0 rounded-2xl ring-2 ring-gold/0 group-hover:ring-gold/60 transition-all duration-300 pointer-events-none" />
-      </div>
+      </Link>
     </motion.div>
   );
 }

@@ -2,22 +2,30 @@
 
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { Calendar, Smile, Globe2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/provider";
 
 const stats = [
-  { icon: Calendar, value: 12, label: "Años de experiencia", suffix: "+" },
-  { icon: Smile, value: 8500, label: "Viajeros felices", suffix: "+" },
-  { icon: Globe2, value: 35, label: "Rutas exclusivas", suffix: "" },
+  { icon: Calendar, value: 12, labelKey: "years" as const, suffix: "+" },
+  { icon: Smile, value: 8500, labelKey: "travelers" as const, suffix: "+" },
+  { icon: Globe2, value: 35, labelKey: "routes" as const, suffix: "" },
 ];
 
 export function Stats() {
+  const { m, locale } = useI18n();
   return (
-    <section className="relative py-32 px-6 bg-stone">
-      <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-16 items-center">
+    <section className="relative py-20 md:py-32 px-4 sm:px-6 bg-stone">
+      <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
           <div className="grid grid-cols-3 gap-6 mb-12">
             {stats.map((s, i) => (
-              <Stat key={s.label} {...s} delay={i * 0.15} />
+              <Stat
+                key={s.labelKey}
+                {...s}
+                label={m.sections.stats[s.labelKey]}
+                delay={i * 0.15}
+              />
             ))}
           </div>
 
@@ -28,20 +36,31 @@ export function Stats() {
             transition={{ duration: 0.8 }}
             className="text-night/70 leading-relaxed max-w-md"
           >
-            Diseñamos itinerarios para viajeros curiosos: desde la ciudadela de
-            Machu Picchu al amanecer, hasta caminatas chamánicas por valles
-            sagrados. Los primeros 50 reservantes del mes obtienen{" "}
-            <span className="text-gold font-semibold">15% de descuento</span>.
+            {locale === "en" ? (
+              <>
+                We design itineraries for curious travelers: from the citadel of
+                Machu Picchu at dawn to shamanic hikes through sacred valleys.
+                The first 50 bookings of the month get{" "}
+                <span className="text-gold font-semibold">15% off</span>.
+              </>
+            ) : (
+              <>
+                Diseñamos itinerarios para viajeros curiosos: desde la ciudadela
+                de Machu Picchu al amanecer, hasta caminatas chamánicas por
+                valles sagrados. Los primeros 50 reservantes del mes obtienen{" "}
+                <span className="text-gold font-semibold">15% de descuento</span>.
+              </>
+            )}
           </motion.p>
 
           <div className="mt-8">
             <button className="text-gold hover:text-gold-bright text-sm font-medium underline-offset-4 hover:underline transition">
-              Conoce más →
+              {m.common.learnMore} →
             </button>
           </div>
         </div>
 
-        <div className="relative h-[500px]">
+        <div className="relative h-[500px] hidden lg:block">
           <PolaroidGallery />
         </div>
       </div>
@@ -84,10 +103,10 @@ function Stat({
     >
       <Icon className="w-6 h-6 text-gold mx-auto mb-3" />
       <div className="flex items-baseline justify-center gap-0.5">
-        <motion.span className="font-display text-4xl md:text-5xl font-bold text-night">
+        <motion.span className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-night">
           {rounded}
         </motion.span>
-        <span className="font-display text-3xl text-gold">{suffix}</span>
+        <span className="font-display text-2xl sm:text-3xl text-gold">{suffix}</span>
       </div>
       <div className="mt-2 text-xs text-night/60 uppercase tracking-wider">
         {label}
@@ -131,8 +150,15 @@ function PolaroidGallery() {
           style={{ top: p.top, left: p.left }}
           className="absolute w-56 polaroid rounded-sm cursor-pointer"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={p.src} alt="" className="w-full h-56 object-cover rounded-sm" />
+          <Image
+            src={p.src}
+            alt=""
+            width={224}
+            height={224}
+            sizes="224px"
+            loading="lazy"
+            className="w-full h-56 object-cover rounded-sm"
+          />
         </motion.div>
       ))}
     </>

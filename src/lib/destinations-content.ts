@@ -470,12 +470,33 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
   },
 };
 
+// Versiones en inglés (una por destino). Si falta alguna, cae a español.
+import { machuPicchuEn } from "./destinations-en/machu-picchu";
+import { caminoIncaEn } from "./destinations-en/camino-inca";
+import { valleSagradoEn } from "./destinations-en/valle-sagrado";
+import { rainbowMountainEn } from "./destinations-en/rainbow-mountain";
+import { lagunaHumantayEn } from "./destinations-en/laguna-humantay";
+
+const DESTINATIONS_EN: Record<string, DestinationContent> = {
+  "machu-picchu": machuPicchuEn,
+  "camino-inca": caminoIncaEn,
+  "valle-sagrado": valleSagradoEn,
+  "rainbow-mountain": rainbowMountainEn,
+  "laguna-humantay": lagunaHumantayEn,
+};
+
 export function getDestinationBySlug(
-  slug: string
+  slug: string,
+  locale: string = "es"
 ): DestinationContent | null {
+  if (locale === "en") return DESTINATIONS_EN[slug] ?? DESTINATIONS[slug] ?? null;
   return DESTINATIONS[slug] ?? null;
 }
 
-export function listDestinations(): DestinationContent[] {
-  return Object.values(DESTINATIONS);
+export function listDestinations(
+  locale: string = "es"
+): DestinationContent[] {
+  return Object.keys(DESTINATIONS).map(
+    (slug) => getDestinationBySlug(slug, locale) as DestinationContent
+  );
 }

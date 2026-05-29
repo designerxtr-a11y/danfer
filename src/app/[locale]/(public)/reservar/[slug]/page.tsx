@@ -1,23 +1,34 @@
 import { notFound } from "next/navigation";
 import { getTourBySlug } from "@/lib/queries/tours";
-import { t } from "@/types/database";
+import { t, type Locale } from "@/types/database";
 import { CheckoutForm } from "./checkout-form";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ChevronLeft, Shield, Zap, RotateCcw } from "lucide-react";
+import { buildAlternates } from "@/lib/seo/alternates";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<{ date?: string; travelers?: string }>;
 }
 
-export const metadata = {
-  title: "Reservar tu tour",
-  robots: { index: false },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<import("next").Metadata> {
+  const { slug, locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
+  return {
+    title: lc === "en" ? "Book your tour" : "Reservar tu tour",
+    robots: { index: false },
+    alternates: buildAlternates(`/reservar/${slug}`, lc),
+  };
+}
 
 export default async function ReservarPage({ params, searchParams }: PageProps) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
   const { date, travelers } = await searchParams;
 
   const tour = await getTourBySlug(slug);
@@ -38,20 +49,22 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
           className="inline-flex items-center gap-1.5 text-night/60 hover:text-gold text-sm mb-6 transition"
         >
           <ChevronLeft className="w-4 h-4" />
-          Volver al tour
+          {lc === "en" ? "Back to tour" : "Volver al tour"}
         </Link>
 
         <h1 className="font-display text-4xl md:text-5xl text-night mb-2">
-          Confirma tu reserva
+          {lc === "en" ? "Confirm your booking" : "Confirma tu reserva"}
         </h1>
         <p className="text-night/60 mb-10">
-          Estás a un paso de vivir una experiencia inolvidable.
+          {lc === "en"
+            ? "You're one step away from an unforgettable experience."
+            : "Estás a un paso de vivir una experiencia inolvidable."}
         </p>
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-8">
           <CheckoutForm
             tourId={tour.id}
-            tourTitle={t(tour.title)}
+            tourTitle={t(tour.title, lc)}
             tourSlug={tour.slug}
             priceUsd={finalPrice}
             initialDate={initialDate}
@@ -65,7 +78,7 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
               <div className="relative h-48">
                 <Image
                   src={tour.cover_image}
-                  alt={t(tour.title)}
+                  alt={t(tour.title, lc)}
                   fill
                   sizes="400px"
                   className="object-cover"
@@ -73,24 +86,27 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
               </div>
               <div className="p-6">
                 <h3 className="font-display text-2xl text-night">
-                  {t(tour.title)}
+                  {t(tour.title, lc)}
                 </h3>
                 <p className="text-sm text-night/60 mt-1">
-                  {t(tour.duration_label)} · {tour.max_group_size} máx
+                  {t(tour.duration_label, lc)} · {tour.max_group_size}{" "}
+                  {lc === "en" ? "max" : "máx"}
                 </p>
 
                 <div className="mt-6 pt-6 border-t border-night/8 space-y-2 text-sm text-night/70">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-gold" />
-                    Pago 100% seguro (SSL)
+                    {lc === "en" ? "100% secure payment (SSL)" : "Pago 100% seguro (SSL)"}
                   </div>
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-gold" />
-                    Confirmación inmediata
+                    {lc === "en" ? "Instant confirmation" : "Confirmación inmediata"}
                   </div>
                   <div className="flex items-center gap-2">
                     <RotateCcw className="w-4 h-4 text-gold" />
-                    Cancela gratis hasta 7 días antes
+                    {lc === "en"
+                      ? "Free cancellation up to 7 days before"
+                      : "Cancela gratis hasta 7 días antes"}
                   </div>
                 </div>
               </div>

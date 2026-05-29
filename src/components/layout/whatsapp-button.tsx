@@ -45,7 +45,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-5 z-40 max-w-[260px] bg-white rounded-2xl shadow-card border border-night/8 p-4 pr-9"
+            className="fixed bottom-24 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[260px] bg-white rounded-2xl shadow-card border border-night/8 p-4 pr-9"
           >
             <button
               onClick={() => {
@@ -84,7 +84,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-5 z-40 w-[300px] bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden"
+            className="fixed bottom-24 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[300px] bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden"
           >
             {/* Header */}
             <div className="bg-[#075E54] text-white px-5 py-4 flex items-start gap-3">

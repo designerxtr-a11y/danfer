@@ -64,6 +64,27 @@ export const messages = {
       next: "Siguiente",
       prev: "Anterior",
     },
+    tourDetail: {
+      about: "Sobre el tour",
+      highlights: "Lo más destacado",
+      itinerary: "Itinerario",
+      startPoint: "Punto de inicio",
+      reviewsCount: "reseñas",
+      upTo: "Hasta",
+      masl: "msnm",
+    },
+    breadcrumbs: {
+      home: "Inicio",
+      tours: "Tours",
+      destinations: "Destinos",
+      blog: "Blog",
+    },
+    difficulty: {
+      easy: "Fácil",
+      moderate: "Moderado",
+      challenging: "Exigente",
+      expert: "Experto",
+    },
   },
   en: {
     nav: {
@@ -130,8 +151,34 @@ export const messages = {
       next: "Next",
       prev: "Previous",
     },
+    tourDetail: {
+      about: "About the tour",
+      highlights: "Highlights",
+      itinerary: "Itinerary",
+      startPoint: "Starting point",
+      reviewsCount: "reviews",
+      upTo: "Up to",
+      masl: "m.a.s.l.",
+    },
+    breadcrumbs: {
+      home: "Home",
+      tours: "Tours",
+      destinations: "Destinations",
+      blog: "Blog",
+    },
+    difficulty: {
+      easy: "Easy",
+      moderate: "Moderate",
+      challenging: "Challenging",
+      expert: "Expert",
+    },
   },
 } as const;
 
 export type Locale = keyof typeof messages;
 export type Messages = (typeof messages)[Locale];
+
+/** Bundle de mensajes para el locale dado (uso en Server Components, SSG-safe). */
+export function tr(locale: Locale) {
+  return messages[locale];
+}

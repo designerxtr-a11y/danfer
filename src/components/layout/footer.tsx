@@ -1,8 +1,9 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { getLocale } from "next-intl/server";
 import { Mail, Phone, MapPin, Award, Shield, Clock } from "lucide-react";
 import { NewsletterForm } from "./newsletter-form";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { t } from "@/types/database";
+import { t, type Locale } from "@/types/database";
 
 interface TourLite {
   slug: string;
@@ -42,31 +43,40 @@ async function getFooterData() {
 }
 
 const destinations = [
-  { label: "Machu Picchu", href: "/destinos/machu-picchu" },
-  { label: "Camino Inca", href: "/destinos/camino-inca" },
-  { label: "Valle Sagrado", href: "/destinos/valle-sagrado" },
-  { label: "Rainbow Mountain", href: "/destinos/rainbow-mountain" },
-  { label: "Laguna Humantay", href: "/destinos/laguna-humantay" },
-  { label: "Todos los destinos", href: "/destinos" },
+  { es: "Machu Picchu", en: "Machu Picchu", href: "/destinos/machu-picchu" },
+  { es: "Camino Inca", en: "Inca Trail", href: "/destinos/camino-inca" },
+  { es: "Valle Sagrado", en: "Sacred Valley", href: "/destinos/valle-sagrado" },
+  {
+    es: "Rainbow Mountain",
+    en: "Rainbow Mountain",
+    href: "/destinos/rainbow-mountain",
+  },
+  { es: "Laguna Humantay", en: "Humantay Lake", href: "/destinos/laguna-humantay" },
+  { es: "Todos los destinos", en: "All destinations", href: "/destinos" },
 ];
 
 const company = [
-  { label: "Sobre nosotros", href: "/sobre-nosotros" },
-  { label: "Blog de viajes", href: "/blog" },
-  { label: "Reseñas verificadas", href: "/#reviews" },
-  { label: "Contacto", href: "/contacto" },
+  { es: "Sobre nosotros", en: "About us", href: "/sobre-nosotros" },
+  { es: "Blog de viajes", en: "Travel blog", href: "/blog" },
+  { es: "Reseñas verificadas", en: "Verified reviews", href: "/#reviews" },
+  { es: "Contacto", en: "Contact", href: "/contacto" },
 ];
 
 const legal = [
-  { label: "Términos", href: "/terminos" },
-  { label: "Privacidad", href: "/privacidad" },
-  { label: "Cancelación", href: "/cancelacion" },
+  { es: "Términos", en: "Terms", href: "/terminos" },
+  { es: "Privacidad", en: "Privacy", href: "/privacidad" },
+  { es: "Cancelación", en: "Cancellation", href: "/cancelacion" },
 ];
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
 
 export async function Footer() {
-  const { tours, categories } = await getFooterData();
+  const [{ tours, categories }, locale] = await Promise.all([
+    getFooterData(),
+    getLocale(),
+  ]);
+  const lc = (locale === "en" ? "en" : "es") as Locale;
+  const en = lc === "en";
 
   return (
     <footer
@@ -79,19 +89,15 @@ export async function Footer() {
         <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-white/55 text-xs uppercase tracking-widest">
           <span className="flex items-center gap-2">
             <Award className="w-4 h-4 text-gold" />
-            Operador autorizado MINCETUR
+            {en ? "MINCETUR-licensed operator" : "Operador autorizado MINCETUR"}
           </span>
           <span className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-gold" />
-            Reservas con confianza
+            {en ? "Book with confidence" : "Reservas con confianza"}
           </span>
           <span className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-gold" />
-            12+ años en Cusco
-          </span>
-          <span className="hidden md:flex items-center gap-2">
-            <span className="text-gold">★</span>
-            4.9/5 · 2,300+ reseñas TripAdvisor
+            {en ? "12+ years in Cusco" : "12+ años en Cusco"}
           </span>
         </div>
       </div>
@@ -111,10 +117,9 @@ export async function Footer() {
               className="mt-4 text-white/60 text-sm leading-relaxed max-w-sm"
               itemProp="description"
             >
-              Operador turístico oficial en Cusco, Perú. Tours premium a Machu
-              Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain y Laguna
-              Humantay. Guías locales certificados, grupos pequeños, reservas
-              con confianza.
+              {en
+                ? "Official tour operator in Cusco, Peru. Premium tours to Machu Picchu, the Sacred Valley, the Inca Trail, Rainbow Mountain and Humantay Lake. Certified local guides, small groups, book with confidence."
+                : "Operador turístico oficial en Cusco, Perú. Tours premium a Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain y Laguna Humantay. Guías locales certificados, grupos pequeños, reservas con confianza."}
             </p>
 
             <div className="mt-6 space-y-2.5 text-sm text-white/70">
@@ -144,19 +149,19 @@ export async function Footer() {
                 <div>
                   <span itemProp="streetAddress">Av. El Sol 314</span> ·{" "}
                   <span itemProp="addressLocality">Cusco</span>,{" "}
-                  <span itemProp="addressCountry">Perú</span>
+                  <span itemProp="addressCountry">{en ? "Peru" : "Perú"}</span>
                 </div>
               </div>
             </div>
 
             <div className="mt-6">
               <h4 className="font-display text-sm text-white mb-2">
-                Horario de atención
+                {en ? "Opening hours" : "Horario de atención"}
               </h4>
               <div className="text-xs text-white/55 space-y-0.5">
-                <div>Lun-Vie · 8:00 - 20:00</div>
-                <div>Sábado · 9:00 - 18:00</div>
-                <div>Domingo · 9:00 - 14:00</div>
+                <div>{en ? "Mon-Fri" : "Lun-Vie"} · 8:00 - 20:00</div>
+                <div>{en ? "Saturday" : "Sábado"} · 9:00 - 18:00</div>
+                <div>{en ? "Sunday" : "Domingo"} · 9:00 - 14:00</div>
               </div>
             </div>
           </div>
@@ -164,7 +169,7 @@ export async function Footer() {
           {/* Tours top vendidos */}
           <div className="lg:col-span-3">
             <h4 className="font-display text-lg text-white mb-4">
-              Tours más vendidos
+              {en ? "Best-selling tours" : "Tours más vendidos"}
             </h4>
             <ul className="space-y-2.5">
               {tours.slice(0, 6).map((tour) => (
@@ -173,7 +178,7 @@ export async function Footer() {
                     href={`/tours/${tour.slug}`}
                     className="group flex items-center justify-between gap-3 text-white/60 text-sm hover:text-gold transition"
                   >
-                    <span className="truncate">{t(tour.title)}</span>
+                    <span className="truncate">{t(tour.title, lc)}</span>
                     <span className="text-[10px] text-gold/60 shrink-0">
                       US${tour.price_usd.toFixed(0)}
                     </span>
@@ -187,7 +192,7 @@ export async function Footer() {
                       href={d.href}
                       className="text-white/60 text-sm hover:text-gold transition"
                     >
-                      {d.label}
+                      {en ? d.en : d.es}
                     </Link>
                   </li>
                 ))}
@@ -196,7 +201,7 @@ export async function Footer() {
                   href="/tours"
                   className="text-gold text-xs uppercase tracking-widest font-semibold mt-2 inline-block hover:underline"
                 >
-                  Ver todos los tours →
+                  {en ? "View all tours →" : "Ver todos los tours →"}
                 </Link>
               </li>
             </ul>
@@ -205,7 +210,7 @@ export async function Footer() {
           {/* Categorías + Destinos */}
           <div className="lg:col-span-2">
             <h4 className="font-display text-lg text-white mb-4">
-              Por categoría
+              {en ? "By category" : "Por categoría"}
             </h4>
             <ul className="space-y-2.5">
               {categories.slice(0, 6).map((cat) => (
@@ -214,14 +219,14 @@ export async function Footer() {
                     href={`/tours?category=${cat.slug}`}
                     className="text-white/60 text-sm hover:text-gold transition"
                   >
-                    {t(cat.name)}
+                    {t(cat.name, lc)}
                   </Link>
                 </li>
               ))}
             </ul>
 
             <h4 className="font-display text-sm text-white mt-8 mb-3 uppercase tracking-widest">
-              Destinos
+              {en ? "Destinations" : "Destinos"}
             </h4>
             <ul className="space-y-2">
               {destinations.slice(0, 5).map((d) => (
@@ -230,7 +235,7 @@ export async function Footer() {
                     href={d.href}
                     className="text-white/50 text-xs hover:text-gold transition"
                   >
-                    {d.label}
+                    {en ? d.en : d.es}
                   </Link>
                 </li>
               ))}
@@ -239,7 +244,9 @@ export async function Footer() {
 
           {/* Empresa + newsletter */}
           <div className="lg:col-span-3">
-            <h4 className="font-display text-lg text-white mb-4">Empresa</h4>
+            <h4 className="font-display text-lg text-white mb-4">
+              {en ? "Company" : "Empresa"}
+            </h4>
             <ul className="space-y-2.5 mb-8">
               {company.map((c) => (
                 <li key={c.href}>
@@ -247,17 +254,17 @@ export async function Footer() {
                     href={c.href}
                     className="text-white/60 text-sm hover:text-gold transition"
                   >
-                    {c.label}
+                    {en ? c.en : c.es}
                   </Link>
                 </li>
               ))}
             </ul>
 
-            <h4 className="font-display text-lg text-white mb-3">
-              Newsletter
-            </h4>
+            <h4 className="font-display text-lg text-white mb-3">Newsletter</h4>
             <p className="text-white/55 text-xs mb-4">
-              Ofertas exclusivas y nuevas rutas en tu email.
+              {en
+                ? "Exclusive deals and new routes straight to your inbox."
+                : "Ofertas exclusivas y nuevas rutas en tu email."}
             </p>
             <NewsletterForm />
           </div>
@@ -269,8 +276,10 @@ export async function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/45">
           <div>
             © {new Date().getFullYear()}{" "}
-            <span itemProp="name">Danfer Tours Cusco</span> · Made with{" "}
-            <span className="text-gold">♥</span> in Cusco, Perú
+            <span itemProp="name">Danfer Tours Cusco</span> ·{" "}
+            {en ? "Made with" : "Hecho con"}{" "}
+            <span className="text-gold">♥</span>{" "}
+            {en ? "in Cusco, Peru" : "en Cusco, Perú"}
           </div>
           <div className="flex items-center gap-4">
             {legal.map((l) => (
@@ -279,7 +288,7 @@ export async function Footer() {
                 href={l.href}
                 className="hover:text-gold transition"
               >
-                {l.label}
+                {en ? l.en : l.es}
               </Link>
             ))}
           </div>

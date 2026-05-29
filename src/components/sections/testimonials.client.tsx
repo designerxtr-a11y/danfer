@@ -5,9 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import type { GlobalReview } from "@/lib/queries/reviews";
-import { t } from "@/types/database";
+import { t, type Locale } from "@/types/database";
 
-export function TestimonialsCarousel({ reviews }: { reviews: GlobalReview[] }) {
+export function TestimonialsCarousel({
+  reviews,
+  locale,
+}: {
+  reviews: GlobalReview[];
+  locale: Locale;
+}) {
   const [index, setIndex] = useState(0);
   const review = reviews[index];
 
@@ -30,7 +36,7 @@ export function TestimonialsCarousel({ reviews }: { reviews: GlobalReview[] }) {
             {review.tour && (
               <Image
                 src={review.tour.cover_image}
-                alt={t(review.tour.title)}
+                alt={t(review.tour.title, locale)}
                 fill
                 sizes="(min-width:1024px) 50vw, 100vw"
                 className="object-cover"
@@ -39,9 +45,11 @@ export function TestimonialsCarousel({ reviews }: { reviews: GlobalReview[] }) {
             <div className="absolute inset-0 bg-gradient-to-t from-night/80 via-night/20 to-transparent" />
             {review.tour && (
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="font-hand text-gold-bright text-xl">Reseña sobre</span>
+                <span className="font-hand text-gold-bright text-xl">
+                  {locale === "en" ? "Review of" : "Reseña sobre"}
+                </span>
                 <h4 className="font-display text-2xl mt-1">
-                  {t(review.tour.title)}
+                  {t(review.tour.title, locale)}
                 </h4>
               </div>
             )}

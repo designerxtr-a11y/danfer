@@ -1,9 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CheckCircle2, Calendar, Users, Mail, Download } from "lucide-react";
-import Link from "next/link";
-import { t } from "@/types/database";
+import { Link } from "@/i18n/navigation";
+import { t, type Locale } from "@/types/database";
 
 interface PageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ code?: string }>;
 }
 
@@ -12,13 +13,17 @@ export const metadata = {
   robots: { index: false },
 };
 
-export default async function ConfirmacionPage({ searchParams }: PageProps) {
+export default async function ConfirmacionPage({ params, searchParams }: PageProps) {
+  const { locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
   const { code } = await searchParams;
 
   if (!code) {
     return (
       <div className="pt-32 min-h-screen grid place-items-center">
-        <p className="text-night/60">Código de reserva inválido.</p>
+        <p className="text-night/60">
+          {lc === "en" ? "Invalid booking code." : "Código de reserva inválido."}
+        </p>
       </div>
     );
   }
@@ -33,7 +38,11 @@ export default async function ConfirmacionPage({ searchParams }: PageProps) {
   if (!booking) {
     return (
       <div className="pt-32 min-h-screen grid place-items-center">
-        <p className="text-night/60">No encontramos esa reserva.</p>
+        <p className="text-night/60">
+          {lc === "en"
+            ? "We couldn't find that booking."
+            : "No encontramos esa reserva."}
+        </p>
       </div>
     );
   }
@@ -45,11 +54,29 @@ export default async function ConfirmacionPage({ searchParams }: PageProps) {
           <div className="w-20 h-20 rounded-full bg-emerald-100 grid place-items-center mx-auto mb-4">
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
-          <h1 className="font-display text-5xl text-night">¡Reserva creada!</h1>
+          <h1 className="font-display text-5xl text-night">
+            {lc === "en" ? "Booking created!" : "¡Reserva creada!"}
+          </h1>
           <p className="mt-3 text-night/60">
-            Te enviamos los detalles a{" "}
-            <span className="text-night font-medium">{booking.customer_email}</span>.
-            En las próximas horas recibirás un email con las instrucciones de pago.
+            {lc === "en" ? (
+              <>
+                We sent the details to{" "}
+                <span className="text-night font-medium">
+                  {booking.customer_email}
+                </span>
+                . In the next few hours you'll receive an email with payment
+                instructions.
+              </>
+            ) : (
+              <>
+                Te enviamos los detalles a{" "}
+                <span className="text-night font-medium">
+                  {booking.customer_email}
+                </span>
+                . En las próximas horas recibirás un email con las instrucciones
+                de pago.
+              </>
+            )}
           </p>
         </div>
 
@@ -57,7 +84,7 @@ export default async function ConfirmacionPage({ searchParams }: PageProps) {
           <div className="bg-night text-white px-6 py-4 flex items-center justify-between">
             <div>
               <div className="text-xs uppercase tracking-widest opacity-60">
-                Código de reserva
+                {lc === "en" ? "Booking code" : "Código de reserva"}
               </div>
               <div className="font-mono text-2xl font-bold">{booking.booking_code}</div>
             </div>
@@ -70,28 +97,41 @@ export default async function ConfirmacionPage({ searchParams }: PageProps) {
             <Row
               icon={<Calendar className="w-4 h-4 text-gold" />}
               label="Tour"
-              value={booking.tour ? t(booking.tour.title) : "—"}
+              value={booking.tour ? t(booking.tour.title, lc) : "—"}
             />
             <Row
               icon={<Calendar className="w-4 h-4 text-gold" />}
-              label="Fecha de salida"
-              value={new Date(booking.travel_date + "T00:00:00").toLocaleDateString("es-PE", {
-                weekday: "long", day: "numeric", month: "long", year: "numeric",
-              })}
+              label={lc === "en" ? "Departure date" : "Fecha de salida"}
+              value={new Date(booking.travel_date + "T00:00:00").toLocaleDateString(
+                lc === "en" ? "en-US" : "es-PE",
+                {
+                  weekday: "long", day: "numeric", month: "long", year: "numeric",
+                }
+              )}
             />
             <Row
               icon={<Users className="w-4 h-4 text-gold" />}
-              label="Viajeros"
-              value={`${booking.travelers} ${booking.travelers === 1 ? "persona" : "personas"}`}
+              label={lc === "en" ? "Travelers" : "Viajeros"}
+              value={`${booking.travelers} ${
+                lc === "en"
+                  ? booking.travelers === 1
+                    ? "person"
+                    : "people"
+                  : booking.travelers === 1
+                  ? "persona"
+                  : "personas"
+              }`}
             />
             <Row
               icon={<Mail className="w-4 h-4 text-gold" />}
-              label="Contacto"
+              label={lc === "en" ? "Contact" : "Contacto"}
               value={booking.customer_email}
             />
 
             <div className="pt-4 border-t border-night/8 flex items-baseline justify-between">
-              <span className="text-night/70">Total a pagar</span>
+              <span className="text-night/70">
+                {lc === "en" ? "Total to pay" : "Total a pagar"}
+              </span>
               <span className="font-display text-3xl text-night font-bold">
                 {booking.currency} {Number(booking.total_amount).toLocaleString()}
               </span>
@@ -102,13 +142,13 @@ export default async function ConfirmacionPage({ searchParams }: PageProps) {
         <div className="mt-8 flex flex-wrap gap-3 justify-center">
           <button className="flex items-center gap-2 bg-white border border-night/10 hover:border-gold text-night px-5 py-2.5 rounded-full text-sm transition shadow-soft">
             <Download className="w-4 h-4" />
-            Descargar PDF
+            {lc === "en" ? "Download PDF" : "Descargar PDF"}
           </button>
           <Link
             href="/"
             className="flex items-center gap-2 bg-gold hover:bg-gold-bright text-white px-5 py-2.5 rounded-full text-sm font-medium transition"
           >
-            Volver al sitio
+            {lc === "en" ? "Back to site" : "Volver al sitio"}
           </Link>
         </div>
       </div>

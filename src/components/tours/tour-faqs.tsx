@@ -13,7 +13,7 @@ export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
 
   return (
     <div>
-      <h2 className="font-display text-4xl text-night mb-6">Preguntas frecuentes</h2>
+      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">Preguntas frecuentes</h2>
       <div className="space-y-3">
         {faqs.map((faq, i) => {
           const isOpen = open === i;
@@ -24,9 +24,9 @@ export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+                className="w-full flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 text-left"
               >
-                <span className="font-display text-lg text-night">
+                <span className="font-display text-base sm:text-lg text-night">
                   {t(faq.q)}
                 </span>
                 <ChevronDown
@@ -44,7 +44,7 @@ export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
                     transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-5 text-night/75 leading-relaxed">
+                    <div className="px-4 sm:px-6 pb-5 text-night/75 leading-relaxed text-sm sm:text-base">
                       {t(faq.a)}
                     </div>
                   </motion.div>

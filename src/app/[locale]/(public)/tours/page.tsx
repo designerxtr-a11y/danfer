@@ -1,7 +1,7 @@
 import { getAllTours } from "@/lib/queries/tours";
 import { createClient } from "@/lib/supabase/server";
 import { ToursPageClient } from "./page.client";
-import type { Category } from "@/types/database";
+import type { Category, Locale } from "@/types/database";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   tourListSchema,
@@ -10,20 +10,50 @@ import {
   breadcrumbSchema,
 } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
+import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
+import { tr } from "@/lib/i18n/messages";
 
-export const metadata = {
-  title: "Todos los tours en Cusco",
-  description:
-    "Catálogo completo de tours en Cusco: Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain. Filtra por precio, duración y dificultad. Disponibilidad en vivo.",
-  alternates: { canonical: "/tours" },
-  openGraph: {
-    title: "Todos los tours en Cusco · Danfer Tours",
-    description:
-      "Catálogo completo con disponibilidad en vivo y reseñas verificadas.",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<import("next").Metadata> {
+  const { locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
+  const title =
+    lc === "en"
+      ? "All Cusco Tours · Machu Picchu, Inca Trail & more"
+      : "Todos los tours en Cusco";
+  const description =
+    lc === "en"
+      ? "Complete catalog of Cusco tours: Machu Picchu, Sacred Valley, Inca Trail, Rainbow Mountain. Filter by price, duration and difficulty. Live availability."
+      : "Catálogo completo de tours en Cusco: Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain. Filtra por precio, duración y dificultad. Disponibilidad en vivo.";
+  return {
+    title,
+    description,
+    alternates: buildAlternates("/tours", lc),
+    openGraph: {
+      title:
+        lc === "en"
+          ? "All Cusco Tours · Danfer Tours"
+          : "Todos los tours en Cusco · Danfer Tours",
+      description:
+        lc === "en"
+          ? "Complete catalog with live availability and verified reviews."
+          : "Catálogo completo con disponibilidad en vivo y reseñas verificadas.",
+      locale: ogLocale(lc),
+    },
+  };
+}
 
-export default async function ToursIndexPage() {
+export default async function ToursIndexPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
+  const mx = tr(lc);
   const supabase = await createClient();
   const [tours, { data: categories }] = await Promise.all([
     getAllTours(),
@@ -38,8 +68,8 @@ export default async function ToursIndexPage() {
 
   const schemas = [
     breadcrumbSchema([
-      { name: "Inicio", url: "/" },
-      { name: "Tours", url: "/tours" },
+      { name: mx.breadcrumbs.home, url: "/" },
+      { name: mx.breadcrumbs.tours, url: "/tours" },
     ]),
     tourListSchema(tours),
     toursAggregateOfferSchema(tours),
@@ -53,21 +83,21 @@ export default async function ToursIndexPage() {
   ].filter(Boolean) as object[];
 
   return (
-    <div className="pt-32">
+    <div className="pt-24 md:pt-32">
       <JsonLd data={schemas} />
-      <section className="max-w-7xl mx-auto px-6 mb-12">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-10 md:mb-12">
         <Breadcrumbs
           items={[
-            { name: "Inicio", url: "/" },
-            { name: "Tours", url: "/tours" },
+            { name: mx.breadcrumbs.home, url: "/" },
+            { name: mx.breadcrumbs.tours, url: "/tours" },
           ]}
           className="mb-4"
         />
         <span className="font-hand text-gold text-2xl">
-          {tours.length} experiencias
+          {tours.length} {lc === "en" ? "experiences" : "experiencias"}
         </span>
-        <h1 className="mt-2 font-display text-5xl md:text-7xl text-night max-w-3xl leading-[1.05]">
-          Todos nuestros{" "}
+        <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl text-night max-w-3xl leading-[1.05]">
+          {lc === "en" ? "All our" : "Todos nuestros"}{" "}
           <span className="text-gradient-gold italic">tours</span>
         </h1>
       </section>

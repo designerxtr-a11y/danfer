@@ -7,15 +7,16 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/tours", "/tours/*"],
-        disallow: ["/admin", "/admin/*", "/api/*", "/reservar/confirmacion"],
-      },
-      {
-        userAgent: "Googlebot",
         allow: "/",
+        disallow: [
+          "/admin",
+          "/admin/*",
+          "/api/*",
+          "/reservar/confirmacion",
+          "/en/reservar/confirmacion",
+        ],
       },
     ],
     sitemap: [`${SITE}/sitemap.xml`, `${SITE}/sitemap-images.xml`],
-    host: SITE,
   };
 }

@@ -145,3 +145,30 @@ export async function getTourReviews(tourId: string, limit = 6): Promise<Review[
   }
   return data ?? [];
 }
+
+/**
+ * Estadística REAL de reseñas (conteo + promedio) calculada desde la tabla
+ * `reviews`, NO desde las columnas tour.rating / tour.reviews_count (seed).
+ * Es la fuente de verdad para el aggregateRating del schema y para los números
+ * visibles, de modo que SIEMPRE coincidan y nunca declaren reseñas inexistentes.
+ * Si no hay reseñas publicadas reales devuelve count 0 → no se muestran estrellas.
+ */
+export async function getTourReviewStats(
+  tourId: string
+): Promise<{ count: number; avg: number }> {
+  const supabase = await createClient();
+  const { data, count, error } = await supabase
+    .from("reviews")
+    .select("rating", { count: "exact" })
+    .eq("tour_id", tourId)
+    .eq("is_published", true);
+
+  if (error || !data) {
+    console.error("[getTourReviewStats]", error);
+    return { count: 0, avg: 0 };
+  }
+  const c = count ?? data.length;
+  const avg =
+    c > 0 ? data.reduce((s, r) => s + (r.rating ?? 0), 0) / c : 0;
+  return { count: c, avg: Math.round(avg * 10) / 10 };
+}

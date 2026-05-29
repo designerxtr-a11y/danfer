@@ -48,8 +48,9 @@ export const metadata: Metadata = {
   publisher: "Danfer Tours Cusco",
   formatDetection: { email: false, address: false, telephone: false },
   alternates: {
+    // hreflang/canonical reales se definen por página (buildAlternates).
+    // Aquí solo el canonical raíz por defecto para rutas que no lo sobreescriban.
     canonical: "/",
-    languages: { "es-PE": "/", "en-US": "/" },
   },
   openGraph: {
     type: "website",
@@ -93,6 +94,16 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${playfair.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >
+      <head>
+        {/* Resource hints para el media externo del hero (LCP móvil) */}
+        <link
+          rel="preconnect"
+          href="https://images.unsplash.com"
+          crossOrigin=""
+        />
+        <link rel="preconnect" href="https://videos.pexels.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
         <Analytics />

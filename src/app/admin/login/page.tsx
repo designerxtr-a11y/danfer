@@ -21,14 +21,15 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
         </div>
 
         <div className="bg-white border border-night/8 shadow-card rounded-3xl p-8">
-          <h1 className="font-display text-3xl text-night">Iniciar sesión</h1>
+          <h1 className="font-display text-3xl text-night">Acceso al panel</h1>
           <p className="mt-2 text-night/60 text-sm">
-            Acceso solo para personal autorizado.
+            Inicia sesión o crea tu cuenta para gestionar el sitio.
           </p>
 
           {error === "not_admin" && (
             <div className="mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
-              Tu cuenta no tiene permisos de administrador.
+              Tu cuenta no tiene permisos de administrador todavía. Pide al super
+              admin que te active desde Usuarios.
             </div>
           )}
 

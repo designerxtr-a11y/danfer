@@ -3,8 +3,14 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
+import { useLocale } from "next-intl";
 import { FeaturedToursCarousel } from "@/components/sections/featured-tours.client";
-import type { TourWithCategory, Category, Difficulty } from "@/types/database";
+import type {
+  TourWithCategory,
+  Category,
+  Difficulty,
+  Locale,
+} from "@/types/database";
 import { t } from "@/types/database";
 
 interface Props {
@@ -12,22 +18,27 @@ interface Props {
   categories: Category[];
 }
 
-const difficulties: { value: Difficulty; label: string }[] = [
-  { value: "easy", label: "Fácil" },
-  { value: "moderate", label: "Moderado" },
-  { value: "challenging", label: "Exigente" },
-  { value: "expert", label: "Experto" },
-];
-
-const sortOptions = [
-  { value: "popular", label: "Más populares" },
-  { value: "price-asc", label: "Precio ↑" },
-  { value: "price-desc", label: "Precio ↓" },
-  { value: "rating", label: "Mejor calificados" },
-  { value: "duration", label: "Duración" },
-];
-
 export function ToursPageClient({ tours, categories }: Props) {
+  const locale = useLocale() as Locale;
+
+  const difficulties: { value: Difficulty; label: string }[] = [
+    { value: "easy", label: locale === "en" ? "Easy" : "Fácil" },
+    { value: "moderate", label: locale === "en" ? "Moderate" : "Moderado" },
+    {
+      value: "challenging",
+      label: locale === "en" ? "Challenging" : "Exigente",
+    },
+    { value: "expert", label: locale === "en" ? "Expert" : "Experto" },
+  ];
+
+  const sortOptions = [
+    { value: "popular", label: locale === "en" ? "Most popular" : "Más populares" },
+    { value: "price-asc", label: locale === "en" ? "Price ↑" : "Precio ↑" },
+    { value: "price-desc", label: locale === "en" ? "Price ↓" : "Precio ↓" },
+    { value: "rating", label: locale === "en" ? "Top rated" : "Mejor calificados" },
+    { value: "duration", label: locale === "en" ? "Duration" : "Duración" },
+  ];
+
   const [category, setCategory] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [priceMax, setPriceMax] = useState(1000);
@@ -71,15 +82,15 @@ export function ToursPageClient({ tours, categories }: Props) {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 pb-32">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20 md:pb-32">
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-8 sticky top-20 z-30 bg-background/85 backdrop-blur-md py-4 -mx-6 px-6 border-y border-night/8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-8 sticky top-20 z-30 bg-background/85 backdrop-blur-md py-3 sm:py-4 -mx-4 sm:-mx-6 px-4 sm:px-6 border-y border-night/8">
         <button
           onClick={() => setShowFilters((v) => !v)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-stone hover:bg-cream border border-night/8 text-night text-sm transition"
+          className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-stone hover:bg-cream border border-night/8 text-night text-sm transition"
         >
           <SlidersHorizontal className="w-4 h-4" />
-          Filtros
+          {locale === "en" ? "Filters" : "Filtros"}
           {activeCount > 0 && (
             <span className="ml-1 px-1.5 py-0.5 rounded-full bg-gold text-white text-[10px] font-bold">
               {activeCount}
@@ -87,14 +98,14 @@ export function ToursPageClient({ tours, categories }: Props) {
           )}
         </button>
 
-        <div className="flex items-center gap-4">
-          <span className="text-night/60 text-sm">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <span className="text-night/60 text-xs sm:text-sm hidden xs:inline">
             {filtered.length} {filtered.length === 1 ? "tour" : "tours"}
           </span>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="bg-stone border border-night/8 text-night text-sm rounded-full px-4 py-2 focus:outline-none focus:border-gold"
+            className="bg-stone border border-night/8 text-night text-xs sm:text-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 focus:outline-none focus:border-gold max-w-[140px] sm:max-w-none"
           >
             {sortOptions.map((o) => (
               <option key={o.value} value={o.value} className="bg-white">
@@ -114,14 +125,14 @@ export function ToursPageClient({ tours, categories }: Props) {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden mb-8"
           >
-            <div className="bg-stone border border-night/8 rounded-2xl p-6 grid md:grid-cols-3 gap-8">
+            <div className="bg-stone border border-night/8 rounded-2xl p-4 sm:p-6 grid md:grid-cols-3 gap-6 md:gap-8">
               <div>
                 <div className="text-xs uppercase tracking-widest text-night/50 mb-3">
-                  Categoría
+                  {locale === "en" ? "Category" : "Categoría"}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Pill active={!category} onClick={() => setCategory(null)}>
-                    Todas
+                    {locale === "en" ? "All" : "Todas"}
                   </Pill>
                   {categories.map((c) => (
                     <Pill
@@ -129,7 +140,7 @@ export function ToursPageClient({ tours, categories }: Props) {
                       active={category === c.slug}
                       onClick={() => setCategory(c.slug)}
                     >
-                      {t(c.name)}
+                      {t(c.name, locale)}
                     </Pill>
                   ))}
                 </div>
@@ -137,14 +148,14 @@ export function ToursPageClient({ tours, categories }: Props) {
 
               <div>
                 <div className="text-xs uppercase tracking-widest text-night/50 mb-3">
-                  Dificultad
+                  {locale === "en" ? "Difficulty" : "Dificultad"}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Pill
                     active={!difficulty}
                     onClick={() => setDifficulty(null)}
                   >
-                    Todas
+                    {locale === "en" ? "All" : "Todas"}
                   </Pill>
                   {difficulties.map((d) => (
                     <Pill
@@ -161,7 +172,7 @@ export function ToursPageClient({ tours, categories }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs uppercase tracking-widest text-night/50">
-                    Precio máximo
+                    {locale === "en" ? "Max price" : "Precio máximo"}
                   </span>
                   <span className="text-gold font-semibold">US${priceMax}</span>
                 </div>
@@ -182,7 +193,7 @@ export function ToursPageClient({ tours, categories }: Props) {
                   className="flex items-center gap-2 text-night/60 hover:text-gold text-sm transition"
                 >
                   <X className="w-4 h-4" />
-                  Limpiar filtros
+                  {locale === "en" ? "Clear filters" : "Limpiar filtros"}
                 </button>
               </div>
             </div>
@@ -193,13 +204,17 @@ export function ToursPageClient({ tours, categories }: Props) {
       {/* Results */}
       {filtered.length === 0 ? (
         <div className="text-center py-32 text-night/40">
-          <p>No hay tours con esos filtros.</p>
+          <p>
+            {locale === "en"
+              ? "No tours match those filters."
+              : "No hay tours con esos filtros."}
+          </p>
           <button onClick={reset} className="mt-4 text-gold hover:underline">
-            Limpiar filtros
+            {locale === "en" ? "Clear filters" : "Limpiar filtros"}
           </button>
         </div>
       ) : (
-        <FeaturedToursCarousel tours={filtered} />
+        <FeaturedToursCarousel tours={filtered} locale={locale} />
       )}
     </section>
   );

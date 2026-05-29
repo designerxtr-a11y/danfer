@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   Star,
@@ -14,15 +13,10 @@ import {
   ChevronRight,
   Flame,
 } from "lucide-react";
-import type { TourWithCategory } from "@/types/database";
+import { Link } from "@/i18n/navigation";
+import type { TourWithCategory, Locale } from "@/types/database";
 import { t } from "@/types/database";
-
-const difficultyLabel: Record<string, string> = {
-  easy: "Fácil",
-  moderate: "Moderado",
-  challenging: "Exigente",
-  expert: "Experto",
-};
+import { tr } from "@/lib/i18n/messages";
 
 const difficultyColor: Record<string, string> = {
   easy: "text-emerald-300",
@@ -31,7 +25,14 @@ const difficultyColor: Record<string, string> = {
   expert: "text-rose-400",
 };
 
-export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) {
+export function FeaturedToursCarousel({
+  tours,
+  locale = "es",
+}: {
+  tours: TourWithCategory[];
+  locale?: Locale;
+}) {
+  const m = tr(locale);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const total = tours.length;
@@ -82,7 +83,9 @@ export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) 
       {/* Controls row */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3 text-night/60">
-          <span className="font-hand text-gold text-2xl">Desliza</span>
+          <span className="font-hand text-gold text-2xl">
+            {locale === "en" ? "Swipe" : "Desliza"}
+          </span>
           <span className="text-gold text-xl">→</span>
         </div>
         <div className="flex items-center gap-4">
@@ -98,7 +101,7 @@ export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) 
           <button
             onClick={handlePrev}
             disabled={activeIndex === 0}
-            aria-label="Anterior"
+            aria-label={m.common.prev}
             className="w-12 h-12 rounded-full border border-night/15 hover:border-gold hover:bg-gold hover:text-night text-night/60 grid place-items-center transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -106,7 +109,7 @@ export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) 
           <button
             onClick={handleNext}
             disabled={activeIndex === total - 1}
-            aria-label="Siguiente"
+            aria-label={m.common.next}
             className="w-12 h-12 rounded-full border border-night/15 hover:border-gold hover:bg-gold hover:text-night text-night/60 grid place-items-center transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />
@@ -125,6 +128,8 @@ export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) 
             tour={tour}
             index={i}
             isBestseller={i === 0}
+            locale={locale}
+            m={m}
           />
         ))}
       </div>
@@ -135,7 +140,7 @@ export function FeaturedToursCarousel({ tours }: { tours: TourWithCategory[] }) 
           <button
             key={i}
             onClick={() => scrollToIndex(i)}
-            aria-label={`Ir al tour ${i + 1}`}
+            aria-label={locale === "en" ? `Go to tour ${i + 1}` : `Ir al tour ${i + 1}`}
             className={`h-1 rounded-full transition-all ${
               i === activeIndex
                 ? "w-10 bg-gold"
@@ -152,10 +157,14 @@ function TourCard({
   tour,
   index,
   isBestseller,
+  locale,
+  m,
 }: {
   tour: TourWithCategory;
   index: number;
   isBestseller: boolean;
+  locale: Locale;
+  m: ReturnType<typeof tr>;
 }) {
   const finalPrice =
     tour.discount_pct > 0
@@ -181,7 +190,7 @@ function TourCard({
         {/* Cover image */}
         <Image
           src={tour.cover_image}
-          alt={t(tour.title)}
+          alt={t(tour.title, locale)}
           fill
           sizes="(min-width: 1024px) 380px, (min-width: 768px) 340px, 300px"
           className="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
@@ -201,20 +210,22 @@ function TourCard({
         {isBestseller && (
           <div className="absolute top-5 left-5 flex items-center gap-1.5 bg-gradient-to-r from-gold to-gold-bright text-night text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full shadow-lg">
             <Flame className="w-3 h-3" />
-            Más vendido
+            {locale === "en" ? "Best seller" : "Más vendido"}
           </div>
         )}
 
-        {/* Top row: rating (always) + category (when no bestseller) */}
-        <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full bg-night/60 border border-white/15 px-3 py-1.5 text-xs text-white">
-          <Star className="w-3 h-3 fill-gold text-gold" />
-          <span className="font-semibold">{tour.rating.toFixed(1)}</span>
-          <span className="text-white/55">({tour.reviews_count})</span>
-        </div>
+        {/* Top row: rating (solo si hay reseñas reales) */}
+        {tour.reviews_count > 0 && (
+          <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full bg-night/60 border border-white/15 px-3 py-1.5 text-xs text-white">
+            <Star className="w-3 h-3 fill-gold text-gold" />
+            <span className="font-semibold">{tour.rating.toFixed(1)}</span>
+            <span className="text-white/55">({tour.reviews_count})</span>
+          </div>
+        )}
 
         {!isBestseller && tour.category && (
           <span className="absolute top-5 left-5 rounded-full bg-night/60 border border-white/15 px-3 py-1.5 text-[10px] uppercase tracking-widest text-white/90 font-medium">
-            {t(tour.category.name)}
+            {t(tour.category.name, locale)}
           </span>
         )}
 
@@ -229,11 +240,11 @@ function TourCard({
         <div className="absolute bottom-0 inset-x-0 p-6 space-y-4">
           <div>
             <h3 className="font-display text-2xl lg:text-3xl text-white leading-[1.1]">
-              {t(tour.title)}
+              {t(tour.title, locale)}
             </h3>
             {tour.subtitle && (
               <p className="mt-1.5 text-white/65 text-sm line-clamp-1">
-                {t(tour.subtitle)}
+                {t(tour.subtitle, locale)}
               </p>
             )}
           </div>
@@ -242,13 +253,13 @@ function TourCard({
           <div className="flex items-center gap-4 text-[11px] text-white/70">
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-gold" />
-              {t(tour.duration_label)}
+              {t(tour.duration_label, locale)}
             </span>
             <span
               className={`flex items-center gap-1.5 ${difficultyColor[tour.difficulty]}`}
             >
               <Mountain className="w-3.5 h-3.5" />
-              {difficultyLabel[tour.difficulty]}
+              {m.difficulty[tour.difficulty]}
             </span>
             <span className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-gold" />
@@ -260,7 +271,7 @@ function TourCard({
           <div className="flex items-end justify-between pt-3 border-t border-white/10">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-white/50">
-                Desde
+                {m.booking.from}
               </div>
               <div className="flex items-baseline gap-2">
                 {tour.discount_pct > 0 && (
@@ -274,7 +285,7 @@ function TourCard({
               </div>
             </div>
             <span className="font-hand text-gold/80 text-lg leading-none">
-              por persona
+              {m.booking.perPerson}
             </span>
           </div>
         </div>
