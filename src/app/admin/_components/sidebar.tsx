@@ -13,12 +13,14 @@ import {
   ExternalLink,
   Download,
   Newspaper,
+  Star,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/tours", label: "Tours", icon: Map },
+  { href: "/admin/reviews", label: "Reseñas", icon: Star },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/import", label: "Importar", icon: Download },
   { href: "/admin/bookings", label: "Reservas", icon: Calendar },
