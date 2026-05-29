@@ -404,13 +404,26 @@ function ReviewsImporter({ tours }: { tours: Props["tours"] }) {
         </button>
 
         {showHtml && (
-          <textarea
-            value={html}
-            onChange={(e) => setHtml(e.target.value)}
-            rows={6}
-            placeholder="En la página de TripAdvisor: scroll para cargar reseñas → Ctrl+U → Ctrl+A → Ctrl+C → pega aquí."
-            className="mt-3 w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-gold"
-          />
+          <div className="mt-3 space-y-2">
+            <ol className="text-xs text-night/60 list-decimal list-inside space-y-1 bg-stone/60 rounded-xl p-3">
+              <li>Abre la página de TripAdvisor en tu navegador (donde ya no te bloquea).</li>
+              <li>Haz scroll para cargar las reseñas que quieras importar.</li>
+              <li>
+                Abre DevTools (<kbd className="font-mono">F12</kbd>) → pestaña{" "}
+                <strong>Elements</strong> → click derecho en{" "}
+                <code className="font-mono">&lt;html&gt;</code> →{" "}
+                <strong>Copy → Copy outerHTML</strong>.
+              </li>
+              <li>Pega aquí. (<code className="font-mono">Ctrl+U</code> NO sirve: re-dispara el captcha y no trae las reseñas cargadas con JS.)</li>
+            </ol>
+            <textarea
+              value={html}
+              onChange={(e) => setHtml(e.target.value)}
+              rows={6}
+              placeholder="Pega aquí el outerHTML del <html> copiado desde DevTools…"
+              className="w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-gold"
+            />
+          </div>
         )}
 
         {error && (
