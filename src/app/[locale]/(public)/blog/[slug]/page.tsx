@@ -10,12 +10,13 @@ import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, blogPostingSchema } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
+import { siteUrl } from "@/lib/seo/site-url";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
 }
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug, locale } = await params;

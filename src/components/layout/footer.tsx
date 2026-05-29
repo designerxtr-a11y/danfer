@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin, Award, Shield, Clock } from "lucide-react";
 import { NewsletterForm } from "./newsletter-form";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { t, type Locale } from "@/types/database";
+import { siteUrl } from "@/lib/seo/site-url";
 
 interface TourLite {
   slug: string;
@@ -68,7 +69,7 @@ const legal = [
   { es: "Cancelación", en: "Cancellation", href: "/cancelacion" },
 ];
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 export async function Footer() {
   const [{ tours, categories }, locale] = await Promise.all([

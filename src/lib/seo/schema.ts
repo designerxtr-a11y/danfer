@@ -1,7 +1,8 @@
 import type { TourWithCategory, Review, FAQ } from "@/types/database";
 import { t } from "@/types/database";
+import { siteUrl } from "./site-url";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 const ORG_NAME = "Danfer Tours Cusco";
 // Teléfono real configurable por env. Si no está, NO se emite en el schema
 // (mejor omitir que declarar un número placeholder/falso a Google).

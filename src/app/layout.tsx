@@ -3,6 +3,7 @@ import { Playfair_Display, Inter, Caveat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+import { siteUrl } from "@/lib/seo/site-url";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -22,7 +23,7 @@ const caveat = Caveat({
   display: "swap",
 });
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

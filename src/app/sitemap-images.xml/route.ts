@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { siteUrl } from "@/lib/seo/site-url";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 export const revalidate = 3600;
 

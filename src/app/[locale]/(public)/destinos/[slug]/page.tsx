@@ -25,13 +25,13 @@ import {
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { tr } from "@/lib/i18n/messages";
+import { siteUrl } from "@/lib/seo/site-url";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
 }
 
-const SITE =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 export async function generateStaticParams() {
   return Object.keys(DESTINATIONS).map((slug) => ({ slug }));

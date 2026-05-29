@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { listDestinations } from "@/lib/destinations-content";
+import { siteUrl } from "@/lib/seo/site-url";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://danfertourscusco.com";
+const SITE = siteUrl();
 
 type Entry = MetadataRoute.Sitemap[number];
 
