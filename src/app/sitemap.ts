@@ -3,6 +3,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { listDestinations } from "@/lib/destinations-content";
 import { siteUrl } from "@/lib/seo/site-url";
 
+// Regenera el sitemap cada hora (ISR) en vez de congelarlo en el build.
+// Así los posts/tours nuevos creados desde /admin aparecen sin redeploy.
+export const revalidate = 3600;
+
 const SITE = siteUrl();
 
 type Entry = MetadataRoute.Sitemap[number];
