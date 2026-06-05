@@ -8,7 +8,7 @@ const ORG_NAME = "Danfer Tours Cusco";
 // (mejor omitir que declarar un número placeholder/falso a Google).
 const ORG_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
 
-export function organizationSchema() {
+export function organizationSchema(phone: string = ORG_PHONE) {
   return {
     "@context": "https://schema.org",
     "@type": ["TravelAgency", "LocalBusiness", "TouristInformationCenter"],
@@ -32,7 +32,7 @@ export function organizationSchema() {
       "@type": "Place",
       name: "Cusco, Perú",
     },
-    ...(ORG_PHONE && { telephone: ORG_PHONE }),
+    ...(phone && { telephone: phone }),
     email: "hola@danfertourscusco.com",
     priceRange: "$$",
     currenciesAccepted: ["USD", "PEN", "EUR"],
@@ -116,7 +116,7 @@ export function organizationSchema() {
     contactPoint: [
       {
         "@type": "ContactPoint",
-        ...(ORG_PHONE && { telephone: ORG_PHONE }),
+        ...(phone && { telephone: phone }),
         contactType: "customer service",
         areaServed: ["PE", "US", "ES", "MX", "AR", "CL", "CO"],
         availableLanguage: ["Spanish", "English", "Quechua"],

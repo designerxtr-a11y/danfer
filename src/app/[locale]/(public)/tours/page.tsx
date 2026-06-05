@@ -97,8 +97,8 @@ export default async function ToursIndexPage({
           {tours.length} {lc === "en" ? "experiences" : "experiencias"}
         </span>
         <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl text-night max-w-3xl leading-[1.05]">
-          {lc === "en" ? "All our" : "Todos nuestros"}{" "}
-          <span className="text-gradient-gold italic">tours</span>
+          {lc === "en" ? "All our tours in " : "Todos nuestros tours en "}
+          <span className="text-gradient-gold italic">Cusco</span>
         </h1>
       </section>
       <ToursPageClient tours={tours} categories={cats} />

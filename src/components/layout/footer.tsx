@@ -3,6 +3,7 @@ import { getLocale } from "next-intl/server";
 import { Mail, Phone, MapPin, Award, Shield, Clock } from "lucide-react";
 import { NewsletterForm } from "./newsletter-form";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getSettings, publicPhone, normalizeWhatsApp } from "@/lib/queries/settings";
 import { t, type Locale } from "@/types/database";
 import { siteUrl } from "@/lib/seo/site-url";
 
@@ -72,12 +73,14 @@ const legal = [
 const SITE = siteUrl();
 
 export async function Footer() {
-  const [{ tours, categories }, locale] = await Promise.all([
+  const [{ tours, categories }, locale, settings] = await Promise.all([
     getFooterData(),
     getLocale(),
+    getSettings(),
   ]);
   const lc = (locale === "en" ? "en" : "es") as Locale;
   const en = lc === "en";
+  const phone = publicPhone(settings);
 
   return (
     <footer
@@ -132,14 +135,16 @@ export async function Footer() {
                 <Mail className="w-4 h-4" />
                 hola@danfertourscusco.com
               </a>
-              <a
-                href="tel:+51984123456"
-                className="flex items-center gap-2 hover:text-gold transition"
-                itemProp="telephone"
-              >
-                <Phone className="w-4 h-4" />
-                +51 984 123 456
-              </a>
+              {phone && (
+                <a
+                  href={`tel:${normalizeWhatsApp(phone)}`}
+                  className="flex items-center gap-2 hover:text-gold transition"
+                  itemProp="telephone"
+                >
+                  <Phone className="w-4 h-4" />
+                  {phone}
+                </a>
+              )}
               <div
                 className="flex items-start gap-2"
                 itemProp="address"

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useI18n } from "@/lib/i18n/provider";
@@ -67,6 +67,11 @@ export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { m, locale } = useI18n();
+  // Carrusel de las floating cards: `active` define cuál queda al frente.
+  const [active, setActive] = useState(0);
+  const cardCount = destinationCards.length;
+  const goPrev = () => setActive((a) => (a - 1 + cardCount) % cardCount);
+  const goNext = () => setActive((a) => (a + 1) % cardCount);
   // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
   const keyword =
     locale === "en"
@@ -116,8 +121,8 @@ export function Hero() {
       />
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-night/70 via-night/30 to-night/95 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-night/70 via-night/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-night/55 via-night/15 to-night/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-night/60 via-transparent to-transparent pointer-events-none" />
 
       {/* Main content */}
       <motion.div
@@ -234,23 +239,36 @@ export function Hero() {
           </motion.div>
 
           {destinationCards.map((d, i) => (
-            <FloatingCard key={d.title} destination={d} index={i} />
+            <FloatingCard
+              key={d.title}
+              destination={d}
+              index={i}
+              posIndex={(i - active + cardCount) % cardCount}
+            />
           ))}
 
           {/* Nav + counter */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-4 z-40">
             <button
+              type="button"
+              onClick={goPrev}
               aria-label="Anterior"
               className="bg-white/10 hover:bg-gold border border-white/20 hover:border-gold w-11 h-11 rounded-full grid place-items-center text-white hover:text-night backdrop-blur transition"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <div className="font-display text-white text-sm tabular-nums">
-              <span className="text-gold">01</span>
+              <span className="text-gold">
+                {String(active + 1).padStart(2, "0")}
+              </span>
               <span className="text-white/40 mx-1">/</span>
-              <span className="text-white/60">03</span>
+              <span className="text-white/60">
+                {String(cardCount).padStart(2, "0")}
+              </span>
             </div>
             <button
+              type="button"
+              onClick={goNext}
               aria-label="Siguiente"
               className="bg-white/10 hover:bg-gold border border-white/20 hover:border-gold w-11 h-11 rounded-full grid place-items-center text-white hover:text-night backdrop-blur transition"
             >
@@ -309,19 +327,23 @@ function BottomStat({ value, label }: { value: string; label: string }) {
 function FloatingCard({
   destination,
   index,
+  posIndex,
 }: {
   destination: (typeof destinationCards)[number];
   index: number;
+  posIndex: number;
 }) {
-  // Overlapping cluster — front card prominent, others peeking behind
+  // Overlapping cluster — front card prominent, others peeking behind.
+  // `posIndex` (no `index`) decide la posición, para que las flechas roten
+  // qué card queda al frente.
   const positions = [
     { top: "10%", left: "0%", rotate: -6, z: 30, scale: 1 },
     { top: "0%", left: "35%", rotate: 5, z: 20, scale: 0.92 },
     { top: "32%", left: "44%", rotate: -3, z: 10, scale: 0.85 },
   ];
-  const pos = positions[index];
-  const floatDuration = 5 + index * 0.7;
-  const floatRange = 10 + index * 2;
+  const pos = positions[posIndex];
+  const floatDuration = 5 + posIndex * 0.7;
+  const floatRange = 10 + posIndex * 2;
 
   return (
     <motion.div
@@ -331,11 +353,17 @@ function FloatingCard({
         y: [0, -floatRange, 0],
         rotate: pos.rotate,
         scale: pos.scale,
+        top: pos.top,
+        left: pos.left,
       }}
       transition={{
         opacity: { delay: 0.5 + index * 0.15, duration: 0.9 },
-        rotate: { delay: 0.5 + index * 0.15, duration: 0.9 },
-        scale: { delay: 0.5 + index * 0.15, duration: 0.9 },
+        // Sin delay de entrada en estas → al pulsar las flechas las cards
+        // se reordenan al instante (suave), no con ~0.5s de retardo.
+        rotate: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+        scale: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+        top: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+        left: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
         y: {
           repeat: Infinity,
           duration: floatDuration,
@@ -344,7 +372,7 @@ function FloatingCard({
         },
       }}
       whileHover={{ scale: pos.scale * 1.05, rotate: 0, zIndex: 50, y: -12 }}
-      style={{ top: pos.top, left: pos.left, zIndex: pos.z }}
+      style={{ zIndex: pos.z }}
       className="absolute w-60 cursor-pointer group"
     >
       <Link

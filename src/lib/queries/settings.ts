@@ -57,3 +57,21 @@ export async function getSettings(): Promise<SiteSettings> {
 export function normalizeWhatsApp(raw: string): string {
   return raw.replace(/[^0-9]/g, "");
 }
+
+// Dígitos del teléfono placeholder por defecto (+51 984 123 456). Si el campo
+// "Teléfono visible" sigue con este valor, NO lo usamos (es falso → daña NAP).
+const PLACEHOLDER_PHONE_DIGITS = "51984123456";
+
+/**
+ * Teléfono público "real" como fuente única de verdad para NAP/SEO local.
+ * Usa `contact_phone` si está configurado y no es el placeholder; si no,
+ * cae al número de WhatsApp (que el usuario sí suele configurar). Devuelve
+ * cadena vacía si ninguno es real (así el JSON-LD lo omite en vez de mentir).
+ */
+export function publicPhone(s: SiteSettings): string {
+  const cp = (s.contact_phone || "").trim();
+  if (cp && normalizeWhatsApp(cp) !== PLACEHOLDER_PHONE_DIGITS) return cp;
+  const wa = (s.whatsapp || "").trim();
+  if (wa && normalizeWhatsApp(wa) !== PLACEHOLDER_PHONE_DIGITS) return wa;
+  return "";
+}

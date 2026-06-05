@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Minus, Plus, Shield, Zap } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Calendar, Minus, Plus, MessageCircle, Clock, ShieldCheck } from "lucide-react";
 import type { AvailableDate } from "@/lib/queries/tours";
+import type { Locale } from "@/types/database";
 
 interface Props {
   tourId: string;
@@ -14,16 +14,20 @@ interface Props {
   originalPrice: number | null;
   maxGroupSize: number;
   availability: AvailableDate[];
+  whatsapp: string;
+  locale?: Locale;
 }
 
 export function BookingWidget({
-  tourSlug,
+  tourTitle,
   priceUsd,
   originalPrice,
   maxGroupSize,
   availability,
+  whatsapp,
+  locale = "es",
 }: Props) {
-  const router = useRouter();
+  const en = locale === "en";
   const [selectedDate, setSelectedDate] = useState<string | null>(
     availability[0]?.date ?? null
   );
@@ -39,12 +43,23 @@ export function BookingWidget({
     ? selectedAvailability.total_spots - selectedAvailability.booked_spots
     : maxGroupSize;
 
-  const total = priceUsd * travelers;
+  const personWord = en
+    ? travelers === 1
+      ? "person"
+      : "people"
+    : travelers === 1
+    ? "persona"
+    : "personas";
 
-  const handleBook = () => {
-    if (!selectedDate) return;
-    router.push(`/reservar/${tourSlug}?date=${selectedDate}&travelers=${travelers}`);
-  };
+  const waMessage = en
+    ? `Hi Danfer Tours! 👋 I'd like to ask about the price and availability for the "${tourTitle}" tour${
+        selectedDate ? ` on ${formatDate(selectedDate, locale)}` : ""
+      } for ${travelers} ${personWord}. Can you help me?`
+    : `¡Hola Danfer Tours! 👋 Quiero consultar el precio y la disponibilidad del tour "${tourTitle}"${
+        selectedDate ? ` para el ${formatDate(selectedDate, locale)}` : ""
+      } para ${travelers} ${personWord}. ¿Me ayudan?`;
+
+  const waUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`;
 
   return (
     <motion.div
@@ -61,12 +76,12 @@ export function BookingWidget({
         <span className="font-display text-3xl sm:text-4xl text-gold font-bold">
           US${priceUsd.toFixed(0)}
         </span>
-        <span className="text-night/60 text-sm">/ persona</span>
+        <span className="text-night/60 text-sm">{en ? "/ person" : "/ persona"}</span>
       </div>
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">
-          Fecha de salida
+          {en ? "Departure date" : "Fecha de salida"}
         </label>
         <button
           onClick={() => setShowCalendar((v) => !v)}
@@ -74,9 +89,15 @@ export function BookingWidget({
         >
           <span className="flex items-center gap-2 text-night">
             <Calendar className="w-4 h-4 text-gold" />
-            {selectedDate ? formatDate(selectedDate) : "Selecciona una fecha"}
+            {selectedDate
+              ? formatDate(selectedDate, locale)
+              : en
+              ? "Pick a date"
+              : "Selecciona una fecha"}
           </span>
-          <span className="text-night/40 text-xs">{availability.length} fechas</span>
+          <span className="text-night/40 text-xs">
+            {availability.length} {en ? "dates" : "fechas"}
+          </span>
         </button>
 
         {showCalendar && (
@@ -104,9 +125,13 @@ export function BookingWidget({
                       : "text-night/80 hover:bg-white"
                   }`}
                 >
-                  <span>{formatDate(a.date)}</span>
+                  <span>{formatDate(a.date, locale)}</span>
                   <span className="text-xs">
-                    {spots > 0 ? `${spots} cupos` : "Lleno"}
+                    {spots > 0
+                      ? `${spots} ${en ? "spots" : "cupos"}`
+                      : en
+                      ? "Full"
+                      : "Lleno"}
                   </span>
                 </button>
               );
@@ -117,7 +142,7 @@ export function BookingWidget({
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">
-          Viajeros
+          {en ? "Travelers" : "Viajeros"}
         </label>
         <div className="mt-2 flex items-center justify-between bg-stone rounded-xl px-4 py-3">
           <button
@@ -127,10 +152,7 @@ export function BookingWidget({
             <Minus className="w-3.5 h-3.5" />
           </button>
           <span className="font-display text-xl text-night">
-            {travelers}{" "}
-            <span className="text-sm text-night/50">
-              {travelers === 1 ? "persona" : "personas"}
-            </span>
+            {travelers} <span className="text-sm text-night/50">{personWord}</span>
           </span>
           <button
             onClick={() => setTravelers((t) => Math.min(availableSpots, t + 1))}
@@ -142,38 +164,33 @@ export function BookingWidget({
         </div>
       </div>
 
-      <div className="mt-6 pt-5 border-t border-night/8 flex items-baseline justify-between">
-        <span className="text-night/70 text-sm">Total</span>
-        <span className="font-display text-3xl text-night font-bold">
-          US${total.toLocaleString()}
-        </span>
-      </div>
-
-      <button
-        onClick={handleBook}
-        disabled={!selectedDate || availableSpots === 0}
-        className="mt-5 w-full rounded-full bg-gold hover:bg-gold-bright text-white font-semibold py-4 transition hover:shadow-glow disabled:opacity-40 disabled:cursor-not-allowed"
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-6 w-full flex items-center justify-center gap-2 rounded-full bg-[#25D366] hover:bg-[#1ebe5b] text-white font-semibold py-4 transition hover:shadow-glow"
       >
-        Reservar ahora
-      </button>
+        <MessageCircle className="w-5 h-5" />
+        {en ? "Ask price on WhatsApp" : "Consultar precio por WhatsApp"}
+      </a>
 
       <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-night/60">
         <div className="flex items-center gap-2">
-          <Shield className="w-3.5 h-3.5 text-gold" />
-          <span>Pago seguro</span>
+          <Clock className="w-3.5 h-3.5 text-gold" />
+          <span>{en ? "Fast reply" : "Respuesta rápida"}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Zap className="w-3.5 h-3.5 text-gold" />
-          <span>Confirmación instantánea</span>
+          <ShieldCheck className="w-3.5 h-3.5 text-gold" />
+          <span>{en ? "No commitment" : "Sin compromiso"}</span>
         </div>
       </div>
     </motion.div>
   );
 }
 
-function formatDate(iso: string) {
+function formatDate(iso: string, locale: Locale) {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("es-PE", {
+  return d.toLocaleDateString(locale === "en" ? "en-US" : "es-PE", {
     weekday: "short",
     day: "numeric",
     month: "short",

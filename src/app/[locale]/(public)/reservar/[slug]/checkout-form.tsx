@@ -3,20 +3,19 @@
 import { useState, useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Calendar, User, CreditCard, Loader2, CheckCircle2, Minus, Plus } from "lucide-react";
+import { Calendar, User, CheckCircle2, Loader2, Minus, Plus } from "lucide-react";
 import { createBooking } from "./actions";
 
 interface Props {
   tourId: string;
   tourTitle: string;
   tourSlug: string;
-  priceUsd: number;
   initialDate: string;
   initialTravelers: number;
   maxGroupSize: number;
 }
 
-type Step = "details" | "customer" | "payment";
+type Step = "details" | "customer" | "confirm";
 
 export function CheckoutForm(props: Props) {
   const router = useRouter();
@@ -34,14 +33,12 @@ export function CheckoutForm(props: Props) {
     requests: "",
   });
 
-  const total = props.priceUsd * travelers;
-
   function next() {
     if (step === "details") setStep("customer");
-    else if (step === "customer") setStep("payment");
+    else if (step === "customer") setStep("confirm");
   }
   function back() {
-    if (step === "payment") setStep("customer");
+    if (step === "confirm") setStep("customer");
     else if (step === "customer") setStep("details");
   }
 
@@ -52,7 +49,7 @@ export function CheckoutForm(props: Props) {
         tour_id: props.tourId,
         travel_date: date,
         travelers,
-        total_amount: total,
+        total_amount: 0,
         customer_name: customer.name,
         customer_email: customer.email,
         customer_phone: customer.phone || null,
@@ -75,12 +72,12 @@ export function CheckoutForm(props: Props) {
         <Bar done={step !== "details"} />
         <StepDot
           active={step === "customer"}
-          done={step === "payment"}
+          done={step === "confirm"}
           label="Tus datos"
           n={2}
         />
-        <Bar done={step === "payment"} />
-        <StepDot active={step === "payment"} done={false} label="Pago" n={3} />
+        <Bar done={step === "confirm"} />
+        <StepDot active={step === "confirm"} done={false} label="Enviar" n={3} />
       </div>
 
       <div className="bg-white border border-night/8 rounded-2xl p-6 md:p-8">
@@ -195,37 +192,31 @@ export function CheckoutForm(props: Props) {
             </motion.div>
           )}
 
-          {step === "payment" && (
+          {step === "confirm" && (
             <motion.div
-              key="payment"
+              key="confirm"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
               <h2 className="font-display text-2xl text-night mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-gold" />
-                Pago
+                <CheckCircle2 className="w-5 h-5 text-gold" />
+                Confirma tu solicitud
               </h2>
 
               <div className="rounded-xl border border-dashed border-night/20 p-6 bg-stone text-center">
                 <p className="text-night/60 text-sm">
-                  Integración de Stripe pendiente. Por ahora se creará la reserva como{" "}
-                  <strong>pendiente de pago</strong> y recibirás un email con
-                  instrucciones.
+                  Envíanos tu solicitud y un asesor te contactará con el{" "}
+                  <strong>precio, la disponibilidad y los detalles</strong> de tu
+                  tour. Sin pago por adelantado ni compromiso.
                 </p>
               </div>
 
               <div className="mt-6 space-y-3 text-sm">
                 <Row label="Tour" value={props.tourTitle} />
                 <Row label="Fecha" value={new Date(date + "T00:00:00").toLocaleDateString("es-PE", { day: "numeric", month: "long", year: "numeric" })} />
-                <Row label={`${travelers} × US$${props.priceUsd.toFixed(0)}`} value={`US$${(props.priceUsd * travelers).toFixed(0)}`} />
-                <div className="pt-3 border-t border-night/8 flex items-baseline justify-between">
-                  <span className="text-night font-medium">Total</span>
-                  <span className="font-display text-3xl text-gold font-bold">
-                    US${total.toLocaleString()}
-                  </span>
-                </div>
+                <Row label="Viajeros" value={`${travelers} ${travelers === 1 ? "persona" : "personas"}`} />
               </div>
 
               {error && (
@@ -251,7 +242,7 @@ export function CheckoutForm(props: Props) {
             <span />
           )}
 
-          {step !== "payment" ? (
+          {step !== "confirm" ? (
             <button
               type="button"
               onClick={next}
@@ -271,7 +262,7 @@ export function CheckoutForm(props: Props) {
             >
               {pending && <Loader2 className="w-4 h-4 animate-spin" />}
               <CheckCircle2 className="w-4 h-4" />
-              Confirmar reserva
+              Enviar solicitud
             </button>
           )}
         </div>

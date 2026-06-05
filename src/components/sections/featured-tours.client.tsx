@@ -42,7 +42,14 @@ export function FeaturedToursCarousel({
     if (!el) return;
     const card = el.children[idx] as HTMLElement | undefined;
     if (!card) return;
-    el.scrollTo({ left: card.offsetLeft - 16, behavior: "smooth" });
+    // Center the card in the viewport so it matches `snap-center`; otherwise
+    // mandatory snap fights the programmatic scroll and snaps back to the
+    // current card (arrows appear to do nothing). offsetLeft for both the card
+    // and the scroller share the same offsetParent, so the difference is the
+    // card's position inside the scroller's scroll area.
+    const target =
+      card.offsetLeft - el.offsetLeft - (el.clientWidth - card.clientWidth) / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   };
 
   const handlePrev = () => scrollToIndex(Math.max(0, activeIndex - 1));
@@ -153,18 +160,20 @@ export function FeaturedToursCarousel({
   );
 }
 
-function TourCard({
+export function TourCard({
   tour,
   index,
   isBestseller,
   locale,
   m,
+  wrapperClassName = "snap-center shrink-0 w-[300px] md:w-[340px] lg:w-[380px] group",
 }: {
   tour: TourWithCategory;
   index: number;
   isBestseller: boolean;
   locale: Locale;
   m: ReturnType<typeof tr>;
+  wrapperClassName?: string;
 }) {
   const finalPrice =
     tour.discount_pct > 0
@@ -178,10 +187,10 @@ function TourCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{
         duration: 0.7,
-        delay: index * 0.08,
+        delay: Math.min(index, 6) * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="snap-center shrink-0 w-[300px] md:w-[340px] lg:w-[380px] group"
+      className={wrapperClassName}
     >
       <Link
         href={`/tours/${tour.slug}`}

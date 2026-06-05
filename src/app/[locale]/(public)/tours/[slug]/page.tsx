@@ -30,6 +30,7 @@ import { TourReviews } from "@/components/tours/tour-reviews";
 import { ReviewForm } from "@/components/tours/review-form";
 import { BookingWidget } from "@/components/tours/booking-widget";
 import { RelatedTours } from "@/components/tours/related-tours";
+import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -97,13 +98,14 @@ export default async function TourDetailPage({ params }: PageProps) {
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
 
-  const [itinerary, availability, reviews, related, reviewStats] =
+  const [itinerary, availability, reviews, related, reviewStats, settings] =
     await Promise.all([
       getTourItinerary(tour.id),
       getTourAvailability(tour.id),
       getTourReviews(tour.id, 8),
       getRelatedTours(tour.id, tour.category_id, 3),
       getTourReviewStats(tour.id),
+      getSettings(),
     ]);
 
   const finalPrice =
@@ -316,6 +318,8 @@ export default async function TourDetailPage({ params }: PageProps) {
               originalPrice={tour.discount_pct > 0 ? tour.price_usd : null}
               maxGroupSize={tour.max_group_size}
               availability={availability}
+              whatsapp={normalizeWhatsApp(settings.whatsapp)}
+              locale={lc}
             />
           </aside>
         </section>

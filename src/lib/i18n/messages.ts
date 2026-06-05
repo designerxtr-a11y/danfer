@@ -56,6 +56,8 @@ export const messages = {
       reserve: "Reservar ahora",
       securePayment: "Pago seguro",
       instant: "Confirmación instantánea",
+      consult: "Consultar precio",
+      consultCta: "Consultar por WhatsApp",
     },
     common: {
       backToTours: "Volver a tours",
@@ -143,6 +145,8 @@ export const messages = {
       reserve: "Book now",
       securePayment: "Secure payment",
       instant: "Instant confirmation",
+      consult: "Ask for price",
+      consultCta: "Ask on WhatsApp",
     },
     common: {
       backToTours: "Back to tours",

@@ -36,10 +36,6 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
 
   const initialTravelers = travelers ? parseInt(travelers) : 2;
   const initialDate = date ?? new Date().toISOString().slice(0, 10);
-  const finalPrice =
-    tour.discount_pct > 0
-      ? tour.price_usd * (1 - tour.discount_pct / 100)
-      : tour.price_usd;
 
   return (
     <div className="pt-28 pb-24 bg-stone min-h-screen">
@@ -53,12 +49,12 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
         </Link>
 
         <h1 className="font-display text-4xl md:text-5xl text-night mb-2">
-          {lc === "en" ? "Confirm your booking" : "Confirma tu reserva"}
+          {lc === "en" ? "Request your tour" : "Solicita tu reserva"}
         </h1>
         <p className="text-night/60 mb-10">
           {lc === "en"
-            ? "You're one step away from an unforgettable experience."
-            : "Estás a un paso de vivir una experiencia inolvidable."}
+            ? "Send your request and an advisor will get back to you with the price and availability."
+            : "Envía tu solicitud y un asesor te contactará con el precio y la disponibilidad."}
         </p>
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-8">
@@ -66,7 +62,6 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
             tourId={tour.id}
             tourTitle={t(tour.title, lc)}
             tourSlug={tour.slug}
-            priceUsd={finalPrice}
             initialDate={initialDate}
             initialTravelers={initialTravelers}
             maxGroupSize={tour.max_group_size}
@@ -96,11 +91,11 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
                 <div className="mt-6 pt-6 border-t border-night/8 space-y-2 text-sm text-night/70">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-gold" />
-                    {lc === "en" ? "100% secure payment (SSL)" : "Pago 100% seguro (SSL)"}
+                    {lc === "en" ? "No upfront payment" : "Sin pago por adelantado"}
                   </div>
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-gold" />
-                    {lc === "en" ? "Instant confirmation" : "Confirmación inmediata"}
+                    {lc === "en" ? "Fast reply via WhatsApp/email" : "Respuesta rápida por WhatsApp/email"}
                   </div>
                   <div className="flex items-center gap-2">
                     <RotateCcw className="w-4 h-4 text-gold" />

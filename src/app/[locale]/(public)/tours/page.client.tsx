@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useLocale } from "next-intl";
-import { FeaturedToursCarousel } from "@/components/sections/featured-tours.client";
+import { TourCard } from "@/components/sections/featured-tours.client";
+import { tr } from "@/lib/i18n/messages";
 import type {
   TourWithCategory,
   Category,
@@ -20,6 +21,7 @@ interface Props {
 
 export function ToursPageClient({ tours, categories }: Props) {
   const locale = useLocale() as Locale;
+  const m = tr(locale);
 
   const difficulties: { value: Difficulty; label: string }[] = [
     { value: "easy", label: locale === "en" ? "Easy" : "Fácil" },
@@ -214,7 +216,19 @@ export function ToursPageClient({ tours, categories }: Props) {
           </button>
         </div>
       ) : (
-        <FeaturedToursCarousel tours={filtered} locale={locale} />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {filtered.map((tour, i) => (
+            <TourCard
+              key={tour.id}
+              tour={tour}
+              index={i}
+              isBestseller={false}
+              locale={locale}
+              m={m}
+              wrapperClassName="w-full group"
+            />
+          ))}
+        </div>
       )}
     </section>
   );

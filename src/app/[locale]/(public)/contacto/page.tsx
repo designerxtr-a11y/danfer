@@ -1,6 +1,6 @@
 import { Mail, Phone, MapPin, MessageCircle, Clock } from "lucide-react";
 import { ContactForm } from "./contact-form";
-import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
+import { getSettings, normalizeWhatsApp, publicPhone } from "@/lib/queries/settings";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
@@ -45,6 +45,7 @@ export default async function ContactoPage({
   const lc: Locale = locale === "en" ? "en" : "es";
   const settings = await getSettings();
   const waNumber = normalizeWhatsApp(settings.whatsapp);
+  const phone = publicPhone(settings);
   const crumbs = [
     { name: lc === "en" ? "Home" : "Inicio", url: "/" },
     { name: lc === "en" ? "Contact" : "Contacto", url: "/contacto" },
@@ -63,7 +64,7 @@ export default async function ContactoPage({
           <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-6xl text-night">
             {lc === "en" ? (
               <>
-                Let's plan your trip{" "}
+                Let&apos;s plan your trip{" "}
                 <span className="text-gradient-gold italic">together</span>
               </>
             ) : (
@@ -87,7 +88,7 @@ export default async function ContactoPage({
             <InfoCard
               icon={MessageCircle}
               title="WhatsApp"
-              value={settings.contact_phone}
+              value={settings.whatsapp}
               href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
                 lc === "en"
                   ? "Hi Danfer Tours! 👋 I'd like information about a tour."
@@ -110,8 +111,8 @@ export default async function ContactoPage({
             <InfoCard
               icon={Phone}
               title={lc === "en" ? "Phone" : "Teléfono"}
-              value={settings.contact_phone}
-              href={`tel:${normalizeWhatsApp(settings.contact_phone)}`}
+              value={phone}
+              href={`tel:${normalizeWhatsApp(phone)}`}
             />
             <InfoCard
               icon={MapPin}

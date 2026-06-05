@@ -6,6 +6,7 @@ import { Destinations } from "@/components/sections/destinations";
 import { Testimonials } from "@/components/sections/testimonials";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
+import { getSettings, publicPhone } from "@/lib/queries/settings";
 import {
   organizationSchema,
   websiteSchema,
@@ -27,12 +28,13 @@ export async function generateMetadata({
   };
 }
 
-export default function Home() {
+export default async function Home() {
+  const settings = await getSettings();
   return (
     <>
       <JsonLd
         data={[
-          organizationSchema(),
+          organizationSchema(publicPhone(settings)),
           websiteSchema(),
           speakableSchema(),
           heroVideoSchema(),
