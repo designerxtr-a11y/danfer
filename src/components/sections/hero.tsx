@@ -205,14 +205,14 @@ export function Hero() {
             transition={{ delay: 1.1, duration: 0.8 }}
             className="mt-10 hidden md:flex items-center gap-5 flex-wrap"
           >
-            <span className="text-white/45 text-[10px] uppercase tracking-[0.3em]">
+            <span className="text-white/70 text-[10px] uppercase tracking-[0.3em] drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]">
               {m.sections.destinations.eyebrow}
             </span>
             {destinationChips.map((d) => (
               <Link
                 key={d.slug}
                 href={`/destinos/${d.slug}`}
-                className="inline-flex items-center gap-1.5 text-white/75 text-xs hover:text-gold transition"
+                className="inline-flex items-center gap-1.5 text-white/90 text-xs font-medium hover:text-gold transition drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
               >
                 <MapPin className="w-3 h-3 text-gold" />
                 {d.label}
