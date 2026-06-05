@@ -7,7 +7,10 @@ import type { Locale } from "@/types/database";
 import { FeaturedToursGrid } from "./featured-tours.client";
 
 export async function FeaturedTours() {
-  const tours = await getFeaturedTours(6);
+  const featured = await getFeaturedTours(6);
+  // Mostramos filas completas (la grilla es de 3 columnas): 6, o si no llega,
+  // 3 — así nunca queda una tarjeta huérfana sola en la última fila.
+  const tours = featured.length >= 6 ? featured.slice(0, 6) : featured.slice(0, 3);
   const locale = (await getLocale()) as Locale;
   const m = tr(locale);
 

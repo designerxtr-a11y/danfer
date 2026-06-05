@@ -118,21 +118,21 @@ function Stat({
 const polaroids = [
   {
     src: "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=600&auto=format&fit=crop",
-    rotate: -8,
-    top: "5%",
-    left: "0%",
+    rotate: -7,
+    top: "0%",
+    left: "2%",
   },
   {
     src: "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=600&auto=format&fit=crop",
     rotate: 5,
-    top: "10%",
-    left: "30%",
+    top: "24%",
+    left: "42%",
   },
   {
     src: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=600&auto=format&fit=crop",
-    rotate: -3,
-    top: "25%",
-    left: "55%",
+    rotate: -5,
+    top: "47%",
+    left: "8%",
   },
 ];
 
@@ -161,6 +161,17 @@ function PolaroidGallery() {
           />
         </motion.div>
       ))}
+
+      {/* Firma a mano que cierra el espacio vacío inferior-derecho */}
+      <motion.span
+        initial={{ opacity: 0, scale: 0.85 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.7, duration: 0.6 }}
+        className="absolute bottom-6 right-4 font-hand text-gold text-3xl rotate-[-5deg] pointer-events-none drop-shadow-sm"
+      >
+        Cusco, Perú
+      </motion.span>
     </>
   );
 }

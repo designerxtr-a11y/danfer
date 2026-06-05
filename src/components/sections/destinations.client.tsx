@@ -136,7 +136,7 @@ export function DestinationsTabs({
           )}
 
           {/* Side list (right) — premium vertical mini cards */}
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div className="lg:col-span-2 flex flex-col gap-4">
             {current.tours.slice(1, 4).map((tour, i) => (
               <Link
                 key={tour.id}
@@ -191,13 +191,18 @@ export function DestinationsTabs({
               </Link>
             ))}
 
-            {current.tours.length < 2 && (
-              <div className="grid place-items-center bg-white/50 border border-dashed border-night/15 rounded-2xl p-10 text-night/40 text-sm">
-                {locale === "en"
-                  ? "More tours coming soon in this region."
-                  : "Más tours próximamente en esta región."}
-              </div>
-            )}
+            {/* CTA — crece (flex-1) para rellenar el alto: la columna nunca
+                queda vacía aunque la categoría tenga pocos tours. */}
+            <Link
+              href="/tours"
+              className="group relative flex-1 min-h-[64px] overflow-hidden rounded-2xl bg-night text-white grid place-items-center px-6 py-4 text-center ring-1 ring-night/10 hover:ring-gold/50 transition-all"
+            >
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-gold/15 blur-2xl pointer-events-none" />
+              <span className="relative inline-flex items-center gap-2 font-display text-lg lg:text-xl">
+                {locale === "en" ? "See all tours" : "Ver todos los tours"}
+                <ArrowUpRight className="w-5 h-5 text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+              </span>
+            </Link>
           </div>
         </motion.div>
       </AnimatePresence>

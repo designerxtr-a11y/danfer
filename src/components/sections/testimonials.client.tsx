@@ -21,9 +21,9 @@ export function TestimonialsCarousel({
   const prev = () => setIndex((i) => (i - 1 + reviews.length) % reviews.length);
 
   return (
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
       {/* Image */}
-      <div className="relative aspect-[4/5] rounded-3xl overflow-hidden">
+      <div className="relative h-[420px] lg:h-[560px] rounded-3xl overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={review.id}
@@ -58,8 +58,8 @@ export function TestimonialsCarousel({
       </div>
 
       {/* Quote */}
-      <div className="relative">
-        <Quote className="w-16 h-16 text-gold/40" />
+      <div className="relative bg-white rounded-3xl shadow-card border border-night/5 p-8 lg:p-12 flex flex-col justify-center">
+        <Quote className="w-14 h-14 text-gold/40" />
 
         <AnimatePresence mode="wait">
           <motion.div
