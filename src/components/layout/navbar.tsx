@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -54,6 +54,13 @@ export function Navbar() {
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 30));
   const { m, locale, setLocale } = useI18n();
 
+  // El navbar es transparente con texto blanco SOLO en el home (que tiene el
+  // hero oscuro detrás). En el resto de páginas el fondo es claro, así que el
+  // texto blanco quedaría invisible → forzamos el estilo sólido (texto oscuro).
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const solid = scrolled || !isHome;
+
   // Bloquea scroll del body cuando el menú móvil está abierto
   useEffect(() => {
     if (mobileOpen) document.body.style.overflow = "hidden";
@@ -76,7 +83,7 @@ export function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled
+        solid
           ? "bg-background/85 backdrop-blur-xl shadow-soft"
           : "bg-transparent"
       }`}
@@ -84,7 +91,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
         <Link href="/" className="font-display text-2xl font-bold tracking-wider">
           <span className="text-gradient-gold">DANFER</span>
-          <span className={scrolled ? "text-night" : "text-white"}>TOURS</span>
+          <span className={solid ? "text-night" : "text-white"}>TOURS</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -93,7 +100,7 @@ export function Navbar() {
               key={l.href}
               href={l.href}
               className={`text-sm transition-colors hover:text-gold ${
-                scrolled ? "text-night/70" : "text-white/85"
+                solid ? "text-night/70" : "text-white/85"
               }`}
             >
               {l.label}
@@ -103,12 +110,12 @@ export function Navbar() {
 
         <div
           className={`flex items-center gap-4 ${
-            scrolled ? "text-night/70" : "text-white/85"
+            solid ? "text-night/70" : "text-white/85"
           }`}
         >
           <div
             className={`hidden md:flex items-center gap-0.5 rounded-full p-0.5 border transition ${
-              scrolled ? "border-night/15" : "border-white/30"
+              solid ? "border-night/15" : "border-white/30"
             }`}
           >
             <button
@@ -143,7 +150,7 @@ export function Navbar() {
             onClick={() => setMobileOpen(true)}
             aria-label="Abrir menú"
             className={`md:hidden grid place-items-center w-10 h-10 rounded-full border transition ${
-              scrolled
+              solid
                 ? "border-night/15 text-night"
                 : "border-white/30 text-white"
             }`}
