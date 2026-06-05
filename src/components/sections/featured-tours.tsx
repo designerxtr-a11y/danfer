@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { getFeaturedTours } from "@/lib/queries/tours";
 import { tr } from "@/lib/i18n/messages";
 import type { Locale } from "@/types/database";
-import { FeaturedToursCarousel } from "./featured-tours.client";
+import { FeaturedToursGrid } from "./featured-tours.client";
 
 export async function FeaturedTours() {
   const tours = await getFeaturedTours(6);
@@ -76,7 +76,7 @@ export async function FeaturedTours() {
           </div>
         </div>
 
-        <FeaturedToursCarousel tours={tours} locale={locale} />
+        <FeaturedToursGrid tours={tours} locale={locale} />
       </div>
     </section>
   );

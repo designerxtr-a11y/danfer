@@ -2,15 +2,12 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 import {
   Star,
   Clock,
   Mountain,
   Users,
   ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Flame,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -25,7 +22,7 @@ const difficultyColor: Record<string, string> = {
   expert: "text-rose-400",
 };
 
-export function FeaturedToursCarousel({
+export function FeaturedToursGrid({
   tours,
   locale = "es",
 }: {
@@ -33,129 +30,20 @@ export function FeaturedToursCarousel({
   locale?: Locale;
 }) {
   const m = tr(locale);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const total = tours.length;
-
-  const scrollToIndex = (idx: number) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const card = el.children[idx] as HTMLElement | undefined;
-    if (!card) return;
-    // Center the card in the viewport so it matches `snap-center`; otherwise
-    // mandatory snap fights the programmatic scroll and snaps back to the
-    // current card (arrows appear to do nothing). offsetLeft for both the card
-    // and the scroller share the same offsetParent, so the difference is the
-    // card's position inside the scroller's scroll area.
-    const target =
-      card.offsetLeft - el.offsetLeft - (el.clientWidth - card.clientWidth) / 2;
-    el.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
-  };
-
-  const handlePrev = () => scrollToIndex(Math.max(0, activeIndex - 1));
-  const handleNext = () => scrollToIndex(Math.min(total - 1, activeIndex + 1));
-
-  // Track active card via scroll position
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const center = el.scrollLeft + el.clientWidth / 2;
-        let best = 0;
-        let bestDist = Infinity;
-        Array.from(el.children).forEach((c, i) => {
-          const child = c as HTMLElement;
-          const cardCenter = child.offsetLeft + child.clientWidth / 2;
-          const d = Math.abs(cardCenter - center);
-          if (d < bestDist) {
-            bestDist = d;
-            best = i;
-          }
-        });
-        setActiveIndex(best);
-      });
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
 
   return (
-    <div className="relative">
-      {/* Controls row */}
-      <div className="mb-8 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-night/60">
-          <span className="font-hand text-gold text-2xl">
-            {locale === "en" ? "Swipe" : "Desliza"}
-          </span>
-          <span className="text-gold text-xl">→</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="font-display text-night text-sm tabular-nums">
-            <span className="text-gold font-bold">
-              {String(activeIndex + 1).padStart(2, "0")}
-            </span>
-            <span className="text-night/30 mx-1">/</span>
-            <span className="text-night/60">
-              {String(total).padStart(2, "0")}
-            </span>
-          </div>
-          <button
-            onClick={handlePrev}
-            disabled={activeIndex === 0}
-            aria-label={m.common.prev}
-            className="w-12 h-12 rounded-full border border-night/15 hover:border-gold hover:bg-gold hover:text-night text-night/60 grid place-items-center transition disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={activeIndex === total - 1}
-            aria-label={m.common.next}
-            className="w-12 h-12 rounded-full border border-night/15 hover:border-gold hover:bg-gold hover:text-night text-night/60 grid place-items-center transition disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Scroll-snap carousel */}
-      <div
-        ref={scrollerRef}
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 -mx-6 px-6 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {tours.map((tour, i) => (
-          <TourCard
-            key={tour.id}
-            tour={tour}
-            index={i}
-            isBestseller={i === 0}
-            locale={locale}
-            m={m}
-          />
-        ))}
-      </div>
-
-      {/* Progress dots */}
-      <div className="mt-8 flex items-center justify-center gap-2">
-        {tours.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => scrollToIndex(i)}
-            aria-label={locale === "en" ? `Go to tour ${i + 1}` : `Ir al tour ${i + 1}`}
-            className={`h-1 rounded-full transition-all ${
-              i === activeIndex
-                ? "w-10 bg-gold"
-                : "w-2 bg-night/20 hover:bg-night/40"
-            }`}
-          />
-        ))}
-      </div>
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+      {tours.map((tour, i) => (
+        <TourCard
+          key={tour.id}
+          tour={tour}
+          index={i}
+          isBestseller={i === 0}
+          locale={locale}
+          m={m}
+          wrapperClassName="w-full group"
+        />
+      ))}
     </div>
   );
 }

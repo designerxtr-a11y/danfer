@@ -1,4 +1,4 @@
-import { FeaturedToursCarousel } from "@/components/sections/featured-tours.client";
+import { FeaturedToursGrid } from "@/components/sections/featured-tours.client";
 import type { TourWithCategory } from "@/types/database";
 
 export function RelatedTours({ tours }: { tours: TourWithCategory[] }) {
@@ -10,7 +10,7 @@ export function RelatedTours({ tours }: { tours: TourWithCategory[] }) {
           Otros tours en la región
         </h2>
       </div>
-      <FeaturedToursCarousel tours={tours} />
+      <FeaturedToursGrid tours={tours} />
     </section>
   );
 }
