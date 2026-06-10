@@ -106,7 +106,18 @@ export function Hero() {
       ref={ref}
       className="relative h-screen min-h-[620px] sm:min-h-[680px] max-h-[940px] w-full overflow-hidden bg-night"
     >
-      {/* Background video */}
+      {/* Background: en móvil imagen estática (el MP4 1080p externo penaliza
+          LCP/datos justo donde llega el tráfico orgánico); el video solo en md+ */}
+      <Image
+        src={VIDEO_POSTER}
+        alt=""
+        aria-hidden
+        fill
+        priority
+        fetchPriority="high"
+        sizes="100vw"
+        className="absolute inset-0 object-cover md:hidden"
+      />
       <video
         ref={videoRef}
         src={VIDEO_SRC}
@@ -117,7 +128,7 @@ export function Hero() {
         playsInline
         preload="metadata"
         aria-hidden
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover hidden md:block"
       />
 
       {/* Gradient overlays */}

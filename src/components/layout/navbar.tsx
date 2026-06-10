@@ -141,9 +141,41 @@ export function Navbar() {
               <USFlag className="w-4 h-3 rounded-sm" />
             </button>
           </div>
-          <TikTokIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
-          <FacebookIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
-          <InstagramIcon className="w-4 h-4 hover:text-gold cursor-pointer transition hidden md:block" />
+          <a
+            href="https://www.tiktok.com/@danfertourscusco"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok de Danfer Tours"
+            className="hidden md:block hover:text-gold transition"
+          >
+            <TikTokIcon className="w-4 h-4" />
+          </a>
+          <a
+            href="https://www.facebook.com/danfertourscusco"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook de Danfer Tours"
+            className="hidden md:block hover:text-gold transition"
+          >
+            <FacebookIcon className="w-4 h-4" />
+          </a>
+          <a
+            href="https://www.instagram.com/danfertourscusco"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de Danfer Tours"
+            className="hidden md:block hover:text-gold transition"
+          >
+            <InstagramIcon className="w-4 h-4" />
+          </a>
+
+          {/* CTA de reserva — el navbar no tenía acción primaria visible */}
+          <Link
+            href="/tours"
+            className="hidden md:inline-flex items-center rounded-full bg-gold px-5 py-2 text-night text-sm font-semibold hover:bg-gold-bright hover:shadow-glow transition"
+          >
+            {locale === "en" ? "Book now" : "Reservar"}
+          </Link>
 
           {/* Mobile hamburger */}
           <button
@@ -212,6 +244,19 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + links.length * 0.06 }}
+              >
+                <Link
+                  href="/tours"
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-night font-semibold hover:bg-gold-bright transition"
+                >
+                  {locale === "en" ? "Book your tour" : "Reservar tu tour"}
+                </Link>
+              </motion.div>
             </motion.nav>
 
             {/* Footer of mobile menu: lang + social */}
@@ -246,9 +291,33 @@ export function Navbar() {
                 </button>
               </div>
               <div className="flex items-center gap-5 text-white/80">
-                <TikTokIcon className="w-5 h-5 hover:text-gold transition" />
-                <FacebookIcon className="w-5 h-5 hover:text-gold transition" />
-                <InstagramIcon className="w-5 h-5 hover:text-gold transition" />
+                <a
+                  href="https://www.tiktok.com/@danfertourscusco"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok de Danfer Tours"
+                  className="hover:text-gold transition"
+                >
+                  <TikTokIcon className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/danfertourscusco"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook de Danfer Tours"
+                  className="hover:text-gold transition"
+                >
+                  <FacebookIcon className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.instagram.com/danfertourscusco"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram de Danfer Tours"
+                  className="hover:text-gold transition"
+                >
+                  <InstagramIcon className="w-5 h-5" />
+                </a>
               </div>
             </motion.div>
           </motion.div>

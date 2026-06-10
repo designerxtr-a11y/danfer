@@ -3,9 +3,76 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { useI18n } from "@/lib/i18n/provider";
 
-const DEFAULT_MESSAGE =
-  "Hola Danfer Tours! 👋 Quiero información sobre un tour en Cusco.";
+// Textos del widget por idioma — el visitante EN (mercado principal de
+// conversión) debe recibir el chat en inglés, no en español.
+const COPY = {
+  es: {
+    tooltipTitle: "¿Necesitas ayuda?",
+    tooltipBody: "Escríbenos por WhatsApp y un asesor te responde en minutos.",
+    status: "En línea · responde en minutos",
+    intro: "¡Hola! 👋 Soy parte del equipo de",
+    introEnd: "¿En qué te ayudo? Elige una opción rápida:",
+    hoursLabel: "Horario hoy",
+    hours: "Lun-Vie 8am - 8pm · Sáb 9am - 6pm",
+    close: "Cerrar",
+    open: "Contactar por WhatsApp",
+    quickReplies: [
+      {
+        label: "Quiero info de Machu Picchu",
+        message:
+          "Hola Danfer Tours! 👋 Me interesa el tour a Machu Picchu, ¿pueden contarme más sobre fechas y precios?",
+      },
+      {
+        label: "Camino Inca 4 días",
+        message:
+          "Hola Danfer Tours! 👋 Quiero información sobre el Camino Inca de 4 días — disponibilidad, precio y qué incluye.",
+      },
+      {
+        label: "Armar paquete completo",
+        message:
+          "Hola Danfer Tours! 👋 Voy a Cusco por varios días y quiero armar un paquete (Machu Picchu + Valle Sagrado + más). ¿Me pueden ayudar?",
+      },
+      {
+        label: "Otra consulta",
+        message: "Hola Danfer Tours! 👋 Quiero información sobre un tour en Cusco.",
+      },
+    ],
+  },
+  en: {
+    tooltipTitle: "Need help?",
+    tooltipBody: "Message us on WhatsApp and an advisor replies in minutes.",
+    status: "Online · replies in minutes",
+    intro: "Hi! 👋 I'm part of the team at",
+    introEnd: "How can I help? Pick a quick option:",
+    hoursLabel: "Today's hours",
+    hours: "Mon-Fri 8am - 8pm · Sat 9am - 6pm",
+    close: "Close",
+    open: "Chat on WhatsApp",
+    quickReplies: [
+      {
+        label: "Machu Picchu tour info",
+        message:
+          "Hi Danfer Tours! 👋 I'm interested in the Machu Picchu tour — could you tell me more about dates and prices?",
+      },
+      {
+        label: "Inca Trail 4 days",
+        message:
+          "Hi Danfer Tours! 👋 I'd like info about the 4-day Inca Trail — availability, price and what's included.",
+      },
+      {
+        label: "Build a full package",
+        message:
+          "Hi Danfer Tours! 👋 I'll be in Cusco for several days and want to build a package (Machu Picchu + Sacred Valley + more). Can you help?",
+      },
+      {
+        label: "Other question",
+        message: "Hi Danfer Tours! 👋 I'd like information about a tour in Cusco.",
+      },
+    ],
+  },
+} as const;
 
 const WhatsAppIcon = (p: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
@@ -17,6 +84,8 @@ export function WhatsAppButton({ phone }: { phone: string }) {
   const [open, setOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const { locale } = useI18n();
+  const t = COPY[locale === "en" ? "en" : "es"];
 
   // Mostrar el tooltip "Pregúntanos por WhatsApp" después de 3 segundos
   useEffect(() => {
@@ -53,7 +122,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
                 setDismissed(true);
               }}
               className="absolute top-2 right-2 grid place-items-center w-6 h-6 rounded-full hover:bg-night/5 text-night/40 transition"
-              aria-label="Cerrar"
+              aria-label={t.close}
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -63,10 +132,10 @@ export function WhatsAppButton({ phone }: { phone: string }) {
               </div>
               <div>
                 <div className="font-display text-night text-sm font-semibold leading-tight">
-                  ¿Necesitas ayuda?
+                  {t.tooltipTitle}
                 </div>
                 <div className="mt-1 text-xs text-night/60 leading-relaxed">
-                  Escríbenos por WhatsApp y un asesor te responde en minutos.
+                  {t.tooltipBody}
                 </div>
               </div>
             </div>
@@ -97,13 +166,13 @@ export function WhatsAppButton({ phone }: { phone: string }) {
                   Danfer Tours Cusco
                 </div>
                 <div className="text-[11px] text-white/80 mt-0.5">
-                  En línea · responde en minutos
+                  {t.status}
                 </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 className="grid place-items-center w-7 h-7 rounded-full hover:bg-white/10 transition"
-                aria-label="Cerrar"
+                aria-label={t.close}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -113,36 +182,14 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             <div className="p-4 bg-[#ECE5DD]">
               <div className="bg-white rounded-2xl rounded-tl-sm p-3 shadow-sm max-w-[85%]">
                 <p className="text-sm text-night leading-snug">
-                  ¡Hola! 👋 Soy parte del equipo de{" "}
-                  <strong>Danfer Tours Cusco</strong>. ¿En qué te ayudo? Elige
-                  una opción rápida:
+                  {t.intro} <strong>Danfer Tours Cusco</strong>. {t.introEnd}
                 </p>
               </div>
             </div>
 
             {/* Quick replies */}
             <div className="p-4 pt-0 bg-[#ECE5DD] space-y-2">
-              {[
-                {
-                  label: "Quiero info de Machu Picchu",
-                  message:
-                    "Hola Danfer Tours! 👋 Me interesa el tour a Machu Picchu, ¿pueden contarme más sobre fechas y precios?",
-                },
-                {
-                  label: "Camino Inca 4 días",
-                  message:
-                    "Hola Danfer Tours! 👋 Quiero información sobre el Camino Inca de 4 días — disponibilidad, precio y qué incluye.",
-                },
-                {
-                  label: "Armar paquete completo",
-                  message:
-                    "Hola Danfer Tours! 👋 Voy a Cusco por varios días y quiero armar un paquete (Machu Picchu + Valle Sagrado + más). ¿Me pueden ayudar?",
-                },
-                {
-                  label: "Otra consulta",
-                  message: DEFAULT_MESSAGE,
-                },
-              ].map((q) => (
+              {t.quickReplies.map((q) => (
                 <button
                   key={q.label}
                   onClick={() => openChat(q.message)}
@@ -156,11 +203,9 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             {/* Footer */}
             <div className="px-4 py-3 bg-white border-t border-night/8 text-center">
               <div className="text-[10px] uppercase tracking-widest text-night/40">
-                Horario hoy
+                {t.hoursLabel}
               </div>
-              <div className="text-xs text-night/70 mt-0.5">
-                Lun-Vie 8am - 8pm · Sáb 9am - 6pm
-              </div>
+              <div className="text-xs text-night/70 mt-0.5">{t.hours}</div>
             </div>
           </motion.div>
         )}
@@ -178,7 +223,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
         transition={{ delay: 1.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
-        aria-label="Contactar por WhatsApp"
+        aria-label={t.open}
         className="fixed bottom-5 right-5 z-50 grid place-items-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(37,211,102,0.5)] hover:shadow-[0_15px_40px_rgba(37,211,102,0.7)] transition-shadow"
       >
         {/* Pulse ring */}
