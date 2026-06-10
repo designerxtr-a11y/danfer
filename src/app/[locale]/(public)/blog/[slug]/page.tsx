@@ -26,11 +26,14 @@ export async function generateMetadata({ params }: PageProps) {
 
   const title = t(post.meta_title, lc) || t(post.title, lc);
   const description = t(post.meta_description, lc) || t(post.excerpt, lc);
+  // Sin traducción EN real, /en/blog/x sirve el texto ES (fallback de t())
+  // → declararlo duplicado del ES, no versión inglesa.
+  const enAvailable = Boolean(post.title?.en && post.body_md?.en);
 
   return {
     title,
     description,
-    alternates: buildAlternates(`/blog/${post.slug}`, lc),
+    alternates: buildAlternates(`/blog/${post.slug}`, lc, { enAvailable }),
     openGraph: {
       title,
       description,

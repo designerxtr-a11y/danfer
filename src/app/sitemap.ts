@@ -19,7 +19,9 @@ function withLangs(
   path: string,
   priority: number,
   changeFrequency: Entry["changeFrequency"] = "weekly",
-  lastModified: Date = STATIC_LASTMOD
+  lastModified: Date = STATIC_LASTMOD,
+  // false para contenido solo-ES (la URL /en es duplicado, no alternate)
+  enAvailable = true
 ): Entry {
   return {
     url: `${SITE}${path}`,
@@ -29,7 +31,7 @@ function withLangs(
     alternates: {
       languages: {
         es: `${SITE}${path}`,
-        en: `${SITE}/en${path}`,
+        ...(enAvailable && { en: `${SITE}/en${path}` }),
         "x-default": `${SITE}${path}`,
       },
     },
@@ -47,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .order("updated_at", { ascending: false }),
     supabase
       .from("blog_posts")
-      .select("slug, updated_at, published_at")
+      .select("slug, updated_at, published_at, title, body_md")
       .eq("is_published", true),
   ]);
 
@@ -76,14 +78,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // apunta a otra genera "Duplicate, submitted URL not selected as canonical"
   // en Search Console.
 
-  const blogPages: MetadataRoute.Sitemap = (posts ?? []).map((p) =>
-    withLangs(
+  const blogPages: MetadataRoute.Sitemap = (posts ?? []).map((p) => {
+    const enAvailable = Boolean(p.title?.en && p.body_md?.en);
+    return withLangs(
       `/blog/${p.slug}`,
       0.7,
       "monthly",
-      new Date(p.updated_at ?? p.published_at ?? Date.now())
-    )
-  );
+      new Date(p.updated_at ?? p.published_at ?? Date.now()),
+      enAvailable
+    );
+  });
 
   return [
     ...staticPages,
