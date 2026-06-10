@@ -13,11 +13,17 @@ export async function middleware(request: NextRequest) {
     return await handleAdmin(request);
   }
 
-  // 2. Skip i18n for static/API paths
+  // 2. Skip i18n for static/API paths y rutas de metadata file-convention
+  // (icon/apple-icon/opengraph-image viven en la raíz de app/, SIN punto en
+  // la URL: si el i18n las reescribe a /[locale]/icon devuelven 404 — Google
+  // lo reportaba en Search Console y el logo del schema quedaba roto).
   if (
     path.startsWith("/_next") ||
     path.startsWith("/api") ||
-    path.includes(".")
+    path.includes(".") ||
+    path === "/icon" ||
+    path === "/apple-icon" ||
+    path === "/opengraph-image"
   ) {
     return NextResponse.next();
   }
