@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 import { Playfair_Display, Inter, Caveat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -86,12 +87,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Locale real de la request (middleware next-intl). En /en el html debe
+  // declarar lang="en" — Google usa lang + hreflang para indexar el inglés.
+  // Para /admin (fuera del árbol [locale]) cae al default "es".
+  const locale = await getLocale();
   return (
     <html
-      lang="es"
+      lang={locale}
       data-scroll-behavior="smooth"
       className={`${playfair.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >

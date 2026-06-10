@@ -10,7 +10,9 @@ export function JsonLd({ data }: Props) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(items),
+        // Escapa "<" para que contenido de la BD (p.ej. "</script>" en una
+        // descripción o reseña) no pueda cerrar el tag e inyectar HTML.
+        __html: JSON.stringify(items).replace(/</g, "\\u003c"),
       }}
     />
   );

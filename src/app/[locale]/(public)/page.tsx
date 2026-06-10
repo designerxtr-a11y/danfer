@@ -6,10 +6,7 @@ import { Destinations } from "@/components/sections/destinations";
 import { Testimonials } from "@/components/sections/testimonials";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
-import { getSettings, publicPhone } from "@/lib/queries/settings";
 import {
-  organizationSchema,
-  websiteSchema,
   heroVideoSchema,
   homepageFaqSchema,
   speakableSchema,
@@ -29,13 +26,11 @@ export async function generateMetadata({
 }
 
 export default async function Home() {
-  const settings = await getSettings();
+  // Organization + WebSite los emite el layout público (todas las páginas).
   return (
     <>
       <JsonLd
         data={[
-          organizationSchema(publicPhone(settings)),
-          websiteSchema(),
           speakableSchema(),
           heroVideoSchema(),
           homepageFaqSchema(),

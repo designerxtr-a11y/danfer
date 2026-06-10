@@ -39,16 +39,12 @@ function withLangs(
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createAdminClient();
 
-  const [{ data: tours }, { data: categories }, { data: posts }] = await Promise.all([
+  const [{ data: tours }, { data: posts }] = await Promise.all([
     supabase
       .from("tours")
       .select("slug, updated_at")
       .eq("is_published", true)
       .order("updated_at", { ascending: false }),
-    supabase
-      .from("categories")
-      .select("slug")
-      .eq("is_published", true),
     supabase
       .from("blog_posts")
       .select("slug, updated_at, published_at")
@@ -75,9 +71,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     withLangs(`/tours/${tour.slug}`, 0.8, "weekly", new Date(tour.updated_at))
   );
 
-  const categoryPages: MetadataRoute.Sitemap = (categories ?? []).map((cat) =>
-    withLangs(`/tours?category=${cat.slug}`, 0.7, "weekly")
-  );
+  // NO incluir /tours?category=X: esas URLs canonicalizan a /tours
+  // (buildAlternates ignora el query), y enviar al sitemap URLs cuyo canonical
+  // apunta a otra genera "Duplicate, submitted URL not selected as canonical"
+  // en Search Console.
 
   const blogPages: MetadataRoute.Sitemap = (posts ?? []).map((p) =>
     withLangs(
@@ -92,7 +89,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...destinationPages,
     ...tourPages,
-    ...categoryPages,
     ...blogPages,
   ];
 }
