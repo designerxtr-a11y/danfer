@@ -8,7 +8,8 @@ import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
 import { t, type Locale } from "@/types/database";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema, blogPostingSchema } from "@/lib/seo/schema";
+import { breadcrumbSchema, blogPostingSchema, faqSchema } from "@/lib/seo/schema";
+import { extractFaqSection } from "@/lib/seo/faq-extract";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { siteUrl } from "@/lib/seo/site-url";
 import { headingSlug, extractH2s } from "@/lib/heading-slug";
@@ -102,11 +103,20 @@ export default async function BlogPostPage({ params }: PageProps) {
   ];
 
   const tocItems = extractH2s(body);
+  // FAQPage solo si el post tiene sección visible de preguntas (### bajo
+  // "## Preguntas frecuentes") — al añadirla en /admin/blog se activa solo.
+  const faqs = extractFaqSection(body);
 
   return (
     <div className="pt-24 md:pt-28 pb-16 md:pb-24">
       <ReadingProgress />
-      <JsonLd data={[articleSchema, breadcrumbSchema(crumbs)]} />
+      <JsonLd
+        data={[
+          articleSchema,
+          breadcrumbSchema(crumbs),
+          ...(faqs.length > 0 ? [faqSchema(faqs)] : []),
+        ]}
+      />
 
       <article className="max-w-3xl mx-auto px-4 sm:px-6">
         <Breadcrumbs items={crumbs} className="mb-6" />
