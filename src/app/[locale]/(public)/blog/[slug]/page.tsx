@@ -11,6 +11,32 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, blogPostingSchema } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { siteUrl } from "@/lib/seo/site-url";
+import { headingSlug, extractH2s } from "@/lib/heading-slug";
+import { ReadingProgress } from "@/components/blog/reading-progress";
+import { PostToc } from "@/components/blog/post-toc";
+import { PostCta } from "@/components/blog/post-cta";
+
+/** Texto plano de los children de un heading MDX (para generar su id). */
+function childrenText(children: React.ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) return children.map(childrenText).join("");
+  if (children && typeof children === "object" && "props" in children) {
+    return childrenText(
+      (children as { props: { children?: React.ReactNode } }).props.children
+    );
+  }
+  return "";
+}
+
+// h2 con id estable → anclas del índice de contenidos.
+// scroll-mt compensa el navbar fijo al saltar al ancla.
+const mdxComponents = {
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 id={headingSlug(childrenText(props.children))} className="scroll-mt-28">
+      {props.children}
+    </h2>
+  ),
+};
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -75,8 +101,11 @@ export default async function BlogPostPage({ params }: PageProps) {
     { name: t(post.title, lc), url: `/blog/${post.slug}` },
   ];
 
+  const tocItems = extractH2s(body);
+
   return (
     <div className="pt-24 md:pt-28 pb-16 md:pb-24">
+      <ReadingProgress />
       <JsonLd data={[articleSchema, breadcrumbSchema(crumbs)]} />
 
       <article className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -154,14 +183,19 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         )}
 
+        <PostToc items={tocItems} locale={lc} />
+
         <div className="mt-10 prose prose-neutral max-w-none prose-lg [&_h2]:font-display [&_h2]:text-3xl [&_h2]:text-night [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-display [&_h3]:text-2xl [&_h3]:text-night [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-night/80 [&_p]:leading-relaxed [&_p]:my-4 [&_ul]:my-4 [&_ul]:pl-5 [&_li]:list-disc [&_li]:my-1 [&_li]:text-night/80 [&_a]:text-gold [&_a]:underline [&_strong]:text-night [&_blockquote]:border-l-4 [&_blockquote]:border-gold [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-night/70">
           {body && (
             <MDXRemote
               source={body}
+              components={mdxComponents}
               options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
             />
           )}
         </div>
+
+        <PostCta locale={lc} />
       </article>
 
       {related.length > 0 && (
