@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps) {
       type: "article",
       url: lc === "en" ? `/en/blog/${post.slug}` : `/blog/${post.slug}`,
       locale: ogLocale(lc),
-      images: post.cover_image ? [{ url: post.cover_image, width: 1600, height: 900 }] : undefined,
+      // og:image la genera opengraph-image.tsx (file convention pisa este campo)
       publishedTime: post.published_at ?? post.created_at,
     },
   };

@@ -1,18 +1,26 @@
 import { ImageResponse } from "next/og";
 import { getTourBySlug } from "@/lib/queries/tours";
-import { t } from "@/types/database";
+import { t, type Locale } from "@/types/database";
 
 export const alt = "Tour en Cusco";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function Image({ params }: { params: { slug: string } }) {
-  const tour = await getTourBySlug(params.slug);
+export default async function Image({
+  params,
+}: {
+  // En Next 16 params es Promise también en file conventions de metadata:
+  // leerlo síncrono daba slug undefined → todas las OG salían "Not found".
+  params: Promise<{ slug: string; locale: string }>;
+}) {
+  const { slug, locale } = await params;
+  const lc: Locale = locale === "en" ? "en" : "es";
+  const tour = await getTourBySlug(slug);
   if (!tour) {
     return new ImageResponse(<div>Not found</div>, { ...size });
   }
 
-  const title = t(tour.title);
+  const title = t(tour.title, lc);
   const price =
     tour.discount_pct > 0
       ? tour.price_usd * (1 - tour.discount_pct / 100)
@@ -86,7 +94,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
                   textTransform: "uppercase",
                 }}
               >
-                {t(tour.category.name)}
+                {t(tour.category.name, lc)}
               </div>
             )}
           </div>
@@ -119,12 +127,12 @@ export default async function Image({ params }: { params: { slug: string } }) {
                 ★ {tour.rating.toFixed(1)} ({tour.reviews_count})
               </span>
               <span style={{ color: "rgba(255,255,255,0.75)" }}>
-                {t(tour.duration_label)}
+                {t(tour.duration_label, lc)}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
               <span style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", letterSpacing: 2 }}>
-                DESDE
+                {lc === "en" ? "FROM" : "DESDE"}
               </span>
               <span style={{ fontSize: 60, fontWeight: 800, color: "#E8B043" }}>
                 US${price.toFixed(0)}

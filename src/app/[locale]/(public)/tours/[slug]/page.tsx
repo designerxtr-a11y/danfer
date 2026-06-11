@@ -73,20 +73,13 @@ export async function generateMetadata({ params }: PageProps) {
       url: lc === "en" ? `/en/tours/${tour.slug}` : `/tours/${tour.slug}`,
       type: "website",
       locale: ogLocale(lc),
-      images: [
-        {
-          url: tour.cover_image,
-          width: 1600,
-          height: 900,
-          alt: title,
-        },
-      ],
+      // og:image la genera opengraph-image.tsx (declararla aquí pisa la file
+      // convention y la imagen brandeada con precio nunca se servía)
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [tour.cover_image],
     },
   };
 }
