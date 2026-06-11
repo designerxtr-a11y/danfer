@@ -5,6 +5,7 @@ import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { updateSettingsForm } from "./actions";
 import { ImageUploader } from "@/app/admin/_components/image-uploader";
 import type { SiteSettings } from "@/lib/queries/settings";
+import { HERO_CARD_DEFAULTS } from "@/lib/hero-cards";
 
 export function SettingsForm({ initial }: { initial: SiteSettings }) {
   const [pending, startTransition] = useTransition();
@@ -78,31 +79,68 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
         </div>
       </Section>
 
-      <Section title="Fotos del hero (tarjetas flotantes de la portada)">
+      <Section title="Tarjetas del hero (portada): foto, texto y precio">
         {(
           [
-            { key: "machu-picchu", label: "Tarjeta Machu Picchu", field: "hero_img_machu_picchu" },
-            { key: "valle-sagrado", label: "Tarjeta Pisac & Ollanta (Valle Sagrado)", field: "hero_img_valle_sagrado" },
-            { key: "rainbow-mountain", label: "Tarjeta Rainbow Mountain", field: "hero_img_rainbow_mountain" },
+            { key: "machu-picchu", label: "Tarjeta Machu Picchu", field: "hero_img_machu_picchu", prefix: "hero_card_machu_picchu" },
+            { key: "valle-sagrado", label: "Tarjeta Pisac & Ollanta (Valle Sagrado)", field: "hero_img_valle_sagrado", prefix: "hero_card_valle_sagrado" },
+            { key: "rainbow-mountain", label: "Tarjeta Rainbow Mountain", field: "hero_img_rainbow_mountain", prefix: "hero_card_rainbow_mountain" },
           ] as const
-        ).map((card) => (
-          <div key={card.key}>
-            <ImageUploader
-              bucket="tour-images"
-              folder="hero"
-              value={heroImgs[card.key] || undefined}
-              onChange={(url) =>
-                setHeroImgs((prev) => ({ ...prev, [card.key]: url ?? "" }))
-              }
-              label={card.label}
-            />
-            <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
-              Foto vertical (ideal ~800×1100). Si la dejas vacía se usa la
-              foto de stock actual.
-            </p>
-            <input type="hidden" name={card.field} value={heroImgs[card.key]} />
-          </div>
-        ))}
+        ).map((card) => {
+          const defaults = HERO_CARD_DEFAULTS.find((d) => d.slug === card.key)!;
+          const saved = initial.hero_cards?.[card.key] ?? {};
+          return (
+            <div key={card.key}>
+              <ImageUploader
+                bucket="tour-images"
+                folder="hero"
+                value={heroImgs[card.key] || undefined}
+                onChange={(url) =>
+                  setHeroImgs((prev) => ({ ...prev, [card.key]: url ?? "" }))
+                }
+                label={card.label}
+              />
+              <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
+                Foto vertical (ideal ~800×1100). Si la dejas vacía se usa la
+                foto de stock actual.
+              </p>
+              <input type="hidden" name={card.field} value={heroImgs[card.key]} />
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <Field
+                  label="Título"
+                  name={`${card.prefix}_title`}
+                  defaultValue={saved.title ?? defaults.title}
+                />
+                <Field
+                  label="Región"
+                  name={`${card.prefix}_region`}
+                  defaultValue={saved.region ?? defaults.region}
+                />
+                <Field
+                  label="Duración"
+                  name={`${card.prefix}_days`}
+                  defaultValue={saved.days ?? defaults.days}
+                />
+                <Field
+                  label="Precio (US$)"
+                  name={`${card.prefix}_price`}
+                  defaultValue={String(saved.price ?? defaults.price)}
+                />
+                <Field
+                  label="Rating"
+                  name={`${card.prefix}_rating`}
+                  defaultValue={String(saved.rating ?? defaults.rating)}
+                />
+                <Field
+                  label="Reseñas (nº)"
+                  name={`${card.prefix}_reviews`}
+                  defaultValue={String(saved.reviews ?? defaults.reviews)}
+                />
+              </div>
+            </div>
+          );
+        })}
       </Section>
 
       <Section title="Fotos polaroid (sección de estadísticas de la portada)">

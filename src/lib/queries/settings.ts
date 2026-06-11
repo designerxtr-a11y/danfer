@@ -1,5 +1,17 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export type HeroCardSlug = "machu-picchu" | "valle-sagrado" | "rainbow-mountain";
+
+/** Sobreescritura editable de una tarjeta del hero (todo opcional). */
+export interface HeroCardText {
+  title?: string;
+  region?: string;
+  days?: string;
+  price?: number;
+  rating?: number;
+  reviews?: number;
+}
+
 export interface SiteSettings {
   site_name: string;
   site_tagline: { es: string; en?: string };
@@ -24,6 +36,8 @@ export interface SiteSettings {
     "valle-sagrado"?: string;
     "rainbow-mountain"?: string;
   };
+  /** Texto/precio de las tarjetas del hero; campo ausente = default del código. */
+  hero_cards: Partial<Record<HeroCardSlug, HeroCardText>>;
   /** Fotos polaroid de la sección de estadísticas (portada). */
   stats_images: {
     polaroid_1?: string;
@@ -46,6 +60,7 @@ const DEFAULTS: SiteSettings = {
   },
   branding: {},
   hero_images: {},
+  hero_cards: {},
   stats_images: {},
 };
 
@@ -73,6 +88,9 @@ export async function getSettings(): Promise<SiteSettings> {
       hero_images:
         (map.get("hero_images") as SiteSettings["hero_images"]) ??
         DEFAULTS.hero_images,
+      hero_cards:
+        (map.get("hero_cards") as SiteSettings["hero_cards"]) ??
+        DEFAULTS.hero_cards,
       stats_images:
         (map.get("stats_images") as SiteSettings["stats_images"]) ??
         DEFAULTS.stats_images,

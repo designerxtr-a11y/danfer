@@ -39,7 +39,7 @@ export default async function Home() {
           ...topDestinationsSchemas(),
         ]}
       />
-      <Hero cardImages={settings.hero_images} />
+      <Hero cardImages={settings.hero_images} cardTexts={settings.hero_cards} />
       <Stats polaroidImages={settings.stats_images} />
       <FeaturedTours />
       <Destinations />

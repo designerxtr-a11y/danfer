@@ -13,47 +13,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { HERO_CARD_DEFAULTS, type HeroCard } from "@/lib/hero-cards";
+import type { HeroCardText } from "@/lib/queries/settings";
 
 const VIDEO_SRC =
   "https://videos.pexels.com/video-files/2169307/2169307-hd_1920_1080_30fps.mp4";
 const VIDEO_POSTER =
   "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1920&auto=format&fit=crop";
-
-const destinationCards = [
-  {
-    country: "Perú",
-    region: "Cusco",
-    title: "Machu Picchu",
-    slug: "machu-picchu",
-    rating: 4.9,
-    reviews: 1840,
-    days: "Full day",
-    price: 380,
-    img: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    country: "Perú",
-    region: "Valle Sagrado",
-    title: "Pisac & Ollanta",
-    slug: "valle-sagrado",
-    rating: 4.8,
-    reviews: 920,
-    days: "Full day",
-    price: 195,
-    img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    country: "Perú",
-    region: "Cusco",
-    title: "Rainbow Mountain",
-    slug: "rainbow-mountain",
-    rating: 4.7,
-    reviews: 640,
-    days: "Full day",
-    price: 85,
-    img: "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=800&auto=format&fit=crop",
-  },
-];
 
 // Chips de destinos enlazados (anchor descriptivo + transfiere PageRank a /destinos)
 const destinationChips = [
@@ -65,19 +31,31 @@ const destinationChips = [
 
 export function Hero({
   cardImages,
+  cardTexts,
 }: {
   /** Fotos subidas desde /admin/settings, por slug; fallback a las de stock. */
   cardImages?: Partial<Record<string, string>>;
+  /** Texto/precio editados en /admin/settings; campo vacío = default. */
+  cardTexts?: Partial<Record<string, HeroCardText>>;
 }) {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { m, locale } = useI18n();
   // Carrusel de las floating cards: `active` define cuál queda al frente.
   const [active, setActive] = useState(0);
-  const cards = destinationCards.map((c) => ({
-    ...c,
-    img: cardImages?.[c.slug] || c.img,
-  }));
+  const cards = HERO_CARD_DEFAULTS.map((c): HeroCard => {
+    const o = cardTexts?.[c.slug] ?? {};
+    return {
+      ...c,
+      title: o.title || c.title,
+      region: o.region || c.region,
+      days: o.days || c.days,
+      price: o.price || c.price,
+      rating: o.rating || c.rating,
+      reviews: o.reviews || c.reviews,
+      img: cardImages?.[c.slug] || c.img,
+    };
+  });
   const cardCount = cards.length;
   const goPrev = () => setActive((a) => (a - 1 + cardCount) % cardCount);
   const goNext = () => setActive((a) => (a + 1) % cardCount);
@@ -260,7 +238,7 @@ export function Hero({
 
           {cards.map((d, i) => (
             <FloatingCard
-              key={d.title}
+              key={d.slug}
               destination={d}
               index={i}
               posIndex={(i - active + cardCount) % cardCount}
@@ -349,7 +327,7 @@ function FloatingCard({
   index,
   posIndex,
 }: {
-  destination: (typeof destinationCards)[number];
+  destination: HeroCard;
   index: number;
   posIndex: number;
 }) {

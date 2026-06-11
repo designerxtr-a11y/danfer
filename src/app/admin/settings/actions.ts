@@ -5,6 +5,26 @@ import { revalidatePath } from "next/cache";
 
 type SettingValue = string | number | boolean | object | null;
 
+// Campos editables de una tarjeta del hero. Vacío → undefined (JSON lo
+// omite al guardar) → el frontend cae al default del código.
+function heroCardFields(formData: FormData, prefix: string) {
+  const txt = (k: string) =>
+    String(formData.get(`${prefix}_${k}`) || "").trim() || undefined;
+  const num = (k: string) => {
+    const raw = String(formData.get(`${prefix}_${k}`) || "").replace(",", ".");
+    const n = Number(raw);
+    return raw && Number.isFinite(n) && n > 0 ? n : undefined;
+  };
+  return {
+    title: txt("title"),
+    region: txt("region"),
+    days: txt("days"),
+    price: num("price"),
+    rating: num("rating"),
+    reviews: num("reviews"),
+  };
+}
+
 export async function updateSetting(
   key: string,
   value: SettingValue
@@ -71,6 +91,17 @@ export async function updateSettingsForm(
         "valle-sagrado": String(formData.get("hero_img_valle_sagrado") || ""),
         "rainbow-mountain": String(
           formData.get("hero_img_rainbow_mountain") || ""
+        ),
+      },
+    },
+    {
+      key: "hero_cards",
+      value: {
+        "machu-picchu": heroCardFields(formData, "hero_card_machu_picchu"),
+        "valle-sagrado": heroCardFields(formData, "hero_card_valle_sagrado"),
+        "rainbow-mountain": heroCardFields(
+          formData,
+          "hero_card_rainbow_mountain"
         ),
       },
     },
