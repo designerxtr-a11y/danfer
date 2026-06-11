@@ -63,13 +63,22 @@ const destinationChips = [
   { label: "Camino Inca", slug: "camino-inca" },
 ];
 
-export function Hero() {
+export function Hero({
+  cardImages,
+}: {
+  /** Fotos subidas desde /admin/settings, por slug; fallback a las de stock. */
+  cardImages?: Partial<Record<string, string>>;
+}) {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { m, locale } = useI18n();
   // Carrusel de las floating cards: `active` define cuál queda al frente.
   const [active, setActive] = useState(0);
-  const cardCount = destinationCards.length;
+  const cards = destinationCards.map((c) => ({
+    ...c,
+    img: cardImages?.[c.slug] || c.img,
+  }));
+  const cardCount = cards.length;
   const goPrev = () => setActive((a) => (a - 1 + cardCount) % cardCount);
   const goNext = () => setActive((a) => (a + 1) % cardCount);
   // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
@@ -249,7 +258,7 @@ export function Hero() {
             <span className="text-2xl">↘</span>
           </motion.div>
 
-          {destinationCards.map((d, i) => (
+          {cards.map((d, i) => (
             <FloatingCard
               key={d.title}
               destination={d}

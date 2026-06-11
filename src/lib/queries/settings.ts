@@ -18,6 +18,18 @@ export interface SiteSettings {
     /** Favicon (pestañas, Google). PNG cuadrado ≥512px. */
     favicon_url?: string;
   };
+  /** Fotos de las tarjetas flotantes del hero, por slug de destino. */
+  hero_images: {
+    "machu-picchu"?: string;
+    "valle-sagrado"?: string;
+    "rainbow-mountain"?: string;
+  };
+  /** Fotos polaroid de la sección de estadísticas (portada). */
+  stats_images: {
+    polaroid_1?: string;
+    polaroid_2?: string;
+    polaroid_3?: string;
+  };
 }
 
 const DEFAULTS: SiteSettings = {
@@ -33,6 +45,8 @@ const DEFAULTS: SiteSettings = {
     tiktok: "@danfertourscusco",
   },
   branding: {},
+  hero_images: {},
+  stats_images: {},
 };
 
 export async function getSettings(): Promise<SiteSettings> {
@@ -56,6 +70,12 @@ export async function getSettings(): Promise<SiteSettings> {
         (map.get("social") as SiteSettings["social"]) ?? DEFAULTS.social,
       branding:
         (map.get("branding") as SiteSettings["branding"]) ?? DEFAULTS.branding,
+      hero_images:
+        (map.get("hero_images") as SiteSettings["hero_images"]) ??
+        DEFAULTS.hero_images,
+      stats_images:
+        (map.get("stats_images") as SiteSettings["stats_images"]) ??
+        DEFAULTS.stats_images,
     };
   } catch {
     return DEFAULTS;

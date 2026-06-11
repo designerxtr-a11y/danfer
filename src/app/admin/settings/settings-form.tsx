@@ -12,6 +12,16 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
   const [faviconUrl, setFaviconUrl] = useState(
     initial.branding?.favicon_url ?? ""
   );
+  const [heroImgs, setHeroImgs] = useState({
+    "machu-picchu": initial.hero_images?.["machu-picchu"] ?? "",
+    "valle-sagrado": initial.hero_images?.["valle-sagrado"] ?? "",
+    "rainbow-mountain": initial.hero_images?.["rainbow-mountain"] ?? "",
+  });
+  const [statsImgs, setStatsImgs] = useState({
+    polaroid_1: initial.stats_images?.polaroid_1 ?? "",
+    polaroid_2: initial.stats_images?.polaroid_2 ?? "",
+    polaroid_3: initial.stats_images?.polaroid_3 ?? "",
+  });
   const [status, setStatus] = useState<
     | { type: "idle" }
     | { type: "ok" }
@@ -66,6 +76,60 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
           </p>
           <input type="hidden" name="favicon_url" value={faviconUrl} />
         </div>
+      </Section>
+
+      <Section title="Fotos del hero (tarjetas flotantes de la portada)">
+        {(
+          [
+            { key: "machu-picchu", label: "Tarjeta Machu Picchu", field: "hero_img_machu_picchu" },
+            { key: "valle-sagrado", label: "Tarjeta Pisac & Ollanta (Valle Sagrado)", field: "hero_img_valle_sagrado" },
+            { key: "rainbow-mountain", label: "Tarjeta Rainbow Mountain", field: "hero_img_rainbow_mountain" },
+          ] as const
+        ).map((card) => (
+          <div key={card.key}>
+            <ImageUploader
+              bucket="tour-images"
+              folder="hero"
+              value={heroImgs[card.key] || undefined}
+              onChange={(url) =>
+                setHeroImgs((prev) => ({ ...prev, [card.key]: url ?? "" }))
+              }
+              label={card.label}
+            />
+            <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
+              Foto vertical (ideal ~800×1100). Si la dejas vacía se usa la
+              foto de stock actual.
+            </p>
+            <input type="hidden" name={card.field} value={heroImgs[card.key]} />
+          </div>
+        ))}
+      </Section>
+
+      <Section title="Fotos polaroid (sección de estadísticas de la portada)">
+        {(
+          [
+            { key: "polaroid_1", label: "Polaroid 1 (arriba-izquierda)", field: "stats_img_polaroid_1" },
+            { key: "polaroid_2", label: "Polaroid 2 (centro-derecha)", field: "stats_img_polaroid_2" },
+            { key: "polaroid_3", label: "Polaroid 3 (abajo-izquierda)", field: "stats_img_polaroid_3" },
+          ] as const
+        ).map((p) => (
+          <div key={p.key}>
+            <ImageUploader
+              bucket="tour-images"
+              folder="stats"
+              value={statsImgs[p.key] || undefined}
+              onChange={(url) =>
+                setStatsImgs((prev) => ({ ...prev, [p.key]: url ?? "" }))
+              }
+              label={p.label}
+            />
+            <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
+              Foto cuadrada (ideal ~600×600). Si la dejas vacía se usa la foto
+              de stock actual.
+            </p>
+            <input type="hidden" name={p.field} value={statsImgs[p.key]} />
+          </div>
+        ))}
       </Section>
 
       <Section title="Marca y contacto">

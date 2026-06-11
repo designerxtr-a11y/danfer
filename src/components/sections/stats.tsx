@@ -12,7 +12,12 @@ const stats = [
   { icon: Globe2, value: 35, labelKey: "routes" as const, suffix: "" },
 ];
 
-export function Stats() {
+export function Stats({
+  polaroidImages,
+}: {
+  /** Fotos subidas desde /admin/settings; fallback a las de stock. */
+  polaroidImages?: Partial<Record<"polaroid_1" | "polaroid_2" | "polaroid_3", string>>;
+}) {
   const { m, locale } = useI18n();
   return (
     <section className="relative py-20 md:py-32 px-4 sm:px-6 bg-stone">
@@ -61,7 +66,7 @@ export function Stats() {
         </div>
 
         <div className="relative h-[500px] hidden lg:block">
-          <PolaroidGallery />
+          <PolaroidGallery images={polaroidImages} />
         </div>
       </div>
     </section>
@@ -117,18 +122,21 @@ function Stat({
 
 const polaroids = [
   {
+    key: "polaroid_1" as const,
     src: "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=600&auto=format&fit=crop",
     rotate: -7,
     top: "0%",
     left: "2%",
   },
   {
+    key: "polaroid_2" as const,
     src: "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=600&auto=format&fit=crop",
     rotate: 5,
     top: "24%",
     left: "42%",
   },
   {
+    key: "polaroid_3" as const,
     src: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=600&auto=format&fit=crop",
     rotate: -5,
     top: "47%",
@@ -136,7 +144,11 @@ const polaroids = [
   },
 ];
 
-function PolaroidGallery() {
+function PolaroidGallery({
+  images,
+}: {
+  images?: Partial<Record<"polaroid_1" | "polaroid_2" | "polaroid_3", string>>;
+}) {
   return (
     <>
       {polaroids.map((p, i) => (
@@ -151,7 +163,7 @@ function PolaroidGallery() {
           className="absolute w-56 polaroid rounded-sm cursor-pointer"
         >
           <Image
-            src={p.src}
+            src={images?.[p.key] || p.src}
             alt=""
             width={224}
             height={224}

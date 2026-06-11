@@ -64,6 +64,24 @@ export async function updateSettingsForm(
         favicon_url: String(formData.get("favicon_url") || ""),
       },
     },
+    {
+      key: "hero_images",
+      value: {
+        "machu-picchu": String(formData.get("hero_img_machu_picchu") || ""),
+        "valle-sagrado": String(formData.get("hero_img_valle_sagrado") || ""),
+        "rainbow-mountain": String(
+          formData.get("hero_img_rainbow_mountain") || ""
+        ),
+      },
+    },
+    {
+      key: "stats_images",
+      value: {
+        polaroid_1: String(formData.get("stats_img_polaroid_1") || ""),
+        polaroid_2: String(formData.get("stats_img_polaroid_2") || ""),
+        polaroid_3: String(formData.get("stats_img_polaroid_3") || ""),
+      },
+    },
   ];
 
   const supabase = createAdminClient();
