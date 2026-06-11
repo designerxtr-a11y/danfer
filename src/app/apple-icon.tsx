@@ -1,9 +1,14 @@
 import { ImageResponse } from "next/og";
+import { fetchBrandingImage } from "@/lib/branding-image";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-export default function AppleIcon() {
+export default async function AppleIcon() {
+  // Icono subido desde /admin/settings; si no hay, la "D" generada.
+  const uploaded = await fetchBrandingImage("favicon");
+  if (uploaded) return uploaded;
+
   return new ImageResponse(
     (
       <div

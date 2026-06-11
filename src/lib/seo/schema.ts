@@ -8,7 +8,10 @@ const ORG_NAME = "Danfer Tours Cusco";
 // (mejor omitir que declarar un número placeholder/falso a Google).
 const ORG_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
 
-export function organizationSchema(phone: string = ORG_PHONE) {
+export function organizationSchema(
+  phone: string = ORG_PHONE,
+  logoUrl?: string
+) {
   return {
     "@context": "https://schema.org",
     "@type": ["TravelAgency", "LocalBusiness", "TouristInformationCenter"],
@@ -19,7 +22,8 @@ export function organizationSchema(phone: string = ORG_PHONE) {
     url: SITE,
     logo: {
       "@type": "ImageObject",
-      url: `${SITE}/icon`,
+      // Logo subido desde /admin/settings; fallback al icono generado.
+      url: logoUrl || `${SITE}/icon`,
       width: 512,
       height: 512,
     },

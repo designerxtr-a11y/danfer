@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
@@ -47,7 +48,7 @@ const USFlag = (p: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export function Navbar() {
+export function Navbar({ logoUrl }: { logoUrl?: string }) {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -89,9 +90,26 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
-        <Link href="/" className="font-display text-2xl font-bold tracking-wider">
-          <span className="text-gradient-gold">DANFER</span>
-          <span className={solid ? "text-night" : "text-white"}>TOURS</span>
+        <Link
+          href="/"
+          aria-label="Danfer Tours Cusco — inicio"
+          className="font-display text-2xl font-bold tracking-wider"
+        >
+          {logoUrl ? (
+            <Image
+              src={logoUrl}
+              alt="Danfer Tours Cusco"
+              width={180}
+              height={48}
+              priority
+              className="h-10 w-auto object-contain"
+            />
+          ) : (
+            <>
+              <span className="text-gradient-gold">DANFER</span>
+              <span className={solid ? "text-night" : "text-white"}>TOURS</span>
+            </>
+          )}
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -207,10 +225,23 @@ export function Navbar() {
               <Link
                 href="/"
                 onClick={() => setMobileOpen(false)}
+                aria-label="Danfer Tours Cusco — inicio"
                 className="font-display text-2xl font-bold tracking-wider"
               >
-                <span className="text-gradient-gold">DANFER</span>
-                <span className="text-white">TOURS</span>
+                {logoUrl ? (
+                  <Image
+                    src={logoUrl}
+                    alt="Danfer Tours Cusco"
+                    width={180}
+                    height={48}
+                    className="h-10 w-auto object-contain"
+                  />
+                ) : (
+                  <>
+                    <span className="text-gradient-gold">DANFER</span>
+                    <span className="text-white">TOURS</span>
+                  </>
+                )}
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}

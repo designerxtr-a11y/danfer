@@ -1,9 +1,15 @@
 import { ImageResponse } from "next/og";
+import { fetchBrandingImage } from "@/lib/branding-image";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-export default function Icon() {
+export default async function Icon() {
+  // Favicon subido desde /admin/settings (Identidad visual); si no hay,
+  // se genera la "D" dorada de siempre.
+  const uploaded = await fetchBrandingImage("favicon");
+  if (uploaded) return uploaded;
+
   return new ImageResponse(
     (
       <div

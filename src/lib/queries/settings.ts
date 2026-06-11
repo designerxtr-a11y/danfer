@@ -12,6 +12,12 @@ export interface SiteSettings {
     facebook?: string;
     tiktok?: string;
   };
+  branding: {
+    /** Logo principal (navbar, schema). PNG/SVG con fondo transparente. */
+    logo_url?: string;
+    /** Favicon (pestañas, Google). PNG cuadrado ≥512px. */
+    favicon_url?: string;
+  };
 }
 
 const DEFAULTS: SiteSettings = {
@@ -26,6 +32,7 @@ const DEFAULTS: SiteSettings = {
     facebook: "danfertourscusco",
     tiktok: "@danfertourscusco",
   },
+  branding: {},
 };
 
 export async function getSettings(): Promise<SiteSettings> {
@@ -47,6 +54,8 @@ export async function getSettings(): Promise<SiteSettings> {
         (map.get("address") as SiteSettings["address"]) ?? DEFAULTS.address,
       social:
         (map.get("social") as SiteSettings["social"]) ?? DEFAULTS.social,
+      branding:
+        (map.get("branding") as SiteSettings["branding"]) ?? DEFAULTS.branding,
     };
   } catch {
     return DEFAULTS;

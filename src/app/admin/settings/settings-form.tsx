@@ -3,10 +3,15 @@
 import { useState, useTransition } from "react";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { updateSettingsForm } from "./actions";
+import { ImageUploader } from "@/app/admin/_components/image-uploader";
 import type { SiteSettings } from "@/lib/queries/settings";
 
 export function SettingsForm({ initial }: { initial: SiteSettings }) {
   const [pending, startTransition] = useTransition();
+  const [logoUrl, setLogoUrl] = useState(initial.branding?.logo_url ?? "");
+  const [faviconUrl, setFaviconUrl] = useState(
+    initial.branding?.favicon_url ?? ""
+  );
   const [status, setStatus] = useState<
     | { type: "idle" }
     | { type: "ok" }
@@ -30,6 +35,39 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
+      <Section title="Identidad visual (logo y favicon)">
+        <div>
+          <ImageUploader
+            bucket="tour-images"
+            folder="branding"
+            value={logoUrl || undefined}
+            onChange={(url) => setLogoUrl(url ?? "")}
+            label="Logo del sitio"
+          />
+          <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
+            Se muestra en la barra de navegación y se declara a Google como
+            logo de la empresa. Ideal: PNG o SVG con <strong>fondo
+            transparente</strong>, que se lea bien sobre fondo oscuro.
+          </p>
+          <input type="hidden" name="logo_url" value={logoUrl} />
+        </div>
+        <div>
+          <ImageUploader
+            bucket="tour-images"
+            folder="branding"
+            value={faviconUrl || undefined}
+            onChange={(url) => setFaviconUrl(url ?? "")}
+            label="Favicon (icono de pestaña)"
+          />
+          <p className="mt-2 text-[11px] text-night/45 leading-relaxed">
+            El icono que aparece en la pestaña del navegador y junto al sitio
+            en Google. Ideal: PNG <strong>cuadrado de 512×512</strong>. Si lo
+            dejas vacío se usa la &quot;D&quot; dorada generada.
+          </p>
+          <input type="hidden" name="favicon_url" value={faviconUrl} />
+        </div>
+      </Section>
+
       <Section title="Marca y contacto">
         <Field label="Nombre del sitio" name="site_name" defaultValue={initial.site_name} />
         <Field

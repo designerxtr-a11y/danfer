@@ -57,6 +57,13 @@ export async function updateSettingsForm(
         tiktok: String(formData.get("social_tiktok") || ""),
       },
     },
+    {
+      key: "branding",
+      value: {
+        logo_url: String(formData.get("logo_url") || ""),
+        favicon_url: String(formData.get("favicon_url") || ""),
+      },
+    },
   ];
 
   const supabase = createAdminClient();

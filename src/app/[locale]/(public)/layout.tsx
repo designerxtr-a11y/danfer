@@ -23,10 +23,13 @@ export default async function PublicLayout({
           tours/blog/destinos referencian #organization por @id y Google no
           resuelve referencias entre páginas — el nodo debe ir inline. */}
       <JsonLd
-        data={[organizationSchema(publicPhone(settings)), websiteSchema()]}
+        data={[
+          organizationSchema(publicPhone(settings), settings.branding?.logo_url),
+          websiteSchema(),
+        ]}
       />
       <SmoothScroll>
-        <Navbar />
+        <Navbar logoUrl={settings.branding?.logo_url || undefined} />
         <main className="flex-1">{children}</main>
         <Footer />
       </SmoothScroll>
