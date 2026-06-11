@@ -1,13 +1,14 @@
 import { getSettings } from "@/lib/queries/settings";
 
 /**
- * Si el admin subió un favicon/logo en Ajustes → Identidad visual, lo sirve
- * proxied (mismo origen, cacheado). Devuelve null si no hay imagen subida
- * o si falla la descarga — el caller cae al icono generado por código.
+ * Imagen de marca subida en Ajustes → Identidad visual, como data URI para
+ * incrustarla en un ImageResponse (los iconos la re-encuadran en lienzo
+ * cuadrado: el upload puede ser un logo rectangular). Devuelve null si no
+ * hay imagen o falla la descarga — el caller cae al icono generado.
  */
-export async function fetchBrandingImage(
+export async function fetchBrandingImageDataUri(
   kind: "favicon" | "logo"
-): Promise<Response | null> {
+): Promise<string | null> {
   try {
     const settings = await getSettings();
     const url =
@@ -19,12 +20,9 @@ export async function fetchBrandingImage(
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) return null;
 
-    return new Response(await res.arrayBuffer(), {
-      headers: {
-        "Content-Type": res.headers.get("Content-Type") ?? "image/png",
-        "Cache-Control": "public, max-age=3600, s-maxage=86400",
-      },
-    });
+    const type = res.headers.get("Content-Type") ?? "image/png";
+    const base64 = Buffer.from(await res.arrayBuffer()).toString("base64");
+    return `data:${type};base64,${base64}`;
   } catch {
     return null;
   }
