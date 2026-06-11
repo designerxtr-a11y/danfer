@@ -197,8 +197,20 @@ export function DestinationsTabs({
               href="/tours"
               className="group relative flex-1 min-h-[64px] overflow-hidden rounded-2xl bg-night text-white grid place-items-center px-6 py-4 text-center ring-1 ring-night/10 hover:ring-gold/50 transition-all"
             >
+              {/* Foto de fondo: portada de un tour de la categoría (el que no
+                  se alcanza a mostrar en la lista, o el destacado) */}
+              {(current.tours[4] ?? current.tours[0]) && (
+                <Image
+                  src={(current.tours[4] ?? current.tours[0]).cover_image}
+                  alt=""
+                  fill
+                  sizes="(min-width:1024px) 40vw, 100vw"
+                  className="object-cover opacity-60 group-hover:opacity-75 group-hover:scale-105 transition duration-700"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-night/30" />
               <div className="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-gold/15 blur-2xl pointer-events-none" />
-              <span className="relative inline-flex items-center gap-2 font-display text-lg lg:text-xl">
+              <span className="relative inline-flex items-center gap-2 font-display text-lg lg:text-xl drop-shadow-md">
                 {locale === "en" ? "See all tours" : "Ver todos los tours"}
                 <ArrowUpRight className="w-5 h-5 text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
               </span>
