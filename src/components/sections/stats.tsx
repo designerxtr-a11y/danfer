@@ -167,7 +167,9 @@ function PolaroidGallery({
             alt=""
             width={224}
             height={224}
-            sizes="224px"
+            // 448 y no 224: el recorte cuadrado de una foto apaisada + DPR 2x
+            // necesita más ancho del optimizador o llega borrosa (ver hero).
+            sizes="448px"
             loading="lazy"
             className="w-full h-56 object-cover rounded-sm"
           />

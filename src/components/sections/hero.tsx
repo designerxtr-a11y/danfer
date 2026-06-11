@@ -386,7 +386,11 @@ function FloatingCard({
           priority={index === 0}
           fetchPriority={index === 0 ? "high" : "auto"}
           className="object-cover transition-transform duration-700 group-hover:scale-110"
-          sizes="240px"
+          // La tarjeta es vertical (240×340) pero el optimizador escala por
+          // ANCHO: con sizes=240px una foto apaisada llega de ~256×170 y se
+          // estira a 340px de alto → borrosa. 480px da margen para el
+          // recorte vertical + pantallas 2x.
+          sizes="480px"
         />
 
         {/* Dark gradient for legibility */}
