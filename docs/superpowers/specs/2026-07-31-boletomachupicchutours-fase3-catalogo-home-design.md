@@ -47,17 +47,18 @@ Durante el brainstorming se revisó cuscoperu.com (sitio de referencia ya identi
 
 **Verificación:** 6 filas en `tours`, 4 filas en `tour_itinerary` para `camino-inca-4-dias`; `select slug, title->>'es', category_id from tours` muestra las categorías correctas; cada tour tiene `faqs` con al menos 3 entradas; grep de "danfer"/"Danfer" sobre el script y sobre el contenido insertado da 0 (no debería aparecer nunca, al ser texto nuevo, pero se verifica igual).
 
-## 2. Sobre nosotros y footer — retirar contenido fabricado
+## 2. Retirar contenido fabricado (sobre nosotros, footer, home)
 
-Hallazgo: `sobre-nosotros/page.tsx` tiene una línea de tiempo con fechas y cifras específicas de Danfer (fundación 2012, "primer permiso Camino Inca 2016", "+5,000 viajeros 2019 · rating 4.9 en TripAdvisor", expansión 2022) y una barra de stats ("8,500+ viajeros felices", "35 rutas exclusivas", "4.9 rating TripAdvisor"). El footer tiene "Operador autorizado MINCETUR" y "12+ años en Cusco" en la trust strip. La metadata de la página repite "operador autorizado por MINCETUR con +12 años". Ninguna de estas cifras es verificable para esta marca — el caso más grave es el rating de TripAdvisor: esta marca no tiene perfil en TripAdvisor, así que publicar "4.9" es una afirmación falsa y fácilmente refutable.
+Hallazgo, ampliado durante la planificación: el mismo set de cifras inventadas ("8,500+", "12+ años", "35", "4.9 TripAdvisor") no solo está en "Sobre nosotros" — también está **hardcodeado en el home**, en el hero (`hero.tsx`, barra de stats inferior) y en la sección de stats con los polaroids (`stats.tsx`, contador animado), es decir en lo primero que ve cualquier visitante. El footer tiene "Operador autorizado MINCETUR" y "12+ años en Cusco" en la trust strip. Ninguna de estas cifras es verificable para esta marca — el caso más grave es el rating de TripAdvisor: esta marca no tiene perfil en TripAdvisor, así que publicar "4.9" es una afirmación falsa y fácilmente refutable.
 
-**Regla aplicada:** experiencia en términos generales sí (mismo equipo real, confirmado por el usuario), cifras/fechas/ratings específicos no, hasta que existan de verdad bajo esta marca.
+**Regla aplicada:** experiencia en términos generales sí (mismo equipo real, confirmado por el usuario), cifras/fechas/ratings específicos no, hasta que existan de verdad bajo esta marca. Donde se necesita un número (contadores animados de `hero.tsx`/`stats.tsx`), se reemplaza por hechos reales y verificables ya en la base de datos: 6 tours, 4 categorías/destinos, guías locales certificados (100% — confirmado por el usuario, mismos guías/permisos reales que ya opera el negocio).
 
 Cambios:
-- **Timeline de milestones** (`sobre-nosotros/page.tsx`, array `milestones`): se elimina. Se reemplaza la sección por un párrafo corto sin fechas ("Detrás de Boleto Machu Picchu Tours hay un equipo que lleva años operando tours en Cusco — mismos guías certificados, mismos permisos, ahora enfocados 100% en hacerte fácil tu boleto y tu viaje a Machu Picchu.") — true en sustancia, sin inventar una cronología propia de una marca que nació esta semana.
-- **Stats strip** (`8,500+`, `35`, `4.9 TripAdvisor`): se elimina el rating de TripAdvisor por completo (no existe perfil). Los otros dos números se eliminan también por no ser verificables bajo esta marca — la sección de values grid ("Cuatro razones para confiar") ya cubre el mensaje de confianza sin cifras.
-- **Footer trust strip:** "Operador autorizado MINCETUR" → "Operador turístico autorizado" (general, sin nombrar un ente regulador específico sin confirmar); "12+ años en Cusco" → "Equipo con años de experiencia en Cusco" (mismo hecho, sin cifra exacta no verificable bajo esta marca).
-- **Metadata de sobre-nosotros** (`generateMetadata`) y el value-card "Autorizados MINCETUR": mismo ajuste — quitar "MINCETUR" y "+12 años"/"13 años" por frases generales de experiencia/autorización.
+- **`sobre-nosotros/page.tsx`:** se elimina el array `milestones` (timeline con fechas 2012-2025) y se reemplaza por un párrafo corto sin fechas ("Detrás de Boleto Machu Picchu Tours hay un equipo que lleva años operando tours en Cusco — mismos guías certificados, mismos permisos, ahora enfocados 100% en hacerte fácil tu boleto y tu viaje a Machu Picchu."). Se elimina la stats strip (`8,500+` / `35` / `4.9 TripAdvisor`) — la sección de values grid ("Cuatro razones para confiar") ya cubre el mensaje de confianza sin cifras. `generateMetadata` y el value-card "Autorizados MINCETUR" pierden "MINCETUR" y "+12 años"/"13 años" por frases generales de experiencia/autorización.
+- **`footer.tsx` (trust strip):** "Operador autorizado MINCETUR" → "Operador turístico autorizado"; "12+ años en Cusco" → "Equipo con años de experiencia en Cusco".
+- **`hero.tsx` (barra de stats inferior):** los 4 `BottomStat` (8,500+ viajeros / 12+ años / 35 tours / 100% guías) se reemplazan por 3: 6 tours únicos, 4 destinos, 100% guías certificados (este último se mantiene, es una afirmación categórica ya confirmada como cierta, no una cifra inventada).
+- **`stats.tsx` (contador animado + polaroids):** el array `stats` (`years:12` / `travelers:8500` / `routes:35`) se reemplaza por (`tours:6` / `destinations:4` / `certifiedGuides:100` con sufijo `%`).
+- **`src/lib/i18n/messages.ts`:** claves `sections.stats.{years,travelers,routes}` (ES/EN) → `sections.stats.{tours,destinations,certifiedGuides}`; se eliminan las claves ahora sin uso `hero.stats_travelers`, `hero.stats_rating`, `hero.stats_tours`.
 
 ## 3. FAQ del home — corregir y hacer visible
 
@@ -81,6 +82,6 @@ Nota: este agrupamiento es curatorial para el home (no depende de `category_id` 
 
 - `npm run dev`: home muestra 3 filas de tours (2 tarjetas c/u) + sección FAQ visible con precios correctos.
 - Cada una de las 6 páginas `/tours/[slug]` carga con descripción, highlights, itinerario (Camino Inca) e includes/excludes propios; sección FAQ del tour visible con ≥3 preguntas.
-- `/sobre-nosotros` y el footer ya no muestran fechas/cifras/ratings específicos no verificables (ni "MINCETUR", ni "TripAdvisor 4.9", ni años exactos, ni timeline con fechas).
+- `/sobre-nosotros`, el footer, el hero y la sección de stats del home ya no muestran fechas/cifras/ratings específicos no verificables (ni "MINCETUR", ni "TripAdvisor 4.9", ni "8,500+"/"35"/"12+ años", ni timeline con fechas) — los contadores del hero/stats muestran 6 tours / 4 destinos / 100% guías certificados.
 - `select count(*) from tours` = 6, `select count(*) from tour_itinerary` = 4 (todas de `camino-inca-4-dias`).
 - Sitio sigue `noindex` (sin cambios de Fase 1 en `robots.ts`/`layout.tsx` — el contenido se prepara, el lanzamiento a indexación sigue siendo Fase 5).
