@@ -19,7 +19,7 @@ Hero es el primer archivo del rediseño con fondo tipo foto/video (no un panel d
 
 Estas reglas nacen de que el hero es la primera sección con fondo de foto, y se reutilizarán en las sub-fases siguientes cuando aplique:
 
-**1. Fondo/overlay del hero — `night` → `turquoise-deep`, con opacidad más alta.** `--color-turquoise-deep` (#023E8A) es ~10× más claro que `--color-night` (#0B1929) en luminancia relativa — el mismo problema que causó la regresión de contraste en el footer de Fase 4a. Para mantener la misma legibilidad del texto blanco sobre la foto, cada capa de overlay sube ~10 puntos de opacidad al migrar de `night` a `turquoise-deep`:
+**1. Fondo/overlay del hero — `night` → `turquoise-deep`, con opacidad más alta.** `--color-turquoise-deep` (#023E8A) es ~5.7× más claro que `--color-night` (#0B1929) en luminancia relativa (corrección: el spec original decía "~10×", medido después en el review final de 4b-1) — el mismo problema que causó la regresión de contraste en el footer de Fase 4a. Para mantener la misma legibilidad del texto blanco sobre la foto, cada capa de overlay sube ~10 puntos de opacidad al migrar de `night` a `turquoise-deep`:
 
 | Elemento | Antes | Después |
 |---|---|---|
@@ -27,6 +27,8 @@ Estas reglas nacen de que el hero es la primera sección con fondo de foto, y se
 | Overlay lateral | `from-night/60 via-transparent` | `from-turquoise-deep/70 via-transparent` |
 | Barra de stats inferior | `bg-night/85` | `bg-turquoise-deep/90` |
 | Overlay interno de cada `FloatingCard` | `from-night/40 via-transparent to-night/95` | `from-turquoise-deep/50 via-transparent to-turquoise-deep/95` |
+
+**1b. Corrección post-review — esta regla no alcanza a las zonas casi opacas.** El review final de 4b-1 encontró que el ajuste de opacidad de arriba solo protege las bandas *translúcidas* del overlay (donde efectivamente compensa el salto de luminancia); en zonas que ya componen a >~85% turquoise-deep sólido (la barra de stats inferior, el tramo bajo del degradado interno de `FloatingCard`), el ajuste no hace nada y el texto blanco que estaba ahí antes de esta sub-fase quedó por debajo de AA. Regla para esta y las sub-fases siguientes: en cualquier superficie que componga a más de ~85% `turquoise-deep`, los niveles `text-white/NN` se re-derivan contra esa luminancia con un piso de `/60` (mismo piso que ya fijó el review de Fase 4a para el footer, que está sobre `turquoise-deep` sólido). Concretamente en 4b-1: `text-white/55`→`/60` y `text-white/50`→`/60` en la barra de stats; `text-white/70`→`/80` y `text-white/55`→`/70` en la franja inferior de `FloatingCard`.
 
 **2. Botones con fondo propio → blanco sólido + texto `turquoise-deep`, no turquesa-sobre-turquesa.** El CTA principal, las flechas del carrusel y el mini-botón que aparece al hover en cada tarjeta tienen su propio fondo (no dependen de lo que hay detrás). Fase 4a ya encontró el bug de que un botón turquesa con hover turquesa-deep se "funde" con un fondo turquesa-deep (el CTA del menú móvil). Para evitar repetir ese bug aquí — donde el fondo detrás de estos botones SÍ va a ser turquesa-deep —, estos botones usan `bg-white text-turquoise-deep hover:bg-white/90` (mismo patrón ya usado para arreglar el formulario de newsletter en el review final de 4a), no `bg-turquoise`.
 
