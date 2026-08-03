@@ -52,11 +52,13 @@ No se agregan tokens nuevos — el cambio es de **rol** (qué color domina), no 
 
 Nota: `--font-display` y `--font-hand` no se eliminan de `globals.css` (evita romper algo fuera de alcance que aún los referencie, ej. contenido rico de blog vía `.prose` si aplica) — simplemente dejan de usarse en las clases de los componentes listados en la sección 3.
 
+**Pendiente sin dueño (detectado en el review final de Fase 4a):** `globals.css` tiene 2 usos literales de `--color-gold` fuera de la tabla de tokens — `::selection { background: var(--color-gold) }` y `::-webkit-scrollbar-thumb:hover { background: var(--color-gold) }`. Ninguna sub-fase los tiene asignados explícitamente todavía; se resuelven en la sub-fase que toque `globals.css` de forma más estructural, o en la última sub-fase de Fase 4 como limpieza final.
+
 ## 3. Componentes y páginas afectadas
 
 Mismo cambio de tokens aplicado consistentemente. Se agrupan por área para la futura planificación:
 
-- **Global:** `src/app/globals.css` (roles de color descritos arriba), `src/components/layout/navbar.tsx`, `src/components/layout/footer.tsx`
+- **Global:** `src/app/globals.css` (roles de color descritos arriba), `src/components/layout/navbar.tsx`, `src/components/layout/footer.tsx`, `src/components/layout/newsletter-form.tsx`, `src/components/layout/whatsapp-button.tsx` (los últimos dos no estaban en esta lista originalmente — el review final de Fase 4a los encontró sin dueño, migrados ahí mismo con aprobación del usuario; ya completos, no requieren trabajo en sub-fases futuras)
 - **Home:** `hero.tsx`, `stats.tsx`, `featured-tours.tsx` + `featured-tours.client.tsx`, `destinations.tsx` + `destinations.client.tsx`, `testimonials.tsx` + `testimonials.client.tsx`, `faq.tsx`
 - **Tours:** `tours/page.tsx` + `page.client.tsx` (listado), `tours/[slug]/page.tsx` (detalle)
 - **Sobre nosotros:** `sobre-nosotros/page.tsx`
