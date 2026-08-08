@@ -700,8 +700,13 @@ Declarar `openGraph.images` pisa la file convention, así que el archivo queda m
 
 - [ ] **Step 4: Verificar typecheck y lint**
 
-Run: `npx tsc --noEmit && npm run lint`
-Expected: ambos exit 0, sin salida de error.
+Run: `npx tsc --noEmit`
+Expected: exit 0, sin salida.
+
+Run: `npm run lint 2>&1 | tail -3`
+Expected: **`✖ 84 problems (65 errors, 19 warnings)`**, igual que el baseline.
+
+`npm run lint` **falla con exit 1 en este repo desde antes de esta rama** — son 84 problemas preexistentes en archivos ajenos a esta tarea (`contact-form.tsx`, `terminos`, `smooth-scroll.tsx`, etc.), medidos en el commit base `9a4aa49`. No los arregles: quedan fuera de alcance. Lo único que importa es que el número **no suba**. Si sube, el problema nuevo es tuyo y hay que corregirlo.
 
 - [ ] **Step 5: Verificar el HTML que sale en dev**
 
@@ -845,8 +850,11 @@ git commit -m "chore(seo): script que audita og:image, title y description de la
 
 - [ ] **Step 1: Suite completa en verde**
 
-Run: `npm test && npx tsc --noEmit && npm run lint && npm run build`
-Expected: los cuatro en exit 0. `npm test` debe decir `# pass 20`, `# fail 0`.
+Run: `npm test && npx tsc --noEmit && npm run build`
+Expected: los tres en exit 0. `npm test` debe decir `# pass 20`, `# fail 0`, **sin warnings en la salida**.
+
+Run aparte: `npm run lint 2>&1 | tail -3`
+Expected: `✖ 84 problems (65 errors, 19 warnings)` — el baseline preexistente del repo, medido en `9a4aa49`. Va fuera del `&&` justamente porque sale con exit 1 y cortaría la cadena. Lo que se verifica es que el número no haya subido.
 
 - [ ] **Step 2: Preguntar antes de desplegar**
 
