@@ -37,8 +37,9 @@ Hallazgos secundarios:
   `X-Vercel-Cache: MISS`, 3.6 s por imagen.
 - `og:image:alt` está fijo en `"Tour en Cusco"` en vez del nombre del tour.
 
-Dato que condiciona el diseño: **solo 5 de ~17 tours tienen foto propia en Supabase Storage;
-el resto usa stock de Unsplash**, y varios comparten la misma foto. Ambos hosts sirven
+Dato que condiciona el diseño: de los **33 tours publicados, solo 4 tienen foto propia en
+Supabase Storage; los otros 29 usan stock de Unsplash**, y varios comparten la misma foto
+(medido sobre `sitemap-images.xml`, 2026-08-08). Ambos hosts sirven
 transformaciones baratas y ya se probaron contra los assets reales:
 
 | Origen | URL de transformación | Resultado medido |
@@ -96,8 +97,13 @@ del layout. `year = new Date().getFullYear()`.
 | EN | `{tour}: {year} price & booking` | `Cusco, Sacred Valley & Machu Picchu: 2026 price & booking` |
 
 Degradación si supera **60 caracteres**: primero a `{tour}: precio {year}` / `{tour}: {year} price`,
-y si aún supera, a `{tour}` pelado. Hoy ningún tour la necesita (el título más largo es
-"Cusco, Valle Sagrado y Machu Picchu", 35 car.), pero cubre tours futuros.
+y si aún supera, a `{tour}` pelado — el nombre del tour **nunca se trunca**, así que un tour de
+nombre muy largo puede quedar por encima de 60 y eso es aceptable.
+
+La regla sí se ejercita hoy: "Valle Sur: Tipón, Pikillacta y Andahuaylillas" (45 car.) daría 69
+con el sufijo completo y degrada a 58. De hecho ese tour y "Cusco, Valle Sagrado y Machu Picchu"
+**ya hoy exceden los 60** con el sufijo de marca actual (73 y 63 car.), así que el cambio también
+los arregla.
 
 **Meta description** — base + sufijo con datos reales, tope **155 caracteres**:
 
@@ -153,12 +159,25 @@ Sale con código ≠ 0 si algo falla, e imprime una tabla por tour.
 
 ## Verificación
 
-El repo no tiene infraestructura de tests (sin vitest/jest/playwright, `scripts` solo tiene
-`dev/build/start/lint`), así que la verificación es build + auditoría contra un deploy real:
+El repo no tiene infraestructura de tests (sin vitest/jest/playwright). En vez de agregar un
+framework, se usa el **runner nativo de Node**, que en la v24.14.1 instalada corre TypeScript
+directamente sin transpilar. Verificado empíricamente antes de escribir el plan:
 
-1. `npm run lint` y `npm run build` sin errores.
-2. `node scripts/audit-og.mjs http://localhost:3000` en dev: todos los tours en verde.
+- `node --test 'src/**/*.test.ts'` ejecuta tests en `.ts` sin dependencias nuevas.
+- Requiere `allowImportingTsExtensions: true` en tsconfig (válido porque ya está `noEmit: true`);
+  se comprobó que typechequea limpio con las mismas opciones del repo. Baseline actual:
+  `npx tsc --noEmit` → exit 0.
+- Por eso `tourOgImage` y los builders de texto son **funciones puras sin imports**: el runner
+  de Node no resuelve el alias `@/`. La URL de fallback se pasa por parámetro en vez de
+  importar `siteUrl()`.
+
+Pasos:
+
+1. `npm test`, `npm run lint` y `npm run build` sin errores.
+2. `node scripts/audit-og.mjs http://localhost:3000` en dev: los 33 tours en verde.
 3. Tras `npx vercel --prod`: `node scripts/audit-og.mjs` contra producción, todo en verde.
+   **Baseline medido hoy: `0/33 fichas OK`** (33× `img HTTP 307`, más 2 títulos de 63 y 75
+   caracteres). Ese es el rojo del que hay que partir.
 4. `curl https://boletomachupicchutours.com/robots.txt` muestra `Allow: /`, y una ficha sigue
    emitiendo `<meta name="robots" content="noindex, nofollow">`.
 5. **Prueba manual, la única que cierra el caso:** compartir el link de un tour en un chat de
@@ -187,8 +206,18 @@ El repo no tiene infraestructura de tests (sin vitest/jest/playwright, `scripts`
 
 | Archivo | Acción |
 | --- | --- |
-| `src/lib/seo/og-image.ts` | nuevo |
+| `src/lib/seo/og-image.ts` | nuevo — `tourOgImage()` |
+| `src/lib/seo/og-image.test.ts` | nuevo |
+| `src/lib/seo/tour-meta.ts` | nuevo — `tourSeoTitle()` y `tourSeoDescription()` |
+| `src/lib/seo/tour-meta.test.ts` | nuevo |
 | `src/app/[locale]/(public)/tours/[slug]/page.tsx` | `generateMetadata`: title, description, images |
 | `src/app/[locale]/(public)/tours/[slug]/opengraph-image.tsx` | eliminar |
 | `src/app/robots.ts` | `disallow` → `allow` |
 | `scripts/audit-og.mjs` | nuevo |
+| `tsconfig.json` | `allowImportingTsExtensions: true` |
+| `package.json` | script `test` |
+
+Nota sobre `tour-meta.ts`: el diseño aprobado no lo nombraba (hablaba solo de "cambios en
+`generateMetadata`"). Se separa en su propio módulo porque la degradación de título y el
+truncado de descripción son lógica con ramas que merece test propio, y dejarla inline en
+`page.tsx` la volvería no testeable. No cambia el comportamiento acordado.
