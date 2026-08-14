@@ -39,7 +39,13 @@ La luminancia de `night` nuevo (0.0097) es casi idéntica a la de `night` actual
 
 `#FD4707` sobre blanco da 3.45:1, insuficiente para texto normal en AA (mínimo 4.5:1). Reglas:
 
-1. **Botón de conversión principal** (CTA "Reservar" del `booking-widget`, botones de acción en checkout/confirmación): relleno `bg-flame-deep`, hover `bg-flame`, texto blanco. Es el único botón que pasa de `bg-turquoise` a naranja — el resto de botones/links siguen navy.
+1. **Botón de conversión "reservar"**: todo botón/link cuya acción es iniciar o confirmar una reserva pasa de `bg-turquoise`/`bg-turquoise-deep` a `bg-flame-deep` con hover `bg-flame`, texto blanco. Cubre exactamente estos 4 usos (verificados por archivo/línea):
+   - `booking-widget.tsx` — botón "Reservar ahora" (abre el formulario, step `idle`).
+   - `booking-widget.tsx` — botón "Confirmar · US$X" (envía el formulario de reserva).
+   - `checkout-form.tsx` — botón "Enviar solicitud" (paso final `confirm` del checkout).
+   - `navbar.tsx` — los dos links "Reservar"/"Book now" que apuntan a `/tours` (versión desktop `hidden lg:inline-flex` y versión del menú mobile), presentes en todas las páginas.
+   - **No** incluye: el botón "Continuar" del checkout (pasos intermedios, ya es `bg-night` con hover `turquoise` — se repinta solo vía token, sin tocar), el link "Volver al sitio" de la página de confirmación (navegación post-compra, no dispara una reserva), ni el CTA "Ver los tours" del blog (`post-cta.tsx`, navegación al catálogo) — estos tres siguen navy vía repintado automático de tokens, no se editan a mano.
+   - El botón del hero (`hero.tsx`, fondo blanco + `text-turquoise-deep`) tampoco cambia a naranja: sigue el patrón ya fijado en Fase 4 (botón con fondo propio → `bg-white text-turquoise-deep`), se repinta solo por el cambio de token de `turquoise-deep`.
 2. **Iconos, badges pequeños, subrayados, bordes decorativos**: `flame` libre (no es texto corrido, el umbral de contraste no aplica igual — objetos gráficos piden 3:1, que sí cumple).
 3. **Texto en naranja**: solo permitido (a) sobre fondo `night`/`night-deep` (5.10:1, pasa AA), o (b) en texto grande ≥24px y bold sobre blanco (umbral AA large text es 3:1, que sí cumple). Precios chicos de tarjeta y texto de párrafo **no** van en naranja — siguen `turquoise`/`night`.
 4. **Links y hovers de navegación**: siguen navy (`turquoise`/`turquoise-deep`), nunca naranja — mantiene el naranja como acento aislado en vez de saturar toda interacción.
