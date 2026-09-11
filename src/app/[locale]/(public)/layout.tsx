@@ -58,7 +58,6 @@ export default async function PublicLayout({
       viewAllHref: "/tours",
       viewAllLabel: mx.nav.viewAll,
     },
-    { type: "link", label: mx.nav.blog, href: "/blog" },
     {
       type: "mega",
       label: mx.nav.conocePeru,
@@ -73,6 +72,7 @@ export default async function PublicLayout({
       type: "mega",
       label: mx.nav.infoUtil,
       items: [
+        { label: mx.nav.blog, href: "/blog" },
         { label: mx.nav.aboutUs, href: "/sobre-nosotros" },
         { label: mx.nav.contact, href: "/contacto" },
         { label: mx.nav.reviews, href: "/#reviews" },

@@ -131,7 +131,7 @@ export function Navbar({
         <Link
           href="/"
           aria-label="Danfer Tours Cusco — inicio"
-          className="flex items-center gap-2 font-display text-2xl font-bold tracking-wider"
+          className="flex shrink-0 items-center gap-2 whitespace-nowrap font-display text-2xl font-bold tracking-wider"
         >
           {logoUrl && (
             <Image
