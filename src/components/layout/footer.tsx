@@ -65,7 +65,7 @@ export async function Footer() {
 
       {/* Trust strip */}
       <div className="border-b border-white/5 py-6">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-gray-400 text-xs uppercase tracking-widest">
+        <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-neutral-400 text-xs uppercase tracking-widest">
           <span className="flex items-center gap-2">
             <Award className="w-4 h-4 text-gold" />
             {en ? "MINCETUR-licensed operator" : "Operador autorizado MINCETUR"}
@@ -90,7 +90,7 @@ export async function Footer() {
               <h4 className="text-white font-semibold text-sm">
                 {en ? "Get inspired, travel with us" : "Inspírate y viaja con nosotros"}
               </h4>
-              <p className="text-gray-400 text-xs">
+              <p className="text-neutral-400 text-xs">
                 {en
                   ? "Exclusive deals and new routes straight to your inbox."
                   : "Ofertas exclusivas y nuevas rutas en tu email."}
@@ -124,7 +124,7 @@ export async function Footer() {
               </span>
             </Link>
             <p
-              className="mt-4 text-gray-400 text-sm leading-relaxed max-w-sm"
+              className="mt-4 text-neutral-400 text-sm leading-relaxed max-w-sm"
               itemProp="description"
             >
               {en
@@ -138,7 +138,7 @@ export async function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok de Danfer Tours Cusco"
-                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-gray-300 hover:text-gold hover:border-gold/40 transition"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-neutral-300 hover:text-gold hover:border-gold/40 transition"
               >
                 <TikTokIcon className="w-4 h-4" />
               </a>
@@ -147,7 +147,7 @@ export async function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook de Danfer Tours Cusco"
-                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-gray-300 hover:text-gold hover:border-gold/40 transition"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-neutral-300 hover:text-gold hover:border-gold/40 transition"
               >
                 <FacebookIcon className="w-4 h-4" />
               </a>
@@ -156,7 +156,7 @@ export async function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram de Danfer Tours Cusco"
-                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-gray-300 hover:text-gold hover:border-gold/40 transition"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-neutral-300 hover:text-gold hover:border-gold/40 transition"
               >
                 <InstagramIcon className="w-4 h-4" />
               </a>
@@ -173,7 +173,7 @@ export async function Footer() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-gray-400 text-sm hover:text-gold transition"
+                    className="text-neutral-400 text-sm hover:text-gold transition"
                   >
                     {en ? l.en : l.es}
                   </Link>
@@ -192,7 +192,7 @@ export async function Footer() {
                 <li key={d.href}>
                   <Link
                     href={d.href}
-                    className="text-gray-400 text-sm hover:text-gold transition"
+                    className="text-neutral-400 text-sm hover:text-gold transition"
                   >
                     {en ? d.en : d.es}
                   </Link>
@@ -206,7 +206,7 @@ export async function Footer() {
             <h4 className="font-display text-lg text-white mb-4">
               {en ? "Contact" : "Contacto"}
             </h4>
-            <div className="space-y-2.5 text-sm text-gray-300">
+            <div className="space-y-2.5 text-sm text-neutral-300">
               <a
                 href="mailto:hola@danfertourscusco.com"
                 className="flex items-center gap-2 hover:text-gold transition"
@@ -253,7 +253,7 @@ export async function Footer() {
 
       {/* Bottom row */}
       <div className="border-t border-white/5 py-6 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
           <div>
             © {new Date().getFullYear()}{" "}
             <span itemProp="name">Danfer Tours Cusco</span>
@@ -275,12 +275,12 @@ export async function Footer() {
             <NextLink
               href="/admin/login"
               rel="nofollow"
-              className="text-gray-600 hover:text-gold transition"
+              className="text-neutral-600 hover:text-gold transition"
             >
               {en ? "Staff" : "Administrar"}
             </NextLink>
           </div>
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-600">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-neutral-600">
             Visa · MC · Amex · PayPal
           </div>
         </div>
