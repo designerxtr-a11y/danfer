@@ -42,8 +42,8 @@ export default async function Home() {
       />
       <Hero cardImages={settings.hero_images} cardTexts={settings.hero_cards} />
       <Certifications />
-      <Stats polaroidImages={settings.stats_images} />
       <FeaturedTours />
+      <Stats polaroidImages={settings.stats_images} />
       <Destinations />
       <Testimonials />
     </>
