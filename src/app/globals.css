@@ -45,6 +45,22 @@ body {
   color: #fff;
 }
 
+/* Cinta infinita de la franja de acreditaciones. Cada pista se desplaza el
+   100% de su propio ancho; con dos pistas idénticas el bucle no tiene corte. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--color-stone); }

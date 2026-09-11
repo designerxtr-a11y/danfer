@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/hero";
+import { Certifications } from "@/components/sections/certifications";
 import { Stats } from "@/components/sections/stats";
 import { FeaturedTours } from "@/components/sections/featured-tours";
 import { Destinations } from "@/components/sections/destinations";
@@ -40,6 +41,7 @@ export default async function Home() {
         ]}
       />
       <Hero cardImages={settings.hero_images} cardTexts={settings.hero_cards} />
+      <Certifications />
       <Stats polaroidImages={settings.stats_images} />
       <FeaturedTours />
       <Destinations />
