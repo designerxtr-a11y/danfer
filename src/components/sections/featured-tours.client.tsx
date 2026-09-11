@@ -2,14 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import {
-  Star,
-  Clock,
-  Mountain,
-  Users,
-  ArrowUpRight,
-  Flame,
-} from "lucide-react";
+import { Star, Clock, Mountain, Users, Flame } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { TourWithCategory, Locale } from "@/types/database";
 import { t } from "@/types/database";
@@ -103,15 +96,7 @@ export function TourCard({
           </div>
         )}
 
-        {/* Bestseller pill (only on first card) */}
-        {isBestseller && (
-          <div className="absolute top-5 left-5 flex items-center gap-1.5 bg-gradient-to-r from-gold to-gold-bright text-night text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full shadow-lg">
-            <Flame className="w-3 h-3" />
-            {locale === "en" ? "Best seller" : "Más vendido"}
-          </div>
-        )}
-
-        {/* Top row: rating (solo si hay reseñas reales) */}
+        {/* Rating (solo si hay reseñas reales) */}
         {tour.reviews_count > 0 && (
           <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full bg-night/60 border border-white/15 px-3 py-1.5 text-xs text-white">
             <Star className="w-3 h-3 fill-gold text-gold" />
@@ -120,23 +105,21 @@ export function TourCard({
           </div>
         )}
 
-        {!isBestseller && tour.category && (
-          <span className="absolute top-5 left-5 rounded-full bg-night/60 border border-white/15 px-3 py-1.5 text-[10px] uppercase tracking-widest text-white/90 font-medium">
-            {t(tour.category.name, locale)}
-          </span>
-        )}
-
-        {/* Hover arrow */}
-        <div className="absolute top-5 right-5 mt-14 opacity-0 group-hover:opacity-100 group-hover:mt-0 transition-all duration-500 delay-100">
-          <div className="w-12 h-12 rounded-full bg-gold grid place-items-center shadow-glow">
-            <ArrowUpRight className="w-5 h-5 text-night" />
-          </div>
-        </div>
-
         {/* Bottom content */}
         <div className="absolute bottom-0 inset-x-0 p-6 space-y-4">
           <div>
-            <h3 className="font-display text-2xl lg:text-3xl text-white leading-[1.1]">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest font-semibold">
+              {tour.category && (
+                <span className="text-gold">{t(tour.category.name, locale)}</span>
+              )}
+              {isBestseller && (
+                <span className="flex items-center gap-1 text-white/70">
+                  <Flame className="w-3 h-3" />
+                  {locale === "en" ? "Best seller" : "Más vendido"}
+                </span>
+              )}
+            </div>
+            <h3 className="mt-1 font-display text-2xl lg:text-3xl text-white leading-[1.1]">
               {t(tour.title, locale)}
             </h3>
             {tour.subtitle && (

@@ -4,13 +4,13 @@ import { Link } from "@/i18n/navigation";
 import { getFeaturedTours } from "@/lib/queries/tours";
 import { tr } from "@/lib/i18n/messages";
 import type { Locale } from "@/types/database";
-import { FeaturedToursGrid } from "./featured-tours.client";
+import { TourCard } from "./featured-tours.client";
+
+/** Cuántas tarjetas muestra el home como máximo (1 fila de 4 en desktop). */
+const MAX_FEATURED = 4;
 
 export async function FeaturedTours() {
-  const featured = await getFeaturedTours(6);
-  // Mostramos filas completas (la grilla es de 3 columnas): 6, o si no llega,
-  // 3 — así nunca queda una tarjeta huérfana sola en la última fila.
-  const tours = featured.length >= 6 ? featured.slice(0, 6) : featured.slice(0, 3);
+  const tours = await getFeaturedTours(MAX_FEATURED);
   const locale = (await getLocale()) as Locale;
   const m = tr(locale);
 
@@ -60,7 +60,19 @@ export async function FeaturedTours() {
           </h2>
         </div>
 
-        <FeaturedToursGrid tours={tours} locale={locale} />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          {tours.map((tour, i) => (
+            <TourCard
+              key={tour.id}
+              tour={tour}
+              index={i}
+              isBestseller={i === 0}
+              locale={locale}
+              m={m}
+              wrapperClassName="w-full group"
+            />
+          ))}
+        </div>
 
         <div className="mt-12 text-center">
           <Link
