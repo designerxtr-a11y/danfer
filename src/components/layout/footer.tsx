@@ -5,47 +5,8 @@ import { getLocale } from "next-intl/server";
 import { Mail, Phone, MapPin, Award, Shield, Clock, Send } from "lucide-react";
 import { NewsletterForm } from "./newsletter-form";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "./navbar";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { getSettings, publicPhone, normalizeWhatsApp } from "@/lib/queries/settings";
-import { t, type Locale } from "@/types/database";
 import { siteUrl } from "@/lib/seo/site-url";
-
-interface TourLite {
-  slug: string;
-  title: { es: string; en?: string };
-  price_usd: number;
-  bookings_count: number;
-}
-interface CategoryLite {
-  slug: string;
-  name: { es: string; en?: string };
-  sort_order: number;
-}
-
-async function getFooterData() {
-  try {
-    const supabase = createAdminClient();
-    const [{ data: tours }, { data: categories }] = await Promise.all([
-      supabase
-        .from("tours")
-        .select("slug,title,price_usd,bookings_count")
-        .eq("is_published", true)
-        .order("bookings_count", { ascending: false })
-        .limit(8),
-      supabase
-        .from("categories")
-        .select("slug,name,sort_order")
-        .eq("is_published", true)
-        .order("sort_order"),
-    ]);
-    return {
-      tours: (tours ?? []) as TourLite[],
-      categories: (categories ?? []) as CategoryLite[],
-    };
-  } catch {
-    return { tours: [], categories: [] };
-  }
-}
 
 const destinations = [
   { es: "Machu Picchu", en: "Machu Picchu", href: "/destinos/machu-picchu" },
@@ -60,10 +21,12 @@ const destinations = [
   { es: "Todos los destinos", en: "All destinations", href: "/destinos" },
 ];
 
-const company = [
+const quickLinks = [
+  { es: "Inicio", en: "Home", href: "/" },
+  { es: "Tours", en: "Tours", href: "/tours" },
+  { es: "Destinos", en: "Destinations", href: "/destinos" },
   { es: "Sobre nosotros", en: "About us", href: "/sobre-nosotros" },
   { es: "Blog de viajes", en: "Travel blog", href: "/blog" },
-  { es: "Reseñas verificadas", en: "Verified reviews", href: "/#reviews" },
   { es: "Contacto", en: "Contact", href: "/contacto" },
 ];
 
@@ -76,13 +39,8 @@ const legal = [
 const SITE = siteUrl();
 
 export async function Footer() {
-  const [{ tours, categories }, locale, settings] = await Promise.all([
-    getFooterData(),
-    getLocale(),
-    getSettings(),
-  ]);
-  const lc = (locale === "en" ? "en" : "es") as Locale;
-  const en = lc === "en";
+  const [locale, settings] = await Promise.all([getLocale(), getSettings()]);
+  const en = locale === "en";
   const phone = publicPhone(settings);
 
   return (
@@ -149,12 +107,21 @@ export async function Footer() {
         <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:divide-x lg:divide-white/5">
           {/* Brand col */}
           <div className="lg:col-span-3 lg:pr-8">
-            <Link
-              href="/"
-              className="font-display text-3xl font-bold tracking-wider block"
-            >
-              <span className="text-gradient-gold">DANFER</span>
-              <span className="text-white">TOURS</span>
+            <Link href="/" className="flex items-center gap-2.5 flex-wrap">
+              {settings.branding?.logo_url && (
+                <Image
+                  src={settings.branding.logo_url}
+                  alt=""
+                  aria-hidden
+                  width={840}
+                  height={397}
+                  className="h-10 w-auto object-contain brightness-0 invert"
+                />
+              )}
+              <span className="font-display text-3xl font-bold tracking-wider">
+                <span className="text-gradient-gold">DANFER</span>
+                <span className="text-white">TOURS</span>
+              </span>
             </Link>
             <p
               className="mt-4 text-white/60 text-sm leading-relaxed max-w-sm"
@@ -196,74 +163,36 @@ export async function Footer() {
             </div>
           </div>
 
-          {/* Tours top vendidos */}
+          {/* Enlaces rápidos */}
           <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
-              {en ? "Best-selling tours" : "Tours más vendidos"}
+              {en ? "Quick links" : "Enlaces rápidos"}
             </h4>
             <ul className="space-y-2.5">
-              {tours.slice(0, 6).map((tour) => (
-                <li key={tour.slug}>
+              {quickLinks.map((l) => (
+                <li key={l.href}>
                   <Link
-                    href={`/tours/${tour.slug}`}
-                    className="group flex items-center justify-between gap-3 text-white/60 text-sm hover:text-gold transition"
+                    href={l.href}
+                    className="text-white/60 text-sm hover:text-gold transition"
                   >
-                    <span className="truncate">{t(tour.title, lc)}</span>
-                    <span className="text-[10px] text-gold/60 shrink-0">
-                      US${tour.price_usd.toFixed(0)}
-                    </span>
+                    {en ? l.en : l.es}
                   </Link>
                 </li>
               ))}
-              {tours.length === 0 &&
-                destinations.slice(0, 6).map((d) => (
-                  <li key={d.href}>
-                    <Link
-                      href={d.href}
-                      className="text-white/60 text-sm hover:text-gold transition"
-                    >
-                      {en ? d.en : d.es}
-                    </Link>
-                  </li>
-                ))}
-              <li>
-                <Link
-                  href="/tours"
-                  className="text-gold text-xs uppercase tracking-widest font-semibold mt-2 inline-block hover:underline"
-                >
-                  {en ? "View all tours →" : "Ver todos los tours →"}
-                </Link>
-              </li>
             </ul>
           </div>
 
-          {/* Categorías + Destinos */}
+          {/* Destinos populares */}
           <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
-              {en ? "By category" : "Por categoría"}
+              {en ? "Popular destinations" : "Destinos populares"}
             </h4>
             <ul className="space-y-2.5">
-              {categories.slice(0, 6).map((cat) => (
-                <li key={cat.slug}>
-                  <Link
-                    href={`/tours?category=${cat.slug}`}
-                    className="text-white/60 text-sm hover:text-gold transition"
-                  >
-                    {t(cat.name, lc)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <h4 className="font-display text-sm text-white mt-8 mb-3 uppercase tracking-widest">
-              {en ? "Destinations" : "Destinos"}
-            </h4>
-            <ul className="space-y-2">
-              {destinations.slice(0, 5).map((d) => (
+              {destinations.map((d) => (
                 <li key={d.href}>
                   <Link
                     href={d.href}
-                    className="text-white/50 text-xs hover:text-gold transition"
+                    className="text-white/60 text-sm hover:text-gold transition"
                   >
                     {en ? d.en : d.es}
                   </Link>
@@ -272,25 +201,9 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Empresa + Contacto */}
+          {/* Contacto */}
           <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
-              {en ? "Company" : "Empresa"}
-            </h4>
-            <ul className="space-y-2.5 mb-8">
-              {company.map((c) => (
-                <li key={c.href}>
-                  <Link
-                    href={c.href}
-                    className="text-white/60 text-sm hover:text-gold transition"
-                  >
-                    {en ? c.en : c.es}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <h4 className="font-display text-sm text-white mb-3 uppercase tracking-widest">
               {en ? "Contact" : "Contacto"}
             </h4>
             <div className="space-y-2.5 text-sm text-white/70">
@@ -343,10 +256,7 @@ export async function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/45">
           <div>
             © {new Date().getFullYear()}{" "}
-            <span itemProp="name">Danfer Tours Cusco</span> ·{" "}
-            {en ? "Made with" : "Hecho con"}{" "}
-            <span className="text-gold">♥</span>{" "}
-            {en ? "in Cusco, Peru" : "en Cusco, Perú"}
+            <span itemProp="name">Danfer Tours Cusco</span>
           </div>
           <div className="flex items-center gap-4">
             {legal.map((l) => (

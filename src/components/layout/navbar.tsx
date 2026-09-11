@@ -1,10 +1,10 @@
 "use client";
 
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Link, usePathname } from "@/i18n/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 
 export const InstagramIcon = (p: React.SVGProps<SVGSVGElement>) => (
@@ -48,12 +48,57 @@ const USFlag = (p: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export function Navbar({ logoUrl }: { logoUrl?: string }) {
+export interface NavSubItem {
+  label: string;
+  href: string;
+}
+
+export interface NavLinkItem {
+  type: "link";
+  label: string;
+  href: string;
+}
+
+export interface NavMegaItem {
+  type: "mega";
+  label: string;
+  items: NavSubItem[];
+  viewAllHref?: string;
+  viewAllLabel?: string;
+}
+
+export type NavItem = NavLinkItem | NavMegaItem;
+
+export function Navbar({
+  logoUrl,
+  navItems,
+}: {
+  logoUrl?: string;
+  navItems: NavItem[];
+}) {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpenIndex, setMobileOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openMenu = (i: number) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenIndex(i);
+  };
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpenIndex(null), 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 30));
-  const { m, locale, setLocale } = useI18n();
+  const { locale, setLocale } = useI18n();
 
   // El navbar es transparente con texto blanco SOLO en el home (que tiene el
   // hero oscuro detrás). En el resto de páginas el fondo es claro, así que el
@@ -70,13 +115,6 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
-
-  const links = [
-    { label: m.nav.tours, href: "/tours" },
-    { label: m.nav.destinations, href: "/destinos" },
-    { label: m.nav.blog, href: "/blog" },
-    { label: m.nav.reviews, href: "/#reviews" },
-  ];
 
   return (
     <motion.header
@@ -112,27 +150,83 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
           <span className={solid ? "text-night" : "text-white"}>TOURS</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={`text-sm transition-colors hover:text-gold ${
-                solid ? "text-night/70" : "text-white/85"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <nav className="hidden lg:flex items-center gap-0.5">
+          {navItems.map((item, i) =>
+            item.type === "link" ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`whitespace-nowrap px-2.5 py-2 text-sm transition-colors ${
+                  solid ? "text-night/70 hover:text-turquoise" : "text-white/85 hover:text-white"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <div
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => openMenu(i)}
+                onMouseLeave={scheduleClose}
+              >
+                <button
+                  type="button"
+                  aria-expanded={openIndex === i}
+                  className={`flex items-center gap-1 whitespace-nowrap px-2.5 py-2 text-sm transition-colors ${
+                    solid ? "text-night/70 hover:text-turquoise" : "text-white/85 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform ${
+                      openIndex === i ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {openIndex === i && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-64 z-50"
+                    >
+                      <div className="rounded-2xl bg-background shadow-soft border border-night/10 p-3">
+                        {item.items.map((sub) => (
+                          <Link
+                            key={sub.href}
+                            href={sub.href}
+                            className="block rounded-lg px-3 py-2 text-sm text-night/80 hover:bg-turquoise/10 hover:text-turquoise-deep transition"
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                        {item.viewAllHref && (
+                          <Link
+                            href={item.viewAllHref}
+                            className="mt-1 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-turquoise hover:text-turquoise-deep transition"
+                          >
+                            {item.viewAllLabel ?? item.label}
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )
+          )}
         </nav>
 
         <div
-          className={`flex items-center gap-4 ${
+          className={`flex shrink-0 items-center gap-3 xl:gap-4 ${
             solid ? "text-night/70" : "text-white/85"
           }`}
         >
           <div
-            className={`hidden md:flex items-center gap-0.5 rounded-full p-0.5 border transition ${
+            className={`hidden lg:flex items-center gap-0.5 rounded-full p-0.5 border transition ${
               solid ? "border-night/15" : "border-white/30"
             }`}
           >
@@ -164,7 +258,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="TikTok de Danfer Tours"
-            className="hidden md:block hover:text-gold transition"
+            className="hidden xl:block hover:text-gold transition"
           >
             <TikTokIcon className="w-4 h-4" />
           </a>
@@ -173,7 +267,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook de Danfer Tours"
-            className="hidden md:block hover:text-gold transition"
+            className="hidden xl:block hover:text-gold transition"
           >
             <FacebookIcon className="w-4 h-4" />
           </a>
@@ -182,7 +276,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram de Danfer Tours"
-            className="hidden md:block hover:text-gold transition"
+            className="hidden xl:block hover:text-gold transition"
           >
             <InstagramIcon className="w-4 h-4" />
           </a>
@@ -190,7 +284,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
           {/* CTA de reserva — el navbar no tenía acción primaria visible */}
           <Link
             href="/tours"
-            className="hidden md:inline-flex items-center rounded-full bg-gold px-5 py-2 text-night text-sm font-semibold hover:bg-gold-bright hover:shadow-glow transition"
+            className="hidden lg:inline-flex items-center whitespace-nowrap rounded-full bg-gold px-5 py-2 text-night text-sm font-semibold hover:bg-gold-bright hover:shadow-glow transition"
           >
             {locale === "en" ? "Book now" : "Reservar"}
           </Link>
@@ -199,7 +293,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Abrir menú"
-            className={`md:hidden grid place-items-center w-10 h-10 rounded-full border transition ${
+            className={`lg:hidden grid place-items-center w-10 h-10 rounded-full border transition ${
               solid
                 ? "border-night/15 text-night"
                 : "border-white/30 text-white"
@@ -218,7 +312,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[60] bg-night/95 backdrop-blur-md md:hidden flex flex-col"
+            className="fixed inset-0 z-[60] bg-night/95 backdrop-blur-md lg:hidden flex flex-col"
           >
             {/* Top bar inside menu */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
@@ -255,28 +349,88 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="flex-1 flex flex-col justify-center px-8 gap-2"
+              // `justify-center` + `overflow-y-auto` es una trampa: si el
+              // contenido supera el alto, el centrado empuja los primeros
+              // items por encima del origen del scroll y quedan inalcanzables.
+              // Con `justify-start` la lista scrollea normal de arriba a abajo.
+              className="flex-1 flex flex-col justify-start px-8 py-6 gap-1 overflow-y-auto overscroll-contain"
             >
-              {links.map((l, i) => (
-                <motion.div
-                  key={l.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.06 }}
-                >
-                  <Link
-                    href={l.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block font-display text-4xl text-white hover:text-gold transition py-3 border-b border-white/10"
+              {navItems.map((item, i) =>
+                item.type === "link" ? (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 + i * 0.06 }}
                   >
-                    {l.label}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="block font-display text-3xl text-white hover:text-gold transition py-3 border-b border-white/10"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 + i * 0.06 }}
+                    className="border-b border-white/10"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileOpenIndex((cur) => (cur === i ? null : i))
+                      }
+                      className="w-full flex items-center justify-between font-display text-3xl text-white hover:text-gold transition py-3"
+                    >
+                      {item.label}
+                      <ChevronDown
+                        className={`w-6 h-6 shrink-0 transition-transform ${
+                          mobileOpenIndex === i ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <AnimatePresence>
+                      {mobileOpenIndex === i && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="overflow-hidden flex flex-col gap-1 pb-3"
+                        >
+                          {item.items.map((sub) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              onClick={() => setMobileOpen(false)}
+                              className="text-base text-white/80 hover:text-white transition py-2 pl-1"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                          {item.viewAllHref && (
+                            <Link
+                              href={item.viewAllHref}
+                              onClick={() => setMobileOpen(false)}
+                              className="text-base font-semibold text-white py-2 pl-1"
+                            >
+                              {item.viewAllLabel ?? item.label} →
+                            </Link>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )
+              )}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.15 + links.length * 0.06 }}
+                transition={{ delay: 0.15 + navItems.length * 0.06 }}
               >
                 <Link
                   href="/tours"
