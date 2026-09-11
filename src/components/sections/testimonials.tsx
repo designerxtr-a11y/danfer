@@ -2,7 +2,7 @@ import { getLocale } from "next-intl/server";
 import { getTopReviews } from "@/lib/queries/reviews";
 import { tr } from "@/lib/i18n/messages";
 import type { Locale } from "@/types/database";
-import { TestimonialsCarousel } from "./testimonials.client";
+import { TestimonialsMarquee } from "./testimonials.client";
 
 export async function Testimonials() {
   const reviews = await getTopReviews(8);
@@ -21,8 +21,8 @@ export async function Testimonials() {
             <span className="text-gradient-gold italic">{m.sections.testimonials.title_emphasis}</span>
           </h2>
         </div>
-        <TestimonialsCarousel reviews={reviews} locale={locale} />
       </div>
+      <TestimonialsMarquee reviews={reviews} locale={locale} />
     </section>
   );
 }

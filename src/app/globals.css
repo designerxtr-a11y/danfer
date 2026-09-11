@@ -61,6 +61,13 @@ body {
   will-change: transform;
 }
 
+/* Misma cinta infinita, más lenta: pistas de tarjetas de reseñas (más
+   anchas que los logos de acreditaciones), se pausa al pasar el mouse. */
+.animate-marquee-slow {
+  animation: marquee 60s linear infinite;
+  will-change: transform;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--color-stone); }
