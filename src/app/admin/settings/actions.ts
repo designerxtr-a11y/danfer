@@ -92,6 +92,10 @@ export async function updateSettingsForm(
         "rainbow-mountain": String(
           formData.get("hero_img_rainbow_mountain") || ""
         ),
+        "camino-inca": String(formData.get("hero_img_camino_inca") || ""),
+        "laguna-humantay": String(
+          formData.get("hero_img_laguna_humantay") || ""
+        ),
       },
     },
     {
@@ -102,6 +106,11 @@ export async function updateSettingsForm(
         "rainbow-mountain": heroCardFields(
           formData,
           "hero_card_rainbow_mountain"
+        ),
+        "camino-inca": heroCardFields(formData, "hero_card_camino_inca"),
+        "laguna-humantay": heroCardFields(
+          formData,
+          "hero_card_laguna_humantay"
         ),
       },
     },

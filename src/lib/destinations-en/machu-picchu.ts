@@ -17,7 +17,7 @@ export const machuPicchuEn: DestinationContent = {
   tagline: "The 15th-century Inca citadel · One of the 7 Wonders of the Modern World",
   hero: {
     image:
-      "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1920&auto=format&fit=crop",
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
     imageAlt:
       "Panoramic view of the Inca citadel of Machu Picchu with Huayna Picchu rising in the background, in the Cusco region of Peru",
   },

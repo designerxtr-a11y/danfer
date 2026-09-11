@@ -13,9 +13,9 @@ export const rainbowMountainEn: DestinationContent = {
   tagline: "5,200 m.a.s.l. · Peru's most photographed mountain",
   hero: {
     image:
-      "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=1920&auto=format&fit=crop",
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/rainbow-mountain-1789091035693.webp",
     imageAlt:
-      "Vinicunca (Rainbow Mountain) showing its natural stripes of colored minerals in red, yellow, turquoise and gold",
+      "Traveler at the summit of Vinicunca (Rainbow Mountain) showing its natural stripes of colored minerals in red, yellow, turquoise and gold",
   },
   intro:
     "Rainbow Mountain, known as Vinicunca in Quechua, is a one-of-a-kind geological formation in the Peruvian Andes: sedimentary layers of minerals (oxidized iron, copper sulfide, zinc oxide, calcium carbonate) that create natural stripes of red, ochre, turquoise, gold and green at 5,200 meters above sea level. It went viral in 2015 when the melting of the glacier exposed colors that had previously been hidden under snow. Today it is the most photographed attraction in southern Peru after Machu Picchu, with daily visits from Cusco (~3 hours by bus + 2 hours of hiking). The extreme altitude and steep trail make it a real physical challenge — but the landscape that greets you at the viewpoint makes every step worth it. We run this Full Day excursion with a 4:00 am departure from your hotel in Cusco.",

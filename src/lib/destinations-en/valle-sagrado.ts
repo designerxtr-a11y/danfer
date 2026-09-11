@@ -17,9 +17,9 @@ export const valleSagradoEn: DestinationContent = {
   tagline: "Pisac · Ollantaytambo · Chinchero · Maras · Moray",
   hero: {
     image:
-      "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=1920&auto=format&fit=crop",
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
     imageAlt:
-      "The Sacred Valley of the Incas seen from above, with agricultural terraces, the Urubamba River and Andean mountains",
+      "Pisac artisan market in the Sacred Valley of the Incas, with Andean textile stalls and mountains in the background",
   },
   intro:
     "The Sacred Valley of the Incas (Willka Qhichwa in Quechua) is a fertile, 60-kilometer valley carved by the Urubamba River, set between Cusco and Machu Picchu. To the Incas it was the breadbasket of the empire: a temperate climate, volcanic soils and a system of agricultural terraces that made it possible to grow more than 200 varieties of corn and potato. Today it is one of the must-do routes in southern Peru, with living archaeological sites such as Pisac (fortress + market), Ollantaytambo (the only Inca town still inhabited), Chinchero (traditional textiles), the Maras salt pans (3,000 pre-Inca salt pools) and the circular terraces of Moray (an Inca agricultural laboratory). Just 1-2 hours from Cusco, it is the best option for acclimatizing before Machu Picchu and connecting with living Andean culture.",

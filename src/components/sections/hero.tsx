@@ -1,25 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useI18n } from "@/lib/i18n/provider";
-import {
-  ArrowRight,
-  Star,
-  PlayCircle,
-  MapPin,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ArrowRight, Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { HERO_CARD_DEFAULTS, type HeroCard } from "@/lib/hero-cards";
 import type { HeroCardText } from "@/lib/queries/settings";
-
-const VIDEO_SRC =
-  "https://videos.pexels.com/video-files/2169307/2169307-hd_1920_1080_30fps.mp4";
-const VIDEO_POSTER =
-  "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1920&auto=format&fit=crop";
 
 // Chips de destinos enlazados (anchor descriptivo + transfiere PageRank a /destinos)
 const destinationChips = [
@@ -28,6 +16,8 @@ const destinationChips = [
   { label: "Rainbow Mountain", slug: "rainbow-mountain" },
   { label: "Camino Inca", slug: "camino-inca" },
 ];
+
+const AUTO_ADVANCE_MS = 3000;
 
 export function Hero({
   cardImages,
@@ -39,10 +29,7 @@ export function Hero({
   cardTexts?: Partial<Record<string, HeroCardText>>;
 }) {
   const ref = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const { m, locale } = useI18n();
-  // Carrusel de las floating cards: `active` define cuál queda al frente.
-  const [active, setActive] = useState(0);
   const cards = HERO_CARD_DEFAULTS.map((c): HeroCard => {
     const o = cardTexts?.[c.slug] ?? {};
     return {
@@ -56,14 +43,32 @@ export function Hero({
       img: cardImages?.[c.slug] || c.img,
     };
   });
-  const cardCount = cards.length;
-  const goPrev = () => setActive((a) => (a - 1 + cardCount) % cardCount);
-  const goNext = () => setActive((a) => (a + 1) % cardCount);
-  // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
-  const keyword =
-    locale === "en"
-      ? "Cusco & Machu Picchu Tours"
-      : "Tours en Cusco y Machu Picchu";
+  const count = cards.length;
+  const [active, setActive] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const pausedRef = useRef(false);
+  const current = cards[active % count];
+
+  // Auto-avance: la tarjeta activa pasa a ser el fondo/título del hero.
+  // `progress` (0-100) alimenta la barra de tiempo restante; se pausa con
+  // el mouse sobre la fila de tarjetas sin reiniciar el conteo.
+  useEffect(() => {
+    if (count < 2) return;
+    const tickMs = 50;
+    let elapsedMs = 0;
+    const id = setInterval(() => {
+      if (pausedRef.current) return;
+      elapsedMs += tickMs;
+      if (elapsedMs >= AUTO_ADVANCE_MS) {
+        elapsedMs = 0;
+        setActive((a) => (a + 1) % count);
+        setProgress(0);
+      } else {
+        setProgress((elapsedMs / AUTO_ADVANCE_MS) * 100);
+      }
+    }, tickMs);
+    return () => clearInterval(id);
+  }, [count, active]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -73,63 +78,67 @@ export function Hero({
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-  useEffect(() => {
-    const el = ref.current;
-    const v = videoRef.current;
-    if (!el || !v) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) v.play().catch(() => {});
-        else v.pause();
-      },
-      { threshold: 0.01 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
+  const keyword =
+    locale === "en"
+      ? "Cusco & Machu Picchu Tours"
+      : "Tours en Cusco y Machu Picchu";
+
+  // Tarjetas "en cola": todas menos la activa, empezando por la siguiente
+  // (la que sale de la cola al activarse reaparece al final tras el loop).
+  const queue = [...cards.slice(active + 1), ...cards.slice(0, active)];
 
   return (
     <section
       ref={ref}
       className="relative h-screen min-h-[620px] sm:min-h-[680px] max-h-[940px] w-full overflow-hidden bg-night"
     >
-      {/* Background: en móvil imagen estática (el MP4 1080p externo penaliza
-          LCP/datos justo donde llega el tráfico orgánico); el video solo en md+ */}
-      <Image
-        src={VIDEO_POSTER}
-        alt=""
-        aria-hidden
-        fill
-        priority
-        fetchPriority="high"
-        sizes="100vw"
-        className="absolute inset-0 object-cover md:hidden"
-      />
-      <video
-        ref={videoRef}
-        src={VIDEO_SRC}
-        poster={VIDEO_POSTER}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden
-        className="absolute inset-0 w-full h-full object-cover hidden md:block"
-      />
+      {/* Fondo: foto real de la tarjeta activa — entra agrandándose y
+          desplazándose de derecha a izquierda (efecto "card opening"),
+          igual sea por auto-avance o por clic, no un fundido plano. */}
+      <AnimatePresence>
+        <motion.div
+          key={current.slug}
+          initial={{ opacity: 0, scale: 1.15, x: "6%" }}
+          animate={{ opacity: 1, scale: 1, x: "0%" }}
+          exit={{ opacity: 0, x: "-6%" }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={current.img}
+            alt=""
+            aria-hidden
+            fill
+            priority={active === 0}
+            fetchPriority={active === 0 ? "high" : "auto"}
+            sizes="100vw"
+            className="object-cover"
+          />
+        </motion.div>
+      </AnimatePresence>
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-night/55 via-night/15 to-night/80 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-r from-night/60 via-transparent to-transparent pointer-events-none" />
 
+      {/* Barra de progreso hasta el próximo avance automático */}
+      {count > 1 && (
+        <div className="absolute top-0 left-0 right-0 z-30 h-[3px] bg-white/10">
+          <div
+            className="h-full bg-gold"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
+
       {/* Main content */}
       <motion.div
         style={{ y: contentY, opacity: overlayOpacity }}
-        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 h-full grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center pt-20 sm:pt-24 pb-28 sm:pb-32"
+        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 h-full flex items-center pt-20 sm:pt-24 pb-28 sm:pb-32"
       >
-        {/* LEFT — text + CTA */}
-        <div>
-          {/* Eyebrow con keyword visible (sin opacity:0 → pinta de inmediato, LCP) */}
+        <div className="max-w-2xl">
+          {/* Eyebrow con keyword visible (fijo: no rota con las tarjetas, SEO) */}
           <motion.div
             initial={{ y: 10 }}
             animate={{ y: 0 }}
@@ -142,37 +151,37 @@ export function Hero({
             </span>
           </motion.div>
 
-          <motion.span
-            initial={{ y: 16 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="font-hand text-gold text-2xl md:text-3xl"
-          >
-            {m.hero.eyebrow}
-          </motion.span>
+          <AnimatePresence mode="wait">
+            <motion.div key={current.slug} initial="in" animate="in">
+              <motion.span
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="font-hand text-gold text-2xl md:text-3xl"
+              >
+                {current.region}
+              </motion.span>
 
-          {/* H1: sin opacity:0 ni delay → es el LCP, debe pintar al primer frame */}
-          <motion.h1
-            initial={{ y: 18 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 font-display font-bold leading-[0.95] text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
-          >
-            {m.hero.title_a}{" "}
-            <span className="text-gradient-gold italic font-normal">
-              {m.hero.title_emphasis}
-            </span>{" "}
-            {m.hero.title_b}
-          </motion.h1>
+              {/* H1: la primera tarjeta pinta sin opacity:0 → es el LCP */}
+              <motion.h1
+                initial={{ y: 18, opacity: active === 0 ? 1 : 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-3 font-display font-bold leading-[0.95] text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
+              >
+                {current.title}
+              </motion.h1>
 
-          <motion.p
-            initial={{ y: 16 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-5 sm:mt-6 max-w-xl text-white/80 leading-relaxed text-sm sm:text-base md:text-lg"
-          >
-            {m.hero.subtitle}
-          </motion.p>
+              <motion.p
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="mt-5 sm:mt-6 max-w-xl text-white/80 leading-relaxed text-sm sm:text-base md:text-lg"
+              >
+                {m.hero.subtitle}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -181,20 +190,21 @@ export function Hero({
             className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4 sm:gap-5"
           >
             <Link
-              href="/tours"
+              href={`/destinos/${current.slug}`}
               className="group inline-flex items-center gap-2 sm:gap-3 rounded-full bg-gold px-5 sm:px-7 py-3 sm:py-3.5 text-night font-semibold text-sm sm:text-base transition hover:bg-gold-bright hover:shadow-glow"
             >
               {m.hero.cta}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
             </Link>
-            <button className="flex items-center gap-3 text-white/85 hover:text-gold transition group">
-              <span className="grid place-items-center w-11 h-11 rounded-full bg-white/15 border border-white/20 group-hover:scale-110 transition">
-                <PlayCircle className="w-5 h-5 text-gold" />
+            <div className="flex items-center gap-1 text-gold">
+              <Star className="w-4 h-4 fill-gold" />
+              <span className="text-white font-semibold text-sm">
+                {current.rating}
               </span>
-              <span className="text-sm uppercase tracking-wider">
-                {m.hero.videoCta}
+              <span className="text-white/60 text-xs">
+                ({current.reviews}+)
               </span>
-            </button>
+            </div>
           </motion.div>
 
           <motion.div
@@ -218,63 +228,63 @@ export function Hero({
             ))}
           </motion.div>
         </div>
+      </motion.div>
 
-        {/* RIGHT — floating destination cards */}
-        <div className="relative h-[500px] hidden lg:block">
-          {/* Decorative glow ring behind cards */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full bg-gold/10 blur-3xl pointer-events-none" />
-          <div className="absolute top-[15%] right-[5%] w-32 h-32 rounded-full border border-gold/30 pointer-events-none" />
+      {/* Fila recta de tarjetas "en cola" + controles — al hacer clic, esa
+          tarjeta pasa a ser el fondo/título del hero (no navega). */}
+      {count > 1 && (
+        <div
+          className="hidden lg:flex flex-col items-end gap-3 absolute z-20 bottom-24 sm:bottom-28 right-4 xl:right-10"
+          onMouseEnter={() => {
+            pausedRef.current = true;
+          }}
+          onMouseLeave={() => {
+            pausedRef.current = false;
+          }}
+        >
+          <div className="flex gap-4">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {queue.map((d) => (
+                <QueueCard
+                  key={d.slug}
+                  destination={d}
+                  onSelect={() =>
+                    setActive(cards.findIndex((c) => c.slug === d.slug))
+                  }
+                />
+              ))}
+            </AnimatePresence>
+          </div>
 
-          {/* Floating label */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4 }}
-            className="absolute -top-2 right-4 z-40 flex items-center gap-2 text-gold"
-          >
-            <span className="font-hand text-xl">Top destinos</span>
-            <span className="text-2xl">↘</span>
-          </motion.div>
-
-          {cards.map((d, i) => (
-            <FloatingCard
-              key={d.slug}
-              destination={d}
-              index={i}
-              posIndex={(i - active + cardCount) % cardCount}
-            />
-          ))}
-
-          {/* Nav + counter */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-4 z-40">
+          <div className="flex items-center gap-3 text-white">
             <button
               type="button"
-              onClick={goPrev}
+              onClick={() => setActive((a) => (a - 1 + count) % count)}
               aria-label="Anterior"
-              className="bg-white/10 hover:bg-gold border border-white/20 hover:border-gold w-11 h-11 rounded-full grid place-items-center text-white hover:text-night backdrop-blur transition"
+              className="w-9 h-9 rounded-full border border-white/25 hover:border-gold hover:text-gold grid place-items-center transition"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <div className="font-display text-white text-sm tabular-nums">
+            <span className="font-display text-sm tabular-nums">
               <span className="text-gold">
                 {String(active + 1).padStart(2, "0")}
               </span>
               <span className="text-white/40 mx-1">/</span>
               <span className="text-white/60">
-                {String(cardCount).padStart(2, "0")}
+                {String(count).padStart(2, "0")}
               </span>
-            </div>
+            </span>
             <button
               type="button"
-              onClick={goNext}
+              onClick={() => setActive((a) => (a + 1) % count)}
               aria-label="Siguiente"
-              className="bg-white/10 hover:bg-gold border border-white/20 hover:border-gold w-11 h-11 rounded-full grid place-items-center text-white hover:text-night backdrop-blur transition"
+              className="w-9 h-9 rounded-full border border-white/25 hover:border-gold hover:text-gold grid place-items-center transition"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </motion.div>
+      )}
 
       {/* Bottom stats bar */}
       <motion.div
@@ -322,122 +332,52 @@ function BottomStat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function FloatingCard({
+function QueueCard({
   destination,
-  index,
-  posIndex,
+  onSelect,
 }: {
   destination: HeroCard;
-  index: number;
-  posIndex: number;
+  onSelect: () => void;
 }) {
-  // Overlapping cluster — front card prominent, others peeking behind.
-  // `posIndex` (no `index`) decide la posición, para que las flechas roten
-  // qué card queda al frente.
-  const positions = [
-    { top: "10%", left: "0%", rotate: -6, z: 30, scale: 1 },
-    { top: "0%", left: "35%", rotate: 5, z: 20, scale: 0.92 },
-    { top: "32%", left: "44%", rotate: -3, z: 10, scale: 0.85 },
-  ];
-  const pos = positions[posIndex];
-  const floatDuration = 5 + posIndex * 0.7;
-  const floatRange = 10 + posIndex * 2;
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50, rotate: 0 }}
-      animate={{
-        opacity: 1,
-        y: [0, -floatRange, 0],
-        rotate: pos.rotate,
-        scale: pos.scale,
-        top: pos.top,
-        left: pos.left,
-      }}
-      transition={{
-        opacity: { delay: 0.5 + index * 0.15, duration: 0.9 },
-        // Sin delay de entrada en estas → al pulsar las flechas las cards
-        // se reordenan al instante (suave), no con ~0.5s de retardo.
-        rotate: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-        scale: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-        top: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-        left: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-        y: {
-          repeat: Infinity,
-          duration: floatDuration,
-          ease: "easeInOut",
-          delay: 1 + index * 0.3,
-        },
-      }}
-      whileHover={{ scale: pos.scale * 1.05, rotate: 0, zIndex: 50, y: -12 }}
-      style={{ zIndex: pos.z }}
-      className="absolute w-60 cursor-pointer group"
+    <motion.button
+      type="button"
+      onClick={onSelect}
+      layout
+      initial={{ opacity: 0, x: 48 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, scale: 1.15 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      aria-label={`Ver ${destination.title} — ${destination.region}, Perú`}
+      className="group relative shrink-0 w-36 xl:w-44 h-52 xl:h-60 rounded-2xl overflow-hidden ring-1 ring-white/20 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] cursor-pointer text-left"
     >
-      <Link
-        href={`/destinos/${destination.slug}`}
-        aria-label={`${destination.title} — ${destination.region}, ${destination.country}`}
-        className="relative block w-full h-[340px] rounded-2xl overflow-hidden ring-1 ring-white/20 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)]"
-      >
-        {/* Image */}
-        <Image
-          src={destination.img}
-          alt={`${destination.title}, ${destination.region}, ${destination.country} — tour con Danfer Tours Cusco`}
-          fill
-          priority={index === 0}
-          fetchPriority={index === 0 ? "high" : "auto"}
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          // La tarjeta es vertical (240×340) pero el optimizador escala por
-          // ANCHO: con sizes=240px una foto apaisada llega de ~256×170 y se
-          // estira a 340px de alto → borrosa. 480px da margen para el
-          // recorte vertical + pantallas 2x.
-          sizes="480px"
-        />
+      <Image
+        src={destination.img}
+        alt=""
+        aria-hidden
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
+        sizes="220px"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/15 to-transparent" />
 
-        {/* Dark gradient for legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-night/40 via-transparent to-night/95" />
+      <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-gradient-to-r from-gold to-gold-bright px-2 py-0.5 text-[10px] text-night shadow-lg">
+        <Star className="w-2.5 h-2.5 fill-night text-night" />
+        <span className="font-bold">{destination.rating}</span>
+      </div>
 
-        {/* Top row: location + rating */}
-        <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-          <div className="text-white text-[10px] uppercase tracking-[0.25em] drop-shadow-lg">
-            <div className="opacity-75">{destination.country}</div>
-            <div className="font-semibold mt-0.5">{destination.region}</div>
-          </div>
-          <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-gold to-gold-bright px-2.5 py-1 text-[11px] text-night shadow-lg">
-            <Star className="w-3 h-3 fill-night text-night" />
-            <span className="font-bold">{destination.rating}</span>
-          </div>
+      <div className="absolute bottom-0 left-0 right-0 p-3">
+        <div className="text-white/70 text-[9px] uppercase tracking-[0.2em]">
+          {destination.region}
         </div>
-
-        {/* Bottom: title + meta */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="flex items-center gap-2 text-white/70 text-[10px] uppercase tracking-wider mb-2">
-            <span>{destination.days}</span>
-            <span className="w-1 h-1 rounded-full bg-gold" />
-            <span>{destination.reviews}+ reseñas</span>
-          </div>
-          <h3 className="font-display text-2xl text-white leading-tight drop-shadow-md">
-            {destination.title}
-          </h3>
-          <div className="mt-3 flex items-end justify-between">
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-white/55">
-                Desde
-              </div>
-              <div className="font-display text-xl font-bold text-gold">
-                US$ {destination.price}
-              </div>
-            </div>
-            <div className="opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-              <span className="grid place-items-center w-9 h-9 rounded-full bg-gold text-night shadow-lg">
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
-          </div>
+        <div className="text-white text-sm font-bold leading-tight mt-1">
+          {destination.title}
         </div>
-
-        {/* Gold accent border that appears on hover */}
-        <div className="absolute inset-0 rounded-2xl ring-2 ring-gold/0 group-hover:ring-gold/60 transition-all duration-300 pointer-events-none" />
-      </Link>
-    </motion.div>
+        <div className="mt-1 text-[11px] text-gold font-semibold">
+          Desde US$ {destination.price}
+        </div>
+      </div>
+      <div className="absolute inset-0 rounded-2xl ring-2 ring-gold/0 group-hover:ring-gold/60 transition-all duration-300 pointer-events-none" />
+    </motion.button>
   );
 }

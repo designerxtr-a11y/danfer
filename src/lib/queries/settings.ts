@@ -1,6 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export type HeroCardSlug = "machu-picchu" | "valle-sagrado" | "rainbow-mountain";
+export type HeroCardSlug =
+  | "machu-picchu"
+  | "valle-sagrado"
+  | "rainbow-mountain"
+  | "camino-inca"
+  | "laguna-humantay";
 
 /** Sobreescritura editable de una tarjeta del hero (todo opcional). */
 export interface HeroCardText {
@@ -35,6 +40,8 @@ export interface SiteSettings {
     "machu-picchu"?: string;
     "valle-sagrado"?: string;
     "rainbow-mountain"?: string;
+    "camino-inca"?: string;
+    "laguna-humantay"?: string;
   };
   /** Texto/precio de las tarjetas del hero; campo ausente = default del código. */
   hero_cards: Partial<Record<HeroCardSlug, HeroCardText>>;

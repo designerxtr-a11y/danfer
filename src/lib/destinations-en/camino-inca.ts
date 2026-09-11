@@ -13,9 +13,9 @@ export const caminoIncaEn: DestinationContent = {
   tagline: "South America's most famous trek · SERNANP permits",
   hero: {
     image:
-      "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop",
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/camino-inca-1789091394992.webp",
     imageAlt:
-      "Inca Trail path crossing the Peruvian Andes toward Machu Picchu, with porters and trekkers",
+      "Group of trekkers on the Inca Trail crossing the Peruvian Andes toward Machu Picchu, with the Salkantay snow peak in the background",
   },
   intro:
     "The classic Inca Trail is a 43-kilometer trekking route that connects the Sacred Valley with Machu Picchu, following the same stone-paved path that the chasquis traveled 500 years ago. It is part of the Qhapaq Ñan, the Inca road network declared a World Heritage Site by UNESCO. The classic trek lasts 4 days and 3 nights, crossing three mountain passes — the highest, Dead Woman's Pass (Warmiwañusca) at 4,215 m.a.s.l. — and visiting 8 archaeological sites lost in the Andean cloud forest (Llaqtapata, Runkuracay, Sayacmarca, Phuyupatamarca, Wiñay Wayna) before reaching the Intipunku (Sun Gate) at dawn on the fourth day, with the citadel of Machu Picchu emerging from the mist. Access is strictly regulated by SERNANP: only 500 people per day (including porters and guides), personal non-transferable permits, and officially licensed operators.",

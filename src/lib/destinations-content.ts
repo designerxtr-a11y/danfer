@@ -42,7 +42,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     tagline: "La ciudadela inca del siglo XV · 7 Maravillas del Mundo Moderno",
     hero: {
       image:
-        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1920&auto=format&fit=crop",
+        "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
       imageAlt:
         "Vista panorámica de la ciudadela inca de Machu Picchu con el Huayna Picchu al fondo, en la región Cusco, Perú",
     },
@@ -129,9 +129,9 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     tagline: "La caminata más famosa de Sudamérica · Permisos SERNANP",
     hero: {
       image:
-        "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop",
+        "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/camino-inca-1789091394992.webp",
       imageAlt:
-        "Sendero del Camino Inca atravesando los Andes peruanos rumbo a Machu Picchu, con porteadores y trekkers",
+        "Grupo de trekkers en el sendero del Camino Inca atravesando los Andes peruanos rumbo a Machu Picchu, con el nevado Salkantay al fondo",
     },
     intro:
       "El Camino Inca clásico es una ruta de trekking de 43 kilómetros que conecta el Valle Sagrado con Machu Picchu, siguiendo el mismo sendero empedrado que recorrían los chasquis hace 500 años. Forma parte del Qhapaq Ñan, la red vial inca declarada Patrimonio de la Humanidad por la UNESCO. La caminata clásica dura 4 días y 3 noches, cruzando tres pasos de montaña — el más alto, el Paso de la Mujer Muerta (Warmiwañusca) a 4,215 msnm — y visitando 8 sitios arqueológicos perdidos en la selva andina (Llaqtapata, Runkuracay, Sayacmarca, Phuyupatamarca, Wiñay Wayna) antes de llegar al Intipunku (Puerta del Sol) al amanecer del cuarto día, con la ciudadela de Machu Picchu emergiendo entre la niebla. El acceso está estrictamente regulado por el SERNANP: solo 500 personas por día (incluyendo porteadores y guías), permisos personales intransferibles, y operadores con licencia oficial.",
@@ -220,9 +220,9 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     tagline: "Pisac · Ollantaytambo · Chinchero · Maras · Moray",
     hero: {
       image:
-        "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=1920&auto=format&fit=crop",
+        "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
       imageAlt:
-        "Valle Sagrado de los Incas visto desde lo alto, con terrazas agrícolas, el río Urubamba y montañas andinas",
+        "Mercado artesanal de Pisac, en el Valle Sagrado de los Incas, con puestos de textiles andinos y montañas al fondo",
     },
     intro:
       "El Valle Sagrado de los Incas (Willka Qhichwa en quechua) es un valle fértil de 60 kilómetros formado por el río Urubamba, ubicado entre Cusco y Machu Picchu. Para los incas era el granero del imperio: clima templado, suelos volcánicos y un sistema de terrazas agrícolas que permitían cultivar más de 200 variedades de maíz y papa. Hoy es uno de los recorridos imprescindibles del sur peruano, con sitios arqueológicos vivos como Pisac (fortaleza + mercado), Ollantaytambo (única ciudad inca aún habitada), Chinchero (textiles tradicionales), las salineras de Maras (3,000 pozas de sal pre-inca) y los andenes circulares de Moray (laboratorio agrícola inca). A solo 1-2 horas de Cusco, es la mejor opción para aclimatarse antes de Machu Picchu y conectar con la cultura andina viva.",
@@ -315,9 +315,9 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     tagline: "5,200 msnm · La montaña más fotografiada del Perú",
     hero: {
       image:
-        "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=1920&auto=format&fit=crop",
+        "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/rainbow-mountain-1789091035693.webp",
       imageAlt:
-        "Montaña Vinicunca (Rainbow Mountain) con sus franjas naturales de minerales coloreados en rojo, amarillo, turquesa y dorado",
+        "Viajero en la cima de la Montaña Vinicunca (Rainbow Mountain) con sus franjas naturales de minerales coloreados en rojo, amarillo, turquesa y dorado",
     },
     intro:
       "La Montaña de 7 Colores, llamada Vinicunca en quechua, es una formación geológica única en los Andes peruanos: capas sedimentarias de minerales (hierro oxidado, sulfuro de cobre, óxido de zinc, calcio carbonatado) que crean franjas naturales rojas, ocres, turquesas, doradas y verdes a 5,200 metros sobre el nivel del mar. Se hizo viral en 2015 cuando el deshielo expuso colores antes cubiertos por nieve. Hoy es la atracción más fotografiada del sur peruano después de Machu Picchu, con visitas diarias desde Cusco (~3 horas de viaje en bus + 2 horas de caminata). La altitud extrema y el sendero empinado la convierten en un desafío físico — pero el paisaje al llegar al mirador justifica cada paso. Operamos esta excursión Full Day saliendo a las 4:00 am desde tu hotel en Cusco.",
@@ -401,7 +401,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     tagline: "4,200 msnm · Laguna glaciar turquesa · Salkantay",
     hero: {
       image:
-        "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop",
+        "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/laguna-humantay-1789091396425.webp",
       imageAlt:
         "Laguna glaciar Humantay de aguas turquesas al pie del nevado Salkantay, en la región Cusco",
     },

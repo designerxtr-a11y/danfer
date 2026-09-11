@@ -12,7 +12,7 @@ export const lagunaHumantayEn: DestinationContent = {
   tagline: "4,200 m.a.s.l. · Turquoise glacial lake · Salkantay",
   hero: {
     image:
-      "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop",
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/laguna-humantay-1789091396425.webp",
     imageAlt:
       "Turquoise glacial Humantay Lake at the foot of the Salkantay snow peak, in the Cusco region",
   },

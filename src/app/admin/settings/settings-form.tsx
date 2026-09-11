@@ -17,6 +17,8 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
     "machu-picchu": initial.hero_images?.["machu-picchu"] ?? "",
     "valle-sagrado": initial.hero_images?.["valle-sagrado"] ?? "",
     "rainbow-mountain": initial.hero_images?.["rainbow-mountain"] ?? "",
+    "camino-inca": initial.hero_images?.["camino-inca"] ?? "",
+    "laguna-humantay": initial.hero_images?.["laguna-humantay"] ?? "",
   });
   const [statsImgs, setStatsImgs] = useState({
     polaroid_1: initial.stats_images?.polaroid_1 ?? "",
@@ -85,6 +87,8 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
             { key: "machu-picchu", label: "Tarjeta Machu Picchu", field: "hero_img_machu_picchu", prefix: "hero_card_machu_picchu" },
             { key: "valle-sagrado", label: "Tarjeta Pisac & Ollanta (Valle Sagrado)", field: "hero_img_valle_sagrado", prefix: "hero_card_valle_sagrado" },
             { key: "rainbow-mountain", label: "Tarjeta Rainbow Mountain", field: "hero_img_rainbow_mountain", prefix: "hero_card_rainbow_mountain" },
+            { key: "camino-inca", label: "Tarjeta Camino Inca", field: "hero_img_camino_inca", prefix: "hero_card_camino_inca" },
+            { key: "laguna-humantay", label: "Tarjeta Laguna Humantay", field: "hero_img_laguna_humantay", prefix: "hero_card_laguna_humantay" },
           ] as const
         ).map((card) => {
           const defaults = HERO_CARD_DEFAULTS.find((d) => d.slug === card.key)!;

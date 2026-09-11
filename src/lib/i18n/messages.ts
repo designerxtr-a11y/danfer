@@ -14,7 +14,6 @@ export const messages = {
       subtitle:
         "Tours exclusivos por Machu Picchu, el Valle Sagrado y rutas ancestrales. Experiencias auténticas con guías locales que conocen cada piedra del imperio.",
       cta: "Reservar tour",
-      videoCta: "Ver video",
       stats_travelers: "Viajeros felices",
       stats_rating: "Rating TripAdvisor",
       stats_tours: "Tours únicos",
@@ -103,7 +102,6 @@ export const messages = {
       subtitle:
         "Exclusive tours through Machu Picchu, the Sacred Valley, and ancestral routes. Authentic experiences with local guides who know every stone of the empire.",
       cta: "Book tour",
-      videoCta: "Watch video",
       stats_travelers: "Happy travelers",
       stats_rating: "TripAdvisor rating",
       stats_tours: "Unique tours",

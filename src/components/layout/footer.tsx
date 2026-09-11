@@ -1,7 +1,10 @@
 import { Link } from "@/i18n/navigation";
+import NextLink from "next/link";
+import Image from "next/image";
 import { getLocale } from "next-intl/server";
-import { Mail, Phone, MapPin, Award, Shield, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Award, Shield, Clock, Send } from "lucide-react";
 import { NewsletterForm } from "./newsletter-form";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "./navbar";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSettings, publicPhone, normalizeWhatsApp } from "@/lib/queries/settings";
 import { t, type Locale } from "@/types/database";
@@ -84,10 +87,24 @@ export async function Footer() {
 
   return (
     <footer
-      className="bg-night-deep border-t border-white/5 mt-32"
+      className="bg-night-deep mt-32"
       itemScope
       itemType="https://schema.org/TravelAgency"
     >
+      {/* Franja decorativa: skyline de Machu Picchu (siluetas) sobre fondo
+          claro — transición visual entre el contenido de la página y el
+          footer oscuro. */}
+      <div className="bg-background">
+        <Image
+          src="/images/machupicchu-footer-v3-negro.png"
+          alt=""
+          aria-hidden
+          width={1920}
+          height={268}
+          className="w-full h-auto"
+        />
+      </div>
+
       {/* Trust strip */}
       <div className="border-b border-white/5 py-6">
         <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-white/55 text-xs uppercase tracking-widest">
@@ -106,10 +123,32 @@ export async function Footer() {
         </div>
       </div>
 
-      <div className="py-20 px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10">
+      {/* Newsletter — barra destacada, ancho completo */}
+      <div className="border-b border-white/5 bg-white/[0.03]">
+        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center gap-5 md:gap-8">
+          <div className="flex items-center gap-3 md:shrink-0">
+            <Send className="w-5 h-5 text-gold shrink-0" />
+            <div>
+              <h4 className="text-white font-semibold text-sm">
+                {en ? "Get inspired, travel with us" : "Inspírate y viaja con nosotros"}
+              </h4>
+              <p className="text-white/60 text-xs">
+                {en
+                  ? "Exclusive deals and new routes straight to your inbox."
+                  : "Ofertas exclusivas y nuevas rutas en tu email."}
+              </p>
+            </div>
+          </div>
+          <div className="w-full md:max-w-sm md:ml-auto">
+            <NewsletterForm />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative py-20 px-6 overflow-hidden">
+        <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:divide-x lg:divide-white/5">
           {/* Brand col */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3 lg:pr-8">
             <Link
               href="/"
               className="font-display text-3xl font-bold tracking-wider block"
@@ -126,54 +165,39 @@ export async function Footer() {
                 : "Operador turístico oficial en Cusco, Perú. Tours premium a Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain y Laguna Humantay. Guías locales certificados, grupos pequeños, reservas con confianza."}
             </p>
 
-            <div className="mt-6 space-y-2.5 text-sm text-white/70">
+            <div className="mt-6 flex items-center gap-3">
               <a
-                href="mailto:hola@danfertourscusco.com"
-                className="flex items-center gap-2 hover:text-gold transition"
-                itemProp="email"
+                href="https://www.tiktok.com/@danfertourscusco"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok de Danfer Tours Cusco"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-white/70 hover:text-gold hover:border-gold/40 transition"
               >
-                <Mail className="w-4 h-4" />
-                hola@danfertourscusco.com
+                <TikTokIcon className="w-4 h-4" />
               </a>
-              {phone && (
-                <a
-                  href={`tel:${normalizeWhatsApp(phone)}`}
-                  className="flex items-center gap-2 hover:text-gold transition"
-                  itemProp="telephone"
-                >
-                  <Phone className="w-4 h-4" />
-                  {phone}
-                </a>
-              )}
-              <div
-                className="flex items-start gap-2"
-                itemProp="address"
-                itemScope
-                itemType="https://schema.org/PostalAddress"
+              <a
+                href="https://www.facebook.com/danfertourscusco"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook de Danfer Tours Cusco"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-white/70 hover:text-gold hover:border-gold/40 transition"
               >
-                <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <div>
-                  <span itemProp="streetAddress">Av. El Sol 314</span> ·{" "}
-                  <span itemProp="addressLocality">Cusco</span>,{" "}
-                  <span itemProp="addressCountry">{en ? "Peru" : "Perú"}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <h4 className="font-display text-sm text-white mb-2">
-                {en ? "Opening hours" : "Horario de atención"}
-              </h4>
-              <div className="text-xs text-white/55 space-y-0.5">
-                <div>{en ? "Mon-Fri" : "Lun-Vie"} · 8:00 - 20:00</div>
-                <div>{en ? "Saturday" : "Sábado"} · 9:00 - 18:00</div>
-                <div>{en ? "Sunday" : "Domingo"} · 9:00 - 14:00</div>
-              </div>
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/danfertourscusco"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram de Danfer Tours Cusco"
+                className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-white/70 hover:text-gold hover:border-gold/40 transition"
+              >
+                <InstagramIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
           {/* Tours top vendidos */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
               {en ? "Best-selling tours" : "Tours más vendidos"}
             </h4>
@@ -214,7 +238,7 @@ export async function Footer() {
           </div>
 
           {/* Categorías + Destinos */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
               {en ? "By category" : "Por categoría"}
             </h4>
@@ -248,8 +272,8 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Empresa + newsletter */}
-          <div className="lg:col-span-3">
+          {/* Empresa + Contacto */}
+          <div className="lg:col-span-3 lg:px-8">
             <h4 className="font-display text-lg text-white mb-4">
               {en ? "Company" : "Empresa"}
             </h4>
@@ -266,13 +290,50 @@ export async function Footer() {
               ))}
             </ul>
 
-            <h4 className="font-display text-lg text-white mb-3">Newsletter</h4>
-            <p className="text-white/55 text-xs mb-4">
-              {en
-                ? "Exclusive deals and new routes straight to your inbox."
-                : "Ofertas exclusivas y nuevas rutas en tu email."}
-            </p>
-            <NewsletterForm />
+            <h4 className="font-display text-sm text-white mb-3 uppercase tracking-widest">
+              {en ? "Contact" : "Contacto"}
+            </h4>
+            <div className="space-y-2.5 text-sm text-white/70">
+              <a
+                href="mailto:hola@danfertourscusco.com"
+                className="flex items-center gap-2 hover:text-gold transition"
+                itemProp="email"
+              >
+                <Mail className="w-4 h-4 shrink-0" />
+                hola@danfertourscusco.com
+              </a>
+              {phone && (
+                <a
+                  href={`tel:${normalizeWhatsApp(phone)}`}
+                  className="flex items-center gap-2 hover:text-gold transition"
+                  itemProp="telephone"
+                >
+                  <Phone className="w-4 h-4 shrink-0" />
+                  {phone}
+                </a>
+              )}
+              <div
+                className="flex items-start gap-2"
+                itemProp="address"
+                itemScope
+                itemType="https://schema.org/PostalAddress"
+              >
+                <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                <div>
+                  <span itemProp="streetAddress">Av. El Sol 314</span> ·{" "}
+                  <span itemProp="addressLocality">Cusco</span>,{" "}
+                  <span itemProp="addressCountry">{en ? "Peru" : "Perú"}</span>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 mt-0.5 shrink-0" />
+                <div className="text-xs space-y-0.5">
+                  <div>{en ? "Mon-Fri" : "Lun-Vie"} · 8:00 - 20:00</div>
+                  <div>{en ? "Saturday" : "Sábado"} · 9:00 - 18:00</div>
+                  <div>{en ? "Sunday" : "Domingo"} · 9:00 - 14:00</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -297,6 +358,17 @@ export async function Footer() {
                 {en ? l.en : l.es}
               </Link>
             ))}
+            {/* Acceso al panel. next/link plano y no el Link de next-intl a
+                propósito: /admin queda fuera del enrutado por idioma (lo
+                excluye el middleware), así que el Link con prefijo de
+                locale lo rompería agregando /en. */}
+            <NextLink
+              href="/admin/login"
+              rel="nofollow"
+              className="text-white/35 hover:text-gold transition"
+            >
+              {en ? "Staff" : "Administrar"}
+            </NextLink>
           </div>
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/35">
             Visa · MC · Amex · PayPal
