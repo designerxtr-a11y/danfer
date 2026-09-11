@@ -59,8 +59,9 @@ export function Stats({
           </motion.p>
 
           <div className="mt-8">
-            <button className="text-gold hover:text-gold-bright text-sm font-medium underline-offset-4 hover:underline transition">
-              {m.common.learnMore} →
+            <button className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-5 py-2.5 text-gold hover:bg-gold hover:text-night hover:border-gold text-sm font-semibold transition">
+              {m.common.learnMore}
+              <span aria-hidden>→</span>
             </button>
           </div>
         </div>
@@ -106,7 +107,9 @@ function Stat({
       transition={{ delay, duration: 0.6 }}
       className="text-center"
     >
-      <Icon className="w-6 h-6 text-gold mx-auto mb-3" />
+      <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-gold/10 grid place-items-center">
+        <Icon className="w-6 h-6 text-gold" strokeWidth={1.75} />
+      </div>
       <div className="flex items-baseline justify-center gap-0.5">
         <motion.span className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-night">
           {rounded}
@@ -123,21 +126,21 @@ function Stat({
 const polaroids = [
   {
     key: "polaroid_1" as const,
-    src: "https://images.unsplash.com/photo-1531065208531-4036c0dba3ca?q=80&w=600&auto=format&fit=crop",
+    src: "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/polaroids/polaroid_1-1789168925723.webp",
     rotate: -7,
     top: "0%",
     left: "2%",
   },
   {
     key: "polaroid_2" as const,
-    src: "https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=600&auto=format&fit=crop",
+    src: "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/polaroids/polaroid_2-1789168927119.webp",
     rotate: 5,
     top: "24%",
     left: "42%",
   },
   {
     key: "polaroid_3" as const,
-    src: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=600&auto=format&fit=crop",
+    src: "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/polaroids/polaroid_3-1789168927629.webp",
     rotate: -5,
     top: "47%",
     left: "8%",
