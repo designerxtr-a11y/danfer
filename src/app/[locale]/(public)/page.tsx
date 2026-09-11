@@ -3,7 +3,6 @@ import { Hero } from "@/components/sections/hero";
 import { Certifications } from "@/components/sections/certifications";
 import { Stats } from "@/components/sections/stats";
 import { FeaturedTours } from "@/components/sections/featured-tours";
-import { Destinations } from "@/components/sections/destinations";
 import { Testimonials } from "@/components/sections/testimonials";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
@@ -44,7 +43,6 @@ export default async function Home() {
       <Certifications />
       <FeaturedTours />
       <Stats polaroidImages={settings.stats_images} />
-      <Destinations />
       <Testimonials />
     </>
   );
