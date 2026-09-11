@@ -3,7 +3,7 @@ export const messages = {
     nav: {
       tours: "Tours",
       destinations: "Destinos",
-      blog: "Blog",
+      blog: "Guías de Viaje",
       reviews: "Reseñas",
       machuPicchuTours: "Machu Picchu Tours",
       cuscoTours: "Cusco Tours",
@@ -102,7 +102,7 @@ export const messages = {
     nav: {
       tours: "Tours",
       destinations: "Destinations",
-      blog: "Blog",
+      blog: "Travel Guides",
       reviews: "Reviews",
       machuPicchuTours: "Machu Picchu Tours",
       cuscoTours: "Cusco Tours",

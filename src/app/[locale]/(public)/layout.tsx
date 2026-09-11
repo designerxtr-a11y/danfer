@@ -6,7 +6,6 @@ import { I18nProvider } from "@/lib/i18n/provider";
 import { tr, type Locale } from "@/lib/i18n/messages";
 import { getSettings, normalizeWhatsApp, publicPhone } from "@/lib/queries/settings";
 import { getCategoriesWithTours } from "@/lib/queries/categories";
-import { listDestinations } from "@/lib/destinations-content";
 import { t } from "@/types/database";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
@@ -22,10 +21,7 @@ export default async function PublicLayout({
   const typedLocale: Locale = locale === "en" ? "en" : "es";
   const mx = tr(typedLocale);
 
-  const [categories, destinations] = await Promise.all([
-    getCategoriesWithTours(),
-    Promise.resolve(listDestinations(typedLocale)),
-  ]);
+  const categories = await getCategoriesWithTours();
 
   const catBySlug = (slug: string) => categories.find((c) => c.slug === slug);
   const toTourLinks = (slugs: string[]) =>
@@ -58,21 +54,11 @@ export default async function PublicLayout({
       viewAllHref: "/tours",
       viewAllLabel: mx.nav.viewAll,
     },
-    {
-      type: "mega",
-      label: mx.nav.conocePeru,
-      items: destinations.map((d) => ({
-        label: d.name,
-        href: `/destinos/${d.slug}`,
-      })),
-      viewAllHref: "/destinos",
-      viewAllLabel: mx.nav.viewAll,
-    },
+    { type: "link", label: mx.nav.blog, href: "/blog" },
     {
       type: "mega",
       label: mx.nav.infoUtil,
       items: [
-        { label: mx.nav.blog, href: "/blog" },
         { label: mx.nav.aboutUs, href: "/sobre-nosotros" },
         { label: mx.nav.contact, href: "/contacto" },
         { label: mx.nav.reviews, href: "/#reviews" },
