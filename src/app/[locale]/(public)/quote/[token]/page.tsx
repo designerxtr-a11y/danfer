@@ -36,7 +36,7 @@ export default async function QuotePage({ params }: PageProps) {
 
   return (
     <main className="bg-cream">
-      <div className="max-w-5xl mx-auto px-5 pt-10 pb-16 lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 lg:items-start">
+      <div className="max-w-5xl mx-auto px-5 pt-24 md:pt-28 pb-16 lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 lg:items-start">
         <div className="min-w-0">
           <section className="pb-6">
             <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
@@ -113,7 +113,7 @@ export default async function QuotePage({ params }: PageProps) {
           </section>
         </div>
 
-        <aside className="lg:sticky lg:top-8 mt-2 lg:mt-0">
+        <aside className="lg:sticky lg:top-28 mt-2 lg:mt-0">
           <div className="bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden">
             <div className="p-6">
               <h2 className="font-bold text-lg text-night">{quote.itemLabel}</h2>
