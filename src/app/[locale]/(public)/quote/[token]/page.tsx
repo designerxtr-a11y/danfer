@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Check, X, MapPin, Calendar, Users, Clock } from "lucide-react";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
+import { PassportUpload } from "./passport-upload";
 
 // Private, single-use travel quotes. Not linked from anywhere on the site —
 // only shared directly with the client. Not meant to replace the real
@@ -148,6 +149,14 @@ export default async function QuotePage({ params }: PageProps) {
             </ul>
           </div>
         </div>
+      </section>
+
+      <section className="max-w-3xl mx-auto px-5 pb-10">
+        <h3 className="font-bold text-lg text-night mb-1">Passport photo</h3>
+        <p className="text-sm text-night/60 mb-4 max-w-xl">
+          To book your tourist train ticket and hotel reservation, we need a photo of your passport.
+        </p>
+        <PassportUpload token={token} />
       </section>
 
       <section className="max-w-3xl mx-auto px-5 pb-16">
