@@ -39,7 +39,7 @@ export default async function BlogIndex({
 }) {
   const { locale } = await params;
   const lc: Locale = locale === "en" ? "en" : "es";
-  const posts = await getPublishedPosts(24);
+  const posts = await getPublishedPosts(60);
 
   return (
     <div className="pt-24 md:pt-32 pb-16 md:pb-24">
