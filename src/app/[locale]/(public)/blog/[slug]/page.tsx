@@ -3,7 +3,27 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { Calendar, Clock, ChevronLeft } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  ChevronLeft,
+  MapPin,
+  DollarSign,
+  HelpCircle,
+  ShieldAlert,
+  UtensilsCrossed,
+  Camera,
+  Heart,
+  ShoppingBag,
+  Landmark,
+  Leaf,
+  Languages,
+  Ticket,
+  Users,
+  Backpack,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
 import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
 import { t, type Locale } from "@/types/database";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
@@ -29,14 +49,49 @@ function childrenText(children: React.ReactNode): string {
   return "";
 }
 
-// h2 con id estable → anclas del índice de contenidos.
+// Ícono contextual por encabezado según palabras clave — rompe el bloque de
+// texto plano bajo cada H2 sin tener que tocar el markdown de los posts.
+const H2_ICON_RULES: [RegExp, LucideIcon][] = [
+  [/pregunta|frequently asked/i, HelpCircle],
+  [/lleg|transport|tren|bus|vuelo|train|flight|get to|get there/i, MapPin],
+  [/llevar|equipaje|empacar|mochila|pack/i, Backpack],
+  [/precio|costo|cuesta|presupuesto|cuánto|cost|budget|price/i, DollarSign],
+  [/dificultad|altura|soroche|altitud|seguridad|estafa|difficulty|altitude|scam|safety/i, ShieldAlert],
+  [/comida|comer|gastronom|vegetari|food|eat/i, UtensilsCrossed],
+  [/foto|spot|mirador|photo/i, Camera],
+  [/luna de miel|pareja|romant|honeymoon|couple/i, Heart],
+  [/compra|souvenir|textil|alpaca|shop/i, ShoppingBag],
+  [/arquitectura|templo|historia|significado|símbolo|history|meaning|symbol|temple/i, Landmark],
+  [/turismo responsable|comunidad|sostenib|responsible|community/i, Leaf],
+  [/quechua|idioma|frase|language|phrase/i, Languages],
+  [/boleto|entrada|circuito|ticket|circuit/i, Ticket],
+  [/niño|familia|mayor|kids|family|senior/i, Users],
+];
+function iconForHeading(text: string): LucideIcon {
+  for (const [re, Icon] of H2_ICON_RULES) if (re.test(text)) return Icon;
+  return Sparkles;
+}
+
+// h2 con id estable → anclas del índice de contenidos, más un ícono
+// contextual (según palabras clave del propio título) para que el cuerpo
+// del artículo no se sienta un bloque continuo de texto plano.
 // scroll-mt compensa el navbar fijo al saltar al ancla.
 const mdxComponents = {
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 id={headingSlug(childrenText(props.children))} className="scroll-mt-28">
-      {props.children}
-    </h2>
-  ),
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
+    const text = childrenText(props.children);
+    const Icon = iconForHeading(text);
+    return (
+      <h2
+        id={headingSlug(text)}
+        className="scroll-mt-28 flex items-center gap-3"
+      >
+        <span className="grid place-items-center w-9 h-9 rounded-xl bg-gold/10 shrink-0">
+          <Icon className="w-[18px] h-[18px] text-gold" />
+        </span>
+        <span>{props.children}</span>
+      </h2>
+    );
+  },
 };
 
 interface PageProps {
