@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Check, X, MapPin, Calendar, Users, Clock } from "lucide-react";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { PassportUpload } from "./passport-upload";
@@ -9,6 +10,8 @@ import { PassportUpload } from "./passport-upload";
 interface Quote {
   clientName: string;
   destination: string;
+  heroImage: string;
+  heroImageAlt: string;
   dates: string;
   duration: string;
   travelers: number;
@@ -25,6 +28,9 @@ const QUOTES: Record<string, Quote> = {
   "emmanuel-champagne": {
     clientName: "Emmanuel",
     destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
     dates: "Nov 15 – 18, 2026",
     duration: "2 days / 1 night",
     travelers: 2,
@@ -72,7 +78,20 @@ export default async function QuotePage({ params }: PageProps) {
 
   return (
     <main className="bg-cream">
-      <section className="max-w-3xl mx-auto px-5 pt-14 pb-6">
+      <section className="max-w-3xl mx-auto px-5 pt-10">
+        <div className="relative aspect-[16/9] rounded-3xl overflow-hidden shadow-card">
+          <Image
+            src={quote.heroImage}
+            alt={quote.heroImageAlt}
+            fill
+            priority
+            sizes="(min-width: 768px) 768px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      </section>
+
+      <section className="max-w-3xl mx-auto px-5 pt-6 pb-6">
         <p className="font-display text-gold tracking-widest text-sm uppercase">
           Travel Quote
         </p>
