@@ -38,10 +38,12 @@ export async function uploadPassportPhoto(token: string, formData: FormData) {
 export async function createOrder(token: string) {
   const quote = QUOTES[token];
   if (!quote) return { ok: false as const, error: "Quote not found" };
+  if (!quote.acceptsPaypal) return { ok: false as const, error: "PayPal not available for this quote" };
 
   try {
     const charge = quotePaypalCharge(quote);
-    const orderId = await createPaypalOrder(charge, "USD", `${quote.itemLabel} — Danfer Tours Cusco`);
+    const description = quote.items.map((i) => i.label).join(", ");
+    const orderId = await createPaypalOrder(charge, "USD", `${description} — Danfer Tours Cusco`);
     return { ok: true as const, orderId };
   } catch (e) {
     return { ok: false as const, error: e instanceof Error ? e.message : "PayPal error" };

@@ -4,6 +4,23 @@
 //
 // Shared between the page (display) and the PayPal server actions (source
 // of truth for the amount to charge — never trust a price from the client).
+export interface ItineraryStop {
+  day: string;
+  timeLabel: string;
+  title: string;
+  desc: string;
+  photo: string;
+  photoAlt: string;
+}
+
+export interface QuoteItem {
+  label: string;
+  detail?: string;
+  unitPrice: number;
+  /** false = flat fee for the group (e.g. a shared transfer), not per traveler. Defaults to true. */
+  perTraveler?: boolean;
+}
+
 export interface Quote {
   clientName: string;
   destination: string;
@@ -13,12 +30,13 @@ export interface Quote {
   duration: string;
   travelers: number;
   currency: string;
-  pricePerPerson: number;
-  itemLabel: string;
-  itemDetail: string;
+  itinerary: ItineraryStop[];
+  items: QuoteItem[];
   includes: string[];
   excludes: string[];
   note: string;
+  /** PayPal only supports quotes priced in USD — omit for other currencies. */
+  acceptsPaypal: boolean;
 }
 
 export const QUOTES: Record<string, Quote> = {
@@ -32,10 +50,16 @@ export const QUOTES: Record<string, Quote> = {
     duration: "2 days / 1 night",
     travelers: 2,
     currency: "$",
-    pricePerPerson: 280,
-    itemLabel: "Machu Picchu · 2D/1N",
-    itemDetail:
-      "Tourist train, bus, Machu Picchu entrance ticket, guided tour, and a hotel near Aguas Calientes with breakfast included.",
+    acceptsPaypal: true,
+    itinerary: [],
+    items: [
+      {
+        label: "Machu Picchu · 2D/1N",
+        detail:
+          "Tourist train, bus, Machu Picchu entrance ticket, guided tour, and a hotel near Aguas Calientes with breakfast included.",
+        unitPrice: 280,
+      },
+    ],
     includes: [
       "Tourist train, round trip (Ollantaytambo–Aguas Calientes)",
       "Bus up and down to the citadel",
@@ -46,10 +70,80 @@ export const QUOTES: Record<string, Quote> = {
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
     note: "Rate valid for the dates above, subject to confirmation of train and entrance ticket availability at the time of booking.",
   },
+
+  "victor-cueva": {
+    clientName: "Victor",
+    destination: "Cusco & Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu",
+    dates: "22 – 25 oct, 2026",
+    duration: "4 días / 3 noches",
+    travelers: 3,
+    currency: "S/",
+    acceptsPaypal: false,
+    itinerary: [
+      {
+        day: "Día 1 · 22 oct",
+        timeLabel: "1–6 pm",
+        title: "Llegada + City Tour",
+        desc: "Coricancha, Qenqo, Pucapucara, Sacsahuamán y Tambomachay. Incluye bus y guía profesional.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · 23 oct",
+        timeLabel: "7 am–7 pm",
+        title: "Valle Sagrado VIP",
+        desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo. Incluye bus, guía y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
+        photoAlt: "Mercado artesanal de Pisac, Valle Sagrado",
+      },
+      {
+        day: "Día 3–4 · 24–25 oct",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu · 2D/1N",
+        desc: "Tren local ida/vuelta, transporte Cusco–Ollantaytambo–Cusco, bus de subida/bajada, hotel, entrada y guía profesional. Retorno a Cusco el día 25.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", unitPrice: 30 },
+      { label: "Valle Sagrado VIP", unitPrice: 80 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail: "Tren local, bus, hotel, entrada y guía profesional",
+        unitPrice: 320,
+      },
+      { label: "Traslado aeropuerto", detail: "Solo recojo, tarifa fija", unitPrice: 30, perTraveler: false },
+    ],
+    includes: [
+      "City Tour: bus y guía profesional",
+      "Valle Sagrado VIP: bus, guía y almuerzo buffet",
+      "Machu Picchu: entrada, bus de subida/bajada, guía, tren local, hotel y transporte Cusco–Ollantaytambo–Cusco",
+      "Traslado aeropuerto: solo recojo",
+    ],
+    excludes: [
+      "Boleto Turístico del Cusco, general (S/70 p.p.)",
+      "Alimentación no especificada",
+      "Propinas",
+      "Gastos personales",
+      "Seguro de viaje",
+    ],
+    note: "Precios en soles (S/) por persona, tarifa nacional. Sujeto a confirmación de disponibilidad de tren y entradas al reservar. Boleto Turístico del Cusco (S/70 p.p.) requerido aparte para Sacsahuamán, Qenqo, Pucapucara, Tambomachay, Chinchero y Moray.",
+  },
 };
 
+export function itemSubtotal(item: QuoteItem, travelers: number): number {
+  return item.perTraveler === false ? item.unitPrice : item.unitPrice * travelers;
+}
+
 export function quoteTotal(quote: Quote): number {
-  return quote.pricePerPerson * quote.travelers;
+  return quote.items.reduce((sum, item) => sum + itemSubtotal(item, quote.travelers), 0);
 }
 
 // PayPal "receive payments for goods/services" rate on this account: 5.4% +

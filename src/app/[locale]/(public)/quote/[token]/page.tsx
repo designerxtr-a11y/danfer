@@ -4,7 +4,7 @@ import { Check, X, MapPin, Calendar, Users, Clock } from "lucide-react";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { PassportUpload } from "./passport-upload";
 import { PaypalButton } from "./paypal-button";
-import { QUOTES, quoteTotal, quotePaypalCharge } from "./quotes-data";
+import { QUOTES, quoteTotal, quotePaypalCharge, itemSubtotal } from "./quotes-data";
 
 interface PageProps {
   params: Promise<{ token: string; locale: string }>;
@@ -28,7 +28,7 @@ export default async function QuotePage({ params }: PageProps) {
   const settings = await getSettings();
   const wa = normalizeWhatsApp(settings.whatsapp);
   const total = quoteTotal(quote);
-  const paypalCharge = quotePaypalCharge(quote);
+  const paypalCharge = quote.acceptsPaypal ? quotePaypalCharge(quote) : total;
   const paypalFee = Math.round((paypalCharge - total) * 100) / 100;
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const waMessage = `Hi! I'd like to confirm my ${quote.destination} quote (${quote.dates}) for ${quote.travelers} people.`;
@@ -73,6 +73,42 @@ export default async function QuotePage({ params }: PageProps) {
             </div>
           </section>
 
+          {quote.itinerary.length > 0 && (
+            <section className="pt-10">
+              <h2 className="font-bold text-lg text-night mb-4">Itinerary</h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {quote.itinerary.map((stop) => (
+                  <div
+                    key={stop.day}
+                    className="rounded-2xl border border-night/10 overflow-hidden bg-white"
+                  >
+                    <div className="relative h-36">
+                      <Image
+                        src={stop.photo}
+                        alt={stop.photoAlt}
+                        fill
+                        sizes="(min-width: 1024px) 320px, (min-width: 640px) 340px, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="font-mono text-[11px] uppercase tracking-wide text-gold">
+                          {stop.day}
+                        </span>
+                        <span className="font-mono text-[10px] text-night/50 whitespace-nowrap">
+                          {stop.timeLabel}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-night mt-1">{stop.title}</h3>
+                      <p className="text-sm text-night/70 mt-1">{stop.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="py-10">
             <div className="grid sm:grid-cols-2 gap-8">
               <div>
@@ -116,57 +152,76 @@ export default async function QuotePage({ params }: PageProps) {
         <aside className="lg:sticky lg:top-28 mt-2 lg:mt-0">
           <div className="bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden">
             <div className="p-6">
-              <h2 className="font-bold text-lg text-night">{quote.itemLabel}</h2>
-              <p className="text-sm text-night/60 mt-1">{quote.itemDetail}</p>
-              <div className="flex items-baseline justify-between pt-5 mt-5 border-t border-night/10">
-                <span className="text-sm text-night/60">
-                  {quote.currency}
-                  {quote.pricePerPerson} &times; {quote.travelers}
-                </span>
-                <span className="font-bold text-night">
+              <h2 className="font-bold text-lg text-night">Quote detail</h2>
+              <div className="mt-4 space-y-3">
+                {quote.items.map((item) => (
+                  <div key={item.label} className="flex items-start justify-between gap-3 text-sm">
+                    <div className="min-w-0">
+                      <div className="text-night font-semibold">{item.label}</div>
+                      {item.detail && <div className="text-night/55 text-xs mt-0.5">{item.detail}</div>}
+                      <div className="text-night/50 text-xs mt-0.5">
+                        {quote.currency}
+                        {item.unitPrice}
+                        {item.perTraveler === false ? " (tarifa fija)" : ` × ${quote.travelers}`}
+                      </div>
+                    </div>
+                    <div className="font-semibold text-night shrink-0">
+                      {quote.currency}
+                      {itemSubtotal(item, quote.travelers)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-baseline justify-between pt-4 mt-4 border-t border-night/10">
+                <span className="font-bold text-night text-sm">Total &middot; {quote.travelers}</span>
+                <span className="font-display text-2xl text-gold">
                   {quote.currency}
                   {total}
                 </span>
               </div>
             </div>
 
-            <div className="bg-cream/60 border-t border-night/10 px-6 py-5">
-              <div className="flex items-baseline justify-between text-sm text-night/60">
-                <span>Trip total</span>
-                <span>
-                  {quote.currency}
-                  {total.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
-                <span>PayPal fee</span>
-                <span>
-                  +{quote.currency}
-                  {paypalFee.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-night/10">
-                <span className="font-bold text-night text-sm">Total via PayPal</span>
-                <span className="font-display text-2xl text-gold">
-                  {quote.currency}
-                  {paypalCharge.toFixed(2)}
-                </span>
-              </div>
-            </div>
+            {quote.acceptsPaypal && (
+              <>
+                <div className="bg-cream/60 border-t border-night/10 px-6 py-5">
+                  <div className="flex items-baseline justify-between text-sm text-night/60">
+                    <span>Trip total</span>
+                    <span>
+                      {quote.currency}
+                      {total.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
+                    <span>PayPal fee</span>
+                    <span>
+                      +{quote.currency}
+                      {paypalFee.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-night/10">
+                    <span className="font-bold text-night text-sm">Total via PayPal</span>
+                    <span className="font-display text-2xl text-gold">
+                      {quote.currency}
+                      {paypalCharge.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
 
-            <div className="px-6 py-6 border-t border-night/10">
-              {paypalClientId ? (
-                <PaypalButton
-                  token={token}
-                  clientId={paypalClientId}
-                  chargeLabel={`${quote.currency}${paypalCharge.toFixed(2)}`}
-                />
-              ) : (
-                <p className="text-sm text-rose-600">
-                  Payments aren&rsquo;t configured yet — please use WhatsApp to confirm your booking.
-                </p>
-              )}
-            </div>
+                <div className="px-6 py-6 border-t border-night/10">
+                  {paypalClientId ? (
+                    <PaypalButton
+                      token={token}
+                      clientId={paypalClientId}
+                      chargeLabel={`${quote.currency}${paypalCharge.toFixed(2)}`}
+                    />
+                  ) : (
+                    <p className="text-sm text-rose-600">
+                      Payments aren&rsquo;t configured yet — please use WhatsApp to confirm your booking.
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           <p className="text-xs text-night/50 mt-4">{quote.note}</p>
