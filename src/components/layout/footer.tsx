@@ -45,7 +45,7 @@ export async function Footer() {
 
   return (
     <footer
-      className="bg-night-deep mt-32"
+      className="bg-neutral-950 mt-32"
       itemScope
       itemType="https://schema.org/TravelAgency"
     >
