@@ -34,10 +34,9 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
       "Llaqta de Machu Picchu",
       "Old Mountain",
     ],
-    metaTitle:
-      "Tours a Machu Picchu desde Cusco 2026 · Reserva con operador oficial",
+    metaTitle: "Tours a Machu Picchu desde Cusco 2026",
     metaDescription:
-      "Tours guiados a Machu Picchu desde Cusco con Danfer Tours. Tren panorámico, entrada oficial, guía bilingüe. Desde US$380, grupos pequeños, 12+ años de experiencia.",
+      "Tours guiados a Machu Picchu desde Cusco. Tren panorámico, entrada oficial, guía bilingüe. Desde US$380, grupos pequeños, 12+ años de experiencia.",
     h1: "Tours a Machu Picchu desde Cusco",
     tagline: "La ciudadela inca del siglo XV · 7 Maravillas del Mundo Moderno",
     hero: {
@@ -121,10 +120,9 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     name: "Camino Inca",
     shortName: "Inca Trail",
     alternateNames: ["Inca Trail", "Qhapaq Ñan", "Sendero Inca"],
-    metaTitle:
-      "Camino Inca a Machu Picchu 4D/3N · Tour clásico desde Cusco 2026",
+    metaTitle: "Camino Inca 4D/3N a Machu Picchu 2026",
     metaDescription:
-      "Camino Inca clásico de 4 días/3 noches a Machu Picchu. Permiso oficial SERNANP, porteadores, comidas, carpas y guía certificado. Desde US$750. Reserva 4-6 meses antes.",
+      "Camino Inca clásico de 4 días/3 noches a Machu Picchu. Permiso oficial SERNANP, porteadores, comidas, carpas y guía certificado. Desde US$750.",
     h1: "Camino Inca a Machu Picchu · 4 días por la ruta original",
     tagline: "La caminata más famosa de Sudamérica · Permisos SERNANP",
     hero: {
@@ -212,8 +210,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
       "Urubamba Valley",
       "Valle del Urubamba",
     ],
-    metaTitle:
-      "Tours Valle Sagrado Cusco 2026 · Pisac, Ollantaytambo, Chinchero",
+    metaTitle: "Tours Valle Sagrado desde Cusco 2026",
     metaDescription:
       "Tour Valle Sagrado VIP desde Cusco con Danfer Tours: Pisac, Ollantaytambo, Chinchero, Maras-Moray. Almuerzo buffet incluido, guía certificado. Desde US$195.",
     h1: "Tours al Valle Sagrado de los Incas desde Cusco",
@@ -307,8 +304,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     name: "Montaña de 7 Colores",
     shortName: "Rainbow Mountain",
     alternateNames: ["Vinicunca", "Cerro Colorado", "Rainbow Mountain"],
-    metaTitle:
-      "Tour Rainbow Mountain (Vinicunca) desde Cusco 2026 · Full Day",
+    metaTitle: "Tour Rainbow Mountain (Vinicunca) 2026",
     metaDescription:
       "Tour Full Day a la Montaña de 7 Colores (Vinicunca, 5,200 msnm) desde Cusco. Transporte, desayuno, almuerzo, guía y entrada. Desde US$85.",
     h1: "Tour Rainbow Mountain (Vinicunca) desde Cusco",
@@ -393,8 +389,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     name: "Laguna Humantay",
     shortName: "Humantay",
     alternateNames: ["Humantay Lake", "Laguna de Humantay"],
-    metaTitle:
-      "Tour Laguna Humantay desde Cusco 2026 · Full Day Salkantay",
+    metaTitle: "Tour Laguna Humantay desde Cusco 2026",
     metaDescription:
       "Tour Full Day a Laguna Humantay (4,200 msnm) desde Cusco. Trekking 2h hasta laguna glaciar turquesa al pie del nevado Salkantay. Desde US$80.",
     h1: "Tour Laguna Humantay desde Cusco",

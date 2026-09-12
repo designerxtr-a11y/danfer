@@ -5,8 +5,7 @@ export const rainbowMountainEn: DestinationContent = {
   name: "Rainbow Mountain (Vinicunca)",
   shortName: "Rainbow Mountain",
   alternateNames: ["Vinicunca", "Cerro Colorado", "Rainbow Mountain"],
-  metaTitle:
-    "Rainbow Mountain (Vinicunca) Tour from Cusco 2026 · Full Day",
+  metaTitle: "Rainbow Mountain (Vinicunca) Tour 2026",
   metaDescription:
     "Full Day tour to Rainbow Mountain (Vinicunca, 5,200 m.a.s.l.) from Cusco. Transport, breakfast, lunch, guide and entrance fee included. From US$85.",
   h1: "Rainbow Mountain (Vinicunca) Tour from Cusco",

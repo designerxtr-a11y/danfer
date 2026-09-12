@@ -5,10 +5,9 @@ export const caminoIncaEn: DestinationContent = {
   name: "Inca Trail",
   shortName: "Inca Trail",
   alternateNames: ["Inca Trail", "Qhapaq Ñan", "Inca Path"],
-  metaTitle:
-    "Inca Trail to Machu Picchu 4D/3N · Classic Tour from Cusco 2026",
+  metaTitle: "Inca Trail 4D/3N to Machu Picchu 2026",
   metaDescription:
-    "Classic 4-day/3-night Inca Trail to Machu Picchu. Official SERNANP permit, porters, meals, tents and certified guide. From US$750. Book 4-6 months ahead.",
+    "Classic 4-day/3-night Inca Trail to Machu Picchu. Official SERNANP permit, porters, meals, tents and certified guide. From US$750.",
   h1: "Inca Trail to Machu Picchu · 4 days along the original route",
   tagline: "South America's most famous trek · SERNANP permits",
   hero: {

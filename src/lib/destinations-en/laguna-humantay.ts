@@ -5,7 +5,7 @@ export const lagunaHumantayEn: DestinationContent = {
   name: "Humantay Lake",
   shortName: "Humantay",
   alternateNames: ["Laguna Humantay", "Lake Humantay"],
-  metaTitle: "Humantay Lake Tour from Cusco 2026 · Full Day Salkantay",
+  metaTitle: "Humantay Lake Tour from Cusco 2026",
   metaDescription:
     "Full Day tour to Humantay Lake (4,200 m.a.s.l.) from Cusco. A 2-hour trek to a turquoise glacial lake at the foot of the Salkantay snow peak. From US$80.",
   h1: "Humantay Lake Tour from Cusco",

@@ -9,8 +9,7 @@ export const valleSagradoEn: DestinationContent = {
     "Urubamba Valley",
     "Valle del Urubamba",
   ],
-  metaTitle:
-    "Sacred Valley Cusco Tours 2026 · Pisac, Ollantaytambo, Chinchero",
+  metaTitle: "Sacred Valley Tours from Cusco 2026",
   metaDescription:
     "VIP Sacred Valley tour from Cusco with Danfer Tours: Pisac, Ollantaytambo, Chinchero, Maras-Moray. Buffet lunch included, certified guide. From US$195.",
   h1: "Sacred Valley of the Incas Tours from Cusco",

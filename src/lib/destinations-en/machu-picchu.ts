@@ -9,10 +9,9 @@ export const machuPicchuEn: DestinationContent = {
     "Llaqta of Machu Picchu",
     "Old Mountain",
   ],
-  metaTitle:
-    "Machu Picchu Tours from Cusco 2026 · Book with an Official Operator",
+  metaTitle: "Machu Picchu Tours from Cusco 2026",
   metaDescription:
-    "Guided Machu Picchu tours from Cusco with Danfer Tours. Panoramic train, official entrance ticket, bilingual guide. From US$380, small groups, 12+ years of experience.",
+    "Guided Machu Picchu tours from Cusco. Panoramic train, official entrance ticket, bilingual guide. From US$380, small groups, 12+ years of experience.",
   h1: "Machu Picchu Tours from Cusco",
   tagline: "The 15th-century Inca citadel · One of the 7 Wonders of the Modern World",
   hero: {

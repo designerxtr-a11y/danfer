@@ -29,11 +29,11 @@ const SITE = siteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "Danfer Tours Cusco · Tours premium en Machu Picchu y Valle Sagrado",
+    default: "Danfer Tours Cusco · Tours en Machu Picchu y Valle Sagrado",
     template: "%s · Danfer Tours Cusco",
   },
   description:
-    "Operador turístico oficial en Cusco. Tours guiados a Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain y Laguna Humantay. Reserva con confianza, guías locales certificados.",
+    "Operador turístico oficial en Cusco: Machu Picchu, Valle Sagrado, Camino Inca y Rainbow Mountain. Guías certificados, 12+ años de experiencia.",
   keywords: [
     "tours Cusco",
     "tours Machu Picchu",
