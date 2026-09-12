@@ -22,6 +22,7 @@ export interface QuoteItem {
 }
 
 export interface Quote {
+  lang: "en" | "es";
   clientName: string;
   destination: string;
   heroImage: string;
@@ -41,6 +42,7 @@ export interface Quote {
 
 export const QUOTES: Record<string, Quote> = {
   "emmanuel-champagne": {
+    lang: "en",
     clientName: "Emmanuel",
     destination: "Machu Picchu",
     heroImage:
@@ -72,6 +74,7 @@ export const QUOTES: Record<string, Quote> = {
   },
 
   "victor-cueva": {
+    lang: "es",
     clientName: "Victor",
     destination: "Cusco & Machu Picchu",
     heroImage:

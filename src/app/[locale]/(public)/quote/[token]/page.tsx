@@ -6,6 +6,59 @@ import { PassportUpload } from "./passport-upload";
 import { PaypalButton } from "./paypal-button";
 import { QUOTES, quoteTotal, quotePaypalCharge, itemSubtotal } from "./quotes-data";
 
+const COPY = {
+  en: {
+    travelQuote: "Travel Quote",
+    hi: (name: string) => `Hi ${name}, here's your quote`,
+    thanks: (destination: string) =>
+      `Thanks for your interest — here are the details for your ${destination} trip.`,
+    destination: "Destination",
+    dates: "Dates",
+    duration: "Duration",
+    travelers: "Travelers",
+    itinerary: "Itinerary",
+    included: "Included",
+    notIncluded: "Not included",
+    passportTitle: "Passport or ID photo",
+    passportBody: "To book your tourist train ticket and hotel reservation, we need a photo of each traveler's passport or ID.",
+    quoteDetail: "Quote detail",
+    flatFee: "flat fee",
+    total: "Total",
+    tripTotal: "Trip total",
+    paypalFee: "PayPal fee",
+    totalViaPaypal: "Total via PayPal",
+    paymentsNotReady: "Payments aren't configured yet — please use WhatsApp to confirm your booking.",
+    confirmWhatsapp: "Confirm on WhatsApp →",
+    waMessage: (destination: string, dates: string, travelers: number) =>
+      `Hi! I'd like to confirm my ${destination} quote (${dates}) for ${travelers} people.`,
+  },
+  es: {
+    travelQuote: "Cotización de viaje",
+    hi: (name: string) => `Hola ${name}, esta es tu cotización`,
+    thanks: (destination: string) =>
+      `Gracias por tu interés — aquí están los detalles de tu viaje a ${destination}.`,
+    destination: "Destino",
+    dates: "Fechas",
+    duration: "Duración",
+    travelers: "Pasajeros",
+    itinerary: "Itinerario",
+    included: "Incluye",
+    notIncluded: "No incluye",
+    passportTitle: "Foto de pasaporte o DNI",
+    passportBody: "Para reservar tu tren turístico y el hotel, necesitamos una foto del pasaporte o DNI de cada pasajero.",
+    quoteDetail: "Detalle de la cotización",
+    flatFee: "tarifa fija",
+    total: "Total",
+    tripTotal: "Total del viaje",
+    paypalFee: "Comisión PayPal",
+    totalViaPaypal: "Total vía PayPal",
+    paymentsNotReady: "Los pagos aún no están configurados — escríbenos por WhatsApp para confirmar tu reserva.",
+    confirmWhatsapp: "Confirmar por WhatsApp →",
+    waMessage: (destination: string, dates: string, travelers: number) =>
+      `Hola! Quisiera confirmar mi cotización de ${destination} (${dates}) para ${travelers} personas.`,
+  },
+};
+
 interface PageProps {
   params: Promise<{ token: string; locale: string }>;
 }
@@ -24,6 +77,7 @@ export default async function QuotePage({ params }: PageProps) {
   const { token } = await params;
   const quote = QUOTES[token];
   if (!quote) notFound();
+  const t = COPY[quote.lang];
 
   const settings = await getSettings();
   const wa = normalizeWhatsApp(settings.whatsapp);
@@ -31,7 +85,7 @@ export default async function QuotePage({ params }: PageProps) {
   const paypalCharge = quote.acceptsPaypal ? quotePaypalCharge(quote) : total;
   const paypalFee = Math.round((paypalCharge - total) * 100) / 100;
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const waMessage = `Hi! I'd like to confirm my ${quote.destination} quote (${quote.dates}) for ${quote.travelers} people.`;
+  const waMessage = t.waMessage(quote.destination, quote.dates, quote.travelers);
   const waHref = `https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}`;
 
   return (
@@ -42,14 +96,12 @@ export default async function QuotePage({ params }: PageProps) {
             <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
               <div>
                 <p className="font-display text-gold tracking-widest text-sm uppercase">
-                  Travel Quote
+                  {t.travelQuote}
                 </p>
                 <h1 className="font-display text-3xl sm:text-4xl text-night mt-2">
-                  Hi {quote.clientName}, here&rsquo;s your quote
+                  {t.hi(quote.clientName)}
                 </h1>
-                <p className="text-night/70 mt-3">
-                  Thanks for your interest — here are the details for your {quote.destination} trip.
-                </p>
+                <p className="text-night/70 mt-3">{t.thanks(quote.destination)}</p>
               </div>
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-card">
                 <Image
@@ -66,16 +118,16 @@ export default async function QuotePage({ params }: PageProps) {
 
           <section>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-night/10 border border-night/10 rounded-2xl overflow-hidden">
-              <InfoCell icon={<MapPin className="w-4 h-4" />} label="Destination" value={quote.destination} />
-              <InfoCell icon={<Calendar className="w-4 h-4" />} label="Dates" value={quote.dates} />
-              <InfoCell icon={<Clock className="w-4 h-4" />} label="Duration" value={quote.duration} />
-              <InfoCell icon={<Users className="w-4 h-4" />} label="Travelers" value={String(quote.travelers)} />
+              <InfoCell icon={<MapPin className="w-4 h-4" />} label={t.destination} value={quote.destination} />
+              <InfoCell icon={<Calendar className="w-4 h-4" />} label={t.dates} value={quote.dates} />
+              <InfoCell icon={<Clock className="w-4 h-4" />} label={t.duration} value={quote.duration} />
+              <InfoCell icon={<Users className="w-4 h-4" />} label={t.travelers} value={String(quote.travelers)} />
             </div>
           </section>
 
           {quote.itinerary.length > 0 && (
             <section className="pt-10">
-              <h2 className="font-bold text-lg text-night mb-4">Itinerary</h2>
+              <h2 className="font-bold text-lg text-night mb-4">{t.itinerary}</h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {quote.itinerary.map((stop) => (
                   <div
@@ -113,7 +165,7 @@ export default async function QuotePage({ params }: PageProps) {
             <div className="grid sm:grid-cols-2 gap-8">
               <div>
                 <h3 className="font-bold text-lg text-night mb-3 flex items-center gap-2">
-                  <Check className="w-5 h-5 text-emerald-600" /> Included
+                  <Check className="w-5 h-5 text-emerald-600" /> {t.included}
                 </h3>
                 <ul className="space-y-2">
                   {quote.includes.map((item) => (
@@ -126,7 +178,7 @@ export default async function QuotePage({ params }: PageProps) {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-night mb-3 flex items-center gap-2">
-                  <X className="w-5 h-5 text-rose-600" /> Not included
+                  <X className="w-5 h-5 text-rose-600" /> {t.notIncluded}
                 </h3>
                 <ul className="space-y-2">
                   {quote.excludes.map((item) => (
@@ -141,18 +193,16 @@ export default async function QuotePage({ params }: PageProps) {
           </section>
 
           <section className="pb-10">
-            <h3 className="font-bold text-lg text-night mb-1">Passport photo</h3>
-            <p className="text-sm text-night/60 mb-4 max-w-xl">
-              To book your tourist train ticket and hotel reservation, we need a photo of your passport.
-            </p>
-            <PassportUpload token={token} />
+            <h3 className="font-bold text-lg text-night mb-1">{t.passportTitle}</h3>
+            <p className="text-sm text-night/60 mb-4 max-w-xl">{t.passportBody}</p>
+            <PassportUpload token={token} travelers={quote.travelers} lang={quote.lang} />
           </section>
         </div>
 
         <aside className="lg:sticky lg:top-28 mt-2 lg:mt-0">
           <div className="bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden">
             <div className="p-6">
-              <h2 className="font-bold text-lg text-night">Quote detail</h2>
+              <h2 className="font-bold text-lg text-night">{t.quoteDetail}</h2>
               <div className="mt-4 space-y-3">
                 {quote.items.map((item) => (
                   <div key={item.label} className="flex items-start justify-between gap-3 text-sm">
@@ -162,7 +212,7 @@ export default async function QuotePage({ params }: PageProps) {
                       <div className="text-night/50 text-xs mt-0.5">
                         {quote.currency}
                         {item.unitPrice}
-                        {item.perTraveler === false ? " (tarifa fija)" : ` × ${quote.travelers}`}
+                        {item.perTraveler === false ? ` (${t.flatFee})` : ` × ${quote.travelers}`}
                       </div>
                     </div>
                     <div className="font-semibold text-night shrink-0">
@@ -173,7 +223,9 @@ export default async function QuotePage({ params }: PageProps) {
                 ))}
               </div>
               <div className="flex items-baseline justify-between pt-4 mt-4 border-t border-night/10">
-                <span className="font-bold text-night text-sm">Total &middot; {quote.travelers}</span>
+                <span className="font-bold text-night text-sm">
+                  {t.total} &middot; {quote.travelers}
+                </span>
                 <span className="font-display text-2xl text-gold">
                   {quote.currency}
                   {total}
@@ -185,21 +237,21 @@ export default async function QuotePage({ params }: PageProps) {
               <>
                 <div className="bg-cream/60 border-t border-night/10 px-6 py-5">
                   <div className="flex items-baseline justify-between text-sm text-night/60">
-                    <span>Trip total</span>
+                    <span>{t.tripTotal}</span>
                     <span>
                       {quote.currency}
                       {total.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
-                    <span>PayPal fee</span>
+                    <span>{t.paypalFee}</span>
                     <span>
                       +{quote.currency}
                       {paypalFee.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-night/10">
-                    <span className="font-bold text-night text-sm">Total via PayPal</span>
+                    <span className="font-bold text-night text-sm">{t.totalViaPaypal}</span>
                     <span className="font-display text-2xl text-gold">
                       {quote.currency}
                       {paypalCharge.toFixed(2)}
@@ -215,9 +267,7 @@ export default async function QuotePage({ params }: PageProps) {
                       chargeLabel={`${quote.currency}${paypalCharge.toFixed(2)}`}
                     />
                   ) : (
-                    <p className="text-sm text-rose-600">
-                      Payments aren&rsquo;t configured yet — please use WhatsApp to confirm your booking.
-                    </p>
+                    <p className="text-sm text-rose-600">{t.paymentsNotReady}</p>
                   )}
                 </div>
               </>
@@ -232,7 +282,7 @@ export default async function QuotePage({ params }: PageProps) {
             rel="noopener noreferrer"
             className="group mt-4 flex items-center justify-center gap-2 rounded-full bg-night px-6 py-3 text-cream font-semibold text-sm transition hover:bg-night-deep"
           >
-            Confirm on WhatsApp →
+            {t.confirmWhatsapp}
           </a>
         </aside>
       </div>
