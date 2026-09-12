@@ -3,53 +3,8 @@ import Image from "next/image";
 import { Check, X, MapPin, Calendar, Users, Clock } from "lucide-react";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { PassportUpload } from "./passport-upload";
-
-// Private, single-use travel quotes. Not linked from anywhere on the site —
-// only shared directly with the client. Not meant to replace the real
-// tours/bookings data model; each entry is a one-off, hand-built quote.
-interface Quote {
-  clientName: string;
-  destination: string;
-  heroImage: string;
-  heroImageAlt: string;
-  dates: string;
-  duration: string;
-  travelers: number;
-  currency: string;
-  pricePerPerson: number;
-  itemLabel: string;
-  itemDetail: string;
-  includes: string[];
-  excludes: string[];
-  note: string;
-}
-
-const QUOTES: Record<string, Quote> = {
-  "emmanuel-champagne": {
-    clientName: "Emmanuel",
-    destination: "Machu Picchu",
-    heroImage:
-      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
-    heroImageAlt: "Machu Picchu citadel",
-    dates: "Nov 15 – 18, 2026",
-    duration: "2 days / 1 night",
-    travelers: 2,
-    currency: "$",
-    pricePerPerson: 280,
-    itemLabel: "Machu Picchu · 2D/1N",
-    itemDetail:
-      "Tourist train, bus, Machu Picchu entrance ticket, guided tour, and a hotel near Aguas Calientes with breakfast included.",
-    includes: [
-      "Tourist train, round trip (Ollantaytambo–Aguas Calientes)",
-      "Bus up and down to the citadel",
-      "Machu Picchu entrance ticket",
-      "Professional guide",
-      "1 night hotel near Aguas Calientes, breakfast included",
-    ],
-    excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
-    note: "Rate valid for the dates above, subject to confirmation of train and entrance ticket availability at the time of booking.",
-  },
-};
+import { PaypalButton } from "./paypal-button";
+import { QUOTES, quoteTotal, quotePaypalCharge } from "./quotes-data";
 
 interface PageProps {
   params: Promise<{ token: string; locale: string }>;
@@ -72,7 +27,10 @@ export default async function QuotePage({ params }: PageProps) {
 
   const settings = await getSettings();
   const wa = normalizeWhatsApp(settings.whatsapp);
-  const total = quote.pricePerPerson * quote.travelers;
+  const total = quoteTotal(quote);
+  const paypalCharge = quotePaypalCharge(quote);
+  const paypalFee = Math.round((paypalCharge - total) * 100) / 100;
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const waMessage = `Hi! I'd like to confirm my ${quote.destination} quote (${quote.dates}) for ${quote.travelers} people.`;
   const waHref = `https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}`;
 
@@ -137,7 +95,46 @@ export default async function QuotePage({ params }: PageProps) {
               </span>
             </div>
           </div>
+
+          <div className="bg-cream/60 border-t border-night/10 px-6 sm:px-8 py-5">
+            <div className="flex items-baseline justify-between text-sm text-night/60">
+              <span>Trip total</span>
+              <span>
+                {quote.currency}
+                {total.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
+              <span>PayPal processing fee</span>
+              <span>
+                +{quote.currency}
+                {paypalFee.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-night/10">
+              <span className="font-bold text-night text-sm">Total via PayPal</span>
+              <span className="font-display text-2xl text-gold">
+                {quote.currency}
+                {paypalCharge.toFixed(2)}
+              </span>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <section className="max-w-3xl mx-auto px-5 pb-10">
+        <h3 className="font-bold text-lg text-night mb-3">Pay with PayPal</h3>
+        {paypalClientId ? (
+          <PaypalButton
+            token={token}
+            clientId={paypalClientId}
+            chargeLabel={`${quote.currency}${paypalCharge.toFixed(2)}`}
+          />
+        ) : (
+          <p className="text-sm text-rose-600">
+            Payments aren&rsquo;t configured yet — please use WhatsApp below to confirm your booking.
+          </p>
+        )}
       </section>
 
       <section className="max-w-3xl mx-auto px-5 pb-10">
