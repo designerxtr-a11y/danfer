@@ -78,29 +78,30 @@ export default async function QuotePage({ params }: PageProps) {
 
   return (
     <main className="bg-cream">
-      <section className="max-w-3xl mx-auto px-5 pt-10">
-        <div className="relative aspect-[16/9] rounded-3xl overflow-hidden shadow-card">
-          <Image
-            src={quote.heroImage}
-            alt={quote.heroImageAlt}
-            fill
-            priority
-            sizes="(min-width: 768px) 768px, 100vw"
-            className="object-cover"
-          />
+      <section className="max-w-3xl mx-auto px-5 pt-10 pb-6">
+        <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
+          <div>
+            <p className="font-display text-gold tracking-widest text-sm uppercase">
+              Travel Quote
+            </p>
+            <h1 className="font-display text-3xl sm:text-4xl text-night mt-2">
+              Hi {quote.clientName}, here&rsquo;s your quote
+            </h1>
+            <p className="text-night/70 mt-3">
+              Thanks for your interest — here are the details for your {quote.destination} trip.
+            </p>
+          </div>
+          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-card">
+            <Image
+              src={quote.heroImage}
+              alt={quote.heroImageAlt}
+              fill
+              priority
+              sizes="(min-width: 640px) 384px, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
-      </section>
-
-      <section className="max-w-3xl mx-auto px-5 pt-6 pb-6">
-        <p className="font-display text-gold tracking-widest text-sm uppercase">
-          Travel Quote
-        </p>
-        <h1 className="font-display text-4xl sm:text-5xl text-night mt-2">
-          Hi {quote.clientName}, here&rsquo;s your quote
-        </h1>
-        <p className="text-night/70 mt-3 max-w-xl">
-          Thanks for your interest — here are the details for your {quote.destination} trip.
-        </p>
       </section>
 
       <section className="max-w-3xl mx-auto px-5">
