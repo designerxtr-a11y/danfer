@@ -66,10 +66,26 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const { token } = await params;
   const quote = QUOTES[token];
+  if (!quote) return { title: "Quote", robots: { index: false, follow: false } };
+
+  const title =
+    quote.lang === "es"
+      ? `Cotización para ${quote.clientName} — ${quote.destination}`
+      : `Quote for ${quote.clientName} — ${quote.destination}`;
+  const description =
+    quote.lang === "es"
+      ? `Cotización privada de viaje: ${quote.destination}, ${quote.dates}.`
+      : `Private travel quote: ${quote.destination}, ${quote.dates}.`;
+
   return {
-    title: quote ? `Your ${quote.destination} quote` : "Quote",
-    // Private link shared directly with one client — must not be indexed.
+    title,
+    description,
+    // Private link shared directly with one client — must not be indexed,
+    // but still gets its own title/image so the WhatsApp preview isn't the
+    // site's generic marketing card.
     robots: { index: false, follow: false },
+    openGraph: { title, description, images: [quote.heroImage] },
+    twitter: { card: "summary_large_image", title, description, images: [quote.heroImage] },
   };
 }
 
