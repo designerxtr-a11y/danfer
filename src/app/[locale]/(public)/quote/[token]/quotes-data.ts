@@ -48,7 +48,7 @@ export const QUOTES: Record<string, Quote> = {
     heroImage:
       "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
     heroImageAlt: "Machu Picchu citadel",
-    dates: "Nov 15 – 18, 2026",
+    dates: "Nov 16 – 17, 2026",
     duration: "2 days / 1 night",
     travelers: 2,
     currency: "$",
@@ -58,16 +58,17 @@ export const QUOTES: Record<string, Quote> = {
       {
         label: "Machu Picchu · 2D/1N",
         detail:
-          "Tourist train, bus, Machu Picchu entrance ticket, guided tour, and a hotel near Aguas Calientes with breakfast included.",
+          "Tourist train, bus, Machu Picchu entrance ticket, guided tour, hotel near Aguas Calientes with breakfast included, and return transfer to Cusco.",
         unitPrice: 280,
       },
     ],
     includes: [
-      "Tourist train, round trip (Ollantaytambo–Aguas Calientes)",
+      "Tourist train (Ollantaytambo–Aguas Calientes)",
       "Bus up and down to the citadel",
       "Machu Picchu entrance ticket",
       "Professional guide",
       "1 night hotel near Aguas Calientes, breakfast included",
+      "Return transfer, Ollantaytambo–Cusco (drop-off near the Plaza de Armas)",
     ],
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
     note: "Rate valid for the dates above, subject to confirmation of train and entrance ticket availability at the time of booking.",
