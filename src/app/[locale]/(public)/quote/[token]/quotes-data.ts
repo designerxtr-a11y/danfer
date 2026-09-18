@@ -71,7 +71,7 @@ export const QUOTES: Record<string, Quote> = {
       "Return transfer, Ollantaytambo–Cusco (drop-off near the Plaza de Armas)",
     ],
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
-    note: "Departure is at 8 am to catch the train to Machu Picchu. Rate valid for the dates above, subject to confirmation of train and entrance ticket availability at the time of booking. Machu Picchu entrance tickets must be picked up in person and can involve a long queue. A 50% deposit is required to confirm the booking (train tickets and hotel reservation).",
+    note: "Departure is at 8 am to catch the train to Machu Picchu. Rate valid for the dates above, subject to confirmation of train and entrance ticket availability at the time of booking. The entrance ticket is for Circuit 2A, the most in-demand circuit, so picking it up in person can mean a 1-2 hour queue depending on how busy it is. A 50% deposit is required to confirm the booking (train tickets and hotel reservation).",
   },
 
   "victor-cueva": {
