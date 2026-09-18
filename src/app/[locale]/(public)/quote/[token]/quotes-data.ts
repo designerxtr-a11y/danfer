@@ -40,6 +40,8 @@ export interface Quote {
   acceptsPaypal: boolean;
   /** % of the total charged via PayPal now; the rest is paid in person on arrival. Omit for full payment (100%). */
   depositPercent?: number;
+  /** When true, the page shows a canceled notice instead of the quote. */
+  canceled?: boolean;
 }
 
 export const QUOTES: Record<string, Quote> = {
@@ -56,6 +58,7 @@ export const QUOTES: Record<string, Quote> = {
     currency: "$",
     acceptsPaypal: true,
     depositPercent: 50,
+    canceled: true,
     itinerary: [],
     items: [
       {

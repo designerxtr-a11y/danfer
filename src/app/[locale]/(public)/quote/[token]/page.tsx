@@ -19,6 +19,9 @@ const COPY = {
     itinerary: "Itinerary",
     included: "Included",
     notIncluded: "Not included",
+    canceledTitle: "This offer has been canceled",
+    canceledBody: "This quote is no longer available. Reach out to us on WhatsApp if you'd like a new one.",
+    contactWhatsapp: "Contact us on WhatsApp →",
     passportTitle: "Passport or ID photo",
     passportBody: "To book your tourist train ticket and hotel reservation, we need a photo of each traveler's passport or ID.",
     quoteDetail: "Quote detail",
@@ -46,6 +49,9 @@ const COPY = {
     itinerary: "Itinerario",
     included: "Incluye",
     notIncluded: "No incluye",
+    canceledTitle: "Esta oferta fue cancelada",
+    canceledBody: "Esta cotización ya no está disponible. Escríbenos por WhatsApp si quieres una nueva.",
+    contactWhatsapp: "Escríbenos por WhatsApp →",
     passportTitle: "Foto de pasaporte o DNI",
     passportBody: "Para reservar tu tren turístico y el hotel, necesitamos una foto del pasaporte o DNI de cada pasajero.",
     quoteDetail: "Detalle de la cotización",
@@ -101,6 +107,30 @@ export default async function QuotePage({ params }: PageProps) {
 
   const settings = await getSettings();
   const wa = normalizeWhatsApp(settings.whatsapp);
+
+  if (quote.canceled) {
+    return (
+      <main className="bg-cream min-h-[70vh] flex items-center justify-center px-5">
+        <div className="text-center max-w-md">
+          <p className="font-display text-gold tracking-widest text-sm uppercase">
+            {t.travelQuote}
+          </p>
+          <h1 className="font-display text-3xl text-night mt-2">{t.canceledTitle}</h1>
+          <p className="text-night/70 mt-3">{t.canceledBody}</p>
+          <a
+            href={`https://wa.me/${wa}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex mt-6 items-center justify-center gap-2 rounded-full bg-night px-6 py-3 text-cream font-semibold text-sm transition hover:bg-night-deep"
+          >
+            {t.contactWhatsapp}
+          </a>
+        </div>
+      </main>
+    );
+  }
+
+
   const total = quoteTotal(quote);
   const deposit = depositAmount(quote);
   const isPartialDeposit = (quote.depositPercent ?? 100) < 100;
