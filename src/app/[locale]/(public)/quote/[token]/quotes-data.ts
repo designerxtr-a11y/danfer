@@ -38,6 +38,8 @@ export interface Quote {
   note: string;
   /** PayPal only supports quotes priced in USD — omit for other currencies. */
   acceptsPaypal: boolean;
+  /** % of the total charged via PayPal now; the rest is paid in person on arrival. Omit for full payment (100%). */
+  depositPercent?: number;
 }
 
 export const QUOTES: Record<string, Quote> = {
@@ -53,6 +55,7 @@ export const QUOTES: Record<string, Quote> = {
     travelers: 2,
     currency: "$",
     acceptsPaypal: true,
+    depositPercent: 50,
     itinerary: [],
     items: [
       {
@@ -150,15 +153,22 @@ export function quoteTotal(quote: Quote): number {
   return quote.items.reduce((sum, item) => sum + itemSubtotal(item, quote.travelers), 0);
 }
 
+// Portion of the total charged via PayPal now — the rest is paid in person
+// on arrival. Defaults to the full total when depositPercent is omitted.
+export function depositAmount(quote: Quote): number {
+  const pct = quote.depositPercent ?? 100;
+  return Math.round(quoteTotal(quote) * pct) / 100;
+}
+
 // PayPal "receive payments for goods/services" rate on this account: 5.4% +
 // $0.30 USD (varies by the payer's country / domestic vs international).
-// Grossed up so the business still nets the full quote total after PayPal
+// Grossed up so the business still nets the deposit amount after PayPal
 // takes its cut: charge * (1 - rate) - fixed = base  =>  charge = (base + fixed) / (1 - rate)
 export const PAYPAL_FEE_RATE = 0.054;
 export const PAYPAL_FEE_FIXED = 0.3;
 
 export function quotePaypalCharge(quote: Quote): number {
-  const base = quoteTotal(quote);
+  const base = depositAmount(quote);
   const charge = (base + PAYPAL_FEE_FIXED) / (1 - PAYPAL_FEE_RATE);
   return Math.round(charge * 100) / 100;
 }

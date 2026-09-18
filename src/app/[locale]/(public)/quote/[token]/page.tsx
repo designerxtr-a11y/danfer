@@ -4,7 +4,7 @@ import { Check, X, MapPin, Calendar, Users, Clock } from "lucide-react";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { PassportUpload } from "./passport-upload";
 import { PaypalButton } from "./paypal-button";
-import { QUOTES, quoteTotal, quotePaypalCharge, itemSubtotal } from "./quotes-data";
+import { QUOTES, quoteTotal, quotePaypalCharge, depositAmount, itemSubtotal } from "./quotes-data";
 
 const COPY = {
   en: {
@@ -25,8 +25,10 @@ const COPY = {
     flatFee: "flat fee",
     total: "Total",
     tripTotal: "Trip total",
+    depositDue: (pct: number) => `Deposit due now (${pct}%)`,
     paypalFee: "PayPal fee",
     totalViaPaypal: "Total via PayPal",
+    balanceDue: (amount: string) => `Remaining balance of ${amount} is paid in person on arrival.`,
     paymentsNotReady: "Payments aren't configured yet — please use WhatsApp to confirm your booking.",
     confirmWhatsapp: "Confirm on WhatsApp →",
     waMessage: (destination: string, dates: string, travelers: number) =>
@@ -50,8 +52,10 @@ const COPY = {
     flatFee: "tarifa fija",
     total: "Total",
     tripTotal: "Total del viaje",
+    depositDue: (pct: number) => `Depósito a pagar ahora (${pct}%)`,
     paypalFee: "Comisión PayPal",
     totalViaPaypal: "Total vía PayPal",
+    balanceDue: (amount: string) => `El saldo restante de ${amount} se paga en persona al llegar.`,
     paymentsNotReady: "Los pagos aún no están configurados — escríbenos por WhatsApp para confirmar tu reserva.",
     confirmWhatsapp: "Confirmar por WhatsApp →",
     waMessage: (destination: string, dates: string, travelers: number) =>
@@ -98,8 +102,10 @@ export default async function QuotePage({ params }: PageProps) {
   const settings = await getSettings();
   const wa = normalizeWhatsApp(settings.whatsapp);
   const total = quoteTotal(quote);
-  const paypalCharge = quote.acceptsPaypal ? quotePaypalCharge(quote) : total;
-  const paypalFee = Math.round((paypalCharge - total) * 100) / 100;
+  const deposit = depositAmount(quote);
+  const isPartialDeposit = (quote.depositPercent ?? 100) < 100;
+  const paypalCharge = quote.acceptsPaypal ? quotePaypalCharge(quote) : deposit;
+  const paypalFee = Math.round((paypalCharge - deposit) * 100) / 100;
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const waMessage = t.waMessage(quote.destination, quote.dates, quote.travelers);
   const waHref = `https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}`;
@@ -259,6 +265,15 @@ export default async function QuotePage({ params }: PageProps) {
                       {total.toFixed(2)}
                     </span>
                   </div>
+                  {isPartialDeposit && (
+                    <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
+                      <span>{t.depositDue(quote.depositPercent!)}</span>
+                      <span>
+                        {quote.currency}
+                        {deposit.toFixed(2)}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-baseline justify-between text-sm text-night/60 mt-1.5">
                     <span>{t.paypalFee}</span>
                     <span>
@@ -273,6 +288,11 @@ export default async function QuotePage({ params }: PageProps) {
                       {paypalCharge.toFixed(2)}
                     </span>
                   </div>
+                  {isPartialDeposit && (
+                    <p className="text-xs text-night/50 mt-2">
+                      {t.balanceDue(`${quote.currency}${(total - deposit).toFixed(2)}`)}
+                    </p>
+                  )}
                 </div>
 
                 <div className="px-6 py-6 border-t border-night/10">
