@@ -146,6 +146,264 @@ export const QUOTES: Record<string, Quote> = {
     ],
     note: "Precios en soles (S/) por persona, tarifa nacional. Sujeto a confirmación de disponibilidad de tren y entradas al reservar. Boleto Turístico del Cusco (S/70 p.p.) requerido aparte para Sacsahuamán, Qenqo, Pucapucara, Tambomachay, Chinchero y Moray.",
   },
+
+  "alejandra-zuniga": {
+    lang: "es",
+    clientName: "Alejandra",
+    destination: "Cusco & Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu",
+    dates: "21 – 24 dic, 2026",
+    duration: "4 días / 3 noches",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · 21 dic",
+        timeLabel: "1–6 pm",
+        title: "Llegada + City Tour",
+        desc: "Coricancha, Qenqo, Pucapucara, Sacsahuamán y Tambomachay. Incluye bus y guía profesional.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · 22 dic",
+        timeLabel: "Desde 7 am",
+        title: "Valle Sagrado + tren a Aguas Calientes",
+        desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo, tren turístico a Aguas Calientes y noche de hotel con desayuno.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
+        photoAlt: "Mercado artesanal de Pisac, Valle Sagrado",
+      },
+      {
+        day: "Día 3 · 23 dic",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu + retorno a Cusco",
+        desc: "Bus de subida a la ciudadela y visita guiada por Machu Picchu. Retorno en el tren del mediodía a Ollantaytambo y traslado a Cusco el mismo día.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+      {
+        day: "Día 4 · 24 dic",
+        timeLabel: "Día libre",
+        title: "Tours opcionales a elegir",
+        desc: "Walking Tour, Tranvía, Tour Místico o Valle Sur: tú eliges el que más te guste.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Cusco",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", unitPrice: 15 },
+      { label: "Valle Sagrado VIP", unitPrice: 125 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Tren turístico ida y vuelta, bus, entrada, guía profesional, hotel en Aguas Calientes con desayuno y traslado de retorno a Cusco",
+        unitPrice: 280,
+      },
+    ],
+    includes: [
+      "City Tour: bus y guía profesional",
+      "Valle Sagrado VIP: bus, guía y almuerzo buffet",
+      "Machu Picchu: tren turístico (Ollantaytambo–Aguas Calientes, ida y vuelta), bus de subida/bajada, entrada, guía profesional, 1 noche de hotel en Aguas Calientes con desayuno y traslado de retorno Ollantaytambo–Cusco",
+    ],
+    excludes: [
+      "Boleto Turístico del Cusco (BTC), se compra aparte",
+      "Tours opcionales del día 24",
+      "Alimentación no especificada",
+      "Propinas",
+      "Gastos personales",
+      "Seguro de viaje",
+    ],
+    note: "Precios en dólares (US$) por persona. Tarifa válida para las fechas indicadas, sujeta a confirmación de disponibilidad de tren y entradas al reservar (diciembre es temporada alta). Para asegurar tu ingreso a Machu Picchu, cuyos cupos son limitados en temporada alta, se requiere un adelanto del 50%: te entregamos tu ingreso desde ya, el saldo se completa al llegar a Cusco y ahí te entregamos tus trenes y tours. El Boleto Turístico del Cusco se compra aparte y es necesario para Sacsahuamán, Qenqo, Pucapucara, Tambomachay, Chinchero y Moray.",
+  },
+
+  "viajero-noviembre": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Cusco & Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "14 – 17 nov, 2026",
+    duration: "4 días / 3 noches",
+    travelers: 3,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · 14 nov",
+        timeLabel: "1–6 pm",
+        title: "Llegada + City Tour",
+        desc: "Coricancha, Qenqo, Pucapucara, Sacsahuamán y Tambomachay. Incluye bus y guía profesional.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · 15 nov",
+        timeLabel: "Desde 7 am",
+        title: "Valle Sagrado + tren a Aguas Calientes",
+        desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo, tren turístico a Aguas Calientes y noche de hotel con desayuno.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
+        photoAlt: "Mercado artesanal de Pisac, Valle Sagrado",
+      },
+      {
+        day: "Día 3 · 16 nov",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu + retorno a Cusco",
+        desc: "Bus de subida a la ciudadela y visita guiada por Machu Picchu. Tren de regreso a Ollantaytambo y traslado a Cusco el mismo día.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+      {
+        day: "Día 4 · 17 nov",
+        timeLabel: "Desde 4:30 am",
+        title: "Laguna Humantay",
+        desc: "Caminata hasta la laguna glaciar de aguas turquesa, a 4,200 msnm, con el nevado Salkantay de fondo. Incluye transporte, guía, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/laguna-humantay/1781143602424-rc9fi8.jpg",
+        photoAlt: "Laguna Humantay",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", unitPrice: 15 },
+      { label: "Valle Sagrado VIP", unitPrice: 32 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Tren turístico ida y vuelta, bus, entrada, guía profesional, hotel cerca de Aguas Calientes con desayuno y traslado de retorno a Cusco",
+        unitPrice: 280,
+      },
+      { label: "Laguna Humantay", unitPrice: 35 },
+    ],
+    includes: [
+      "City Tour: bus y guía profesional",
+      "Valle Sagrado VIP: bus, guía y almuerzo buffet",
+      "Machu Picchu: tren turístico (Ollantaytambo–Aguas Calientes, ida y vuelta), bus de subida/bajada, entrada, guía profesional, 1 noche de hotel cerca de Aguas Calientes con desayuno y traslado de retorno Ollantaytambo–Cusco",
+      "Laguna Humantay: transporte, guía, desayuno, almuerzo buffet y entrada",
+    ],
+    excludes: [
+      "Boleto Turístico del Cusco (BTC), se compra aparte",
+      "Alimentación no especificada",
+      "Caballo y alquiler de bastones (opcionales)",
+      "Propinas",
+      "Gastos personales",
+      "Seguro de viaje",
+    ],
+    note: "Precios en dólares (US$) por persona. Tarifa válida para las fechas indicadas, sujeta a confirmación de disponibilidad de tren y entradas al reservar. Se requiere un adelanto del 50% para confirmar la reserva (boletos de tren y reserva del hotel). El Boleto Turístico del Cusco se compra aparte y es necesario para Sacsahuamán, Qenqo, Pucapucara, Tambomachay, Chinchero y Moray.",
+  },
+
+  "viajero-rd-noviembre": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Cusco, Machu Picchu & Lima",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "1 – 10 nov, 2026",
+    duration: "10 días / 9 noches",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · 1 nov",
+        timeLabel: "1–6 pm",
+        title: "Llegada a Cusco + City Tour",
+        desc: "Coricancha, Qenqo, Pucapucara, Sacsahuamán y Tambomachay. Un día suave para aclimatarse. Incluye bus y guía profesional.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · 2 nov",
+        timeLabel: "7 am–7 pm",
+        title: "Valle Sagrado VIP",
+        desc: "Chinchero, Moray, Salineras de Maras y Ollantaytambo. Incluye bus, guía y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
+        photoAlt: "Valle Sagrado de los Incas",
+      },
+      {
+        day: "Días 3–4 · 3–4 nov",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu · 2D/1N",
+        desc: "Traslado Cusco–Ollantaytambo y tren turístico a Aguas Calientes, con 1 noche de hotel y desayuno. Al día siguiente subes en bus a la ciudadela y haces la visita guiada por el Circuito 2A, el más completo. Por la tarde regresas en tren a Ollantaytambo y en transporte a Cusco.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+      {
+        day: "Día 5 · 5 nov",
+        timeLabel: "4:30 am–5 pm",
+        title: "Laguna Humantay",
+        desc: "Caminata a la laguna turquesa, a 4,200 msnm, al pie del nevado Salkantay. Incluye transporte, guía, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/laguna-humantay/1781143602424-rc9fi8.jpg",
+        photoAlt: "Laguna Humantay",
+      },
+      {
+        day: "Día 6 · 6 nov",
+        timeLabel: "5,036 msnm",
+        title: "Montaña de 7 Colores",
+        desc: "Salida de madrugada hacia Vinicunca y caminata a la montaña de colores. Incluye transporte, guía, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/rainbow-mountain-1789091035693.webp",
+        photoAlt: "Montaña de 7 Colores, Vinicunca",
+      },
+      {
+        day: "Día 7 · 7 nov",
+        timeLabel: "Libre",
+        title: "Día libre · tours opcionales",
+        desc: "Walking Tour, Tranvía, Valle Sur o el Tour Místico, la mejor forma de cerrar Cusco con broche de oro.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Cusco",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", detail: "Bus y guía profesional", unitPrice: 15 },
+      { label: "Valle Sagrado VIP", detail: "Bus, guía y almuerzo buffet", unitPrice: 125 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Entrada Circuito 2A, tren turístico Ollantaytambo–Aguas Calientes ida y vuelta, bus de subida/bajada, guía, hotel con desayuno y transporte desde/hasta Cusco",
+        unitPrice: 280,
+      },
+      { label: "Laguna Humantay", detail: "Transporte, guía, desayuno y almuerzo buffet", unitPrice: 35 },
+      { label: "Montaña de 7 Colores", detail: "Transporte, guía, desayuno y almuerzo buffet", unitPrice: 35 },
+    ],
+    includes: [
+      "Transporte turístico compartido para todas las excursiones",
+      "Guía profesional en cada excursión (grupo compartido; guía privado a pedido)",
+      "Valle Sagrado VIP: almuerzo buffet",
+      "Laguna Humantay y Montaña de 7 Colores: desayuno y almuerzo buffet",
+      "Machu Picchu: entrada Circuito 2A, tren turístico (Ollantaytambo–Aguas Calientes, ida y vuelta), bus Aguas Calientes–Machu Picchu–Aguas Calientes, 1 noche de hotel con desayuno y transporte desde/hasta Cusco",
+    ],
+    excludes: [
+      "Vuelos internacionales y nacionales",
+      "Hoteles en Cusco y Lima",
+      "Traslados de aeropuerto (Cusco y Lima)",
+      "Servicios en Lima (se cotizan por separado)",
+      "Boleto Turístico del Cusco (BTC), se compra aparte",
+      "Cenas y comidas no indicadas, más el almuerzo en Machu Picchu",
+      "Caballo y bastones en Humantay y 7 Colores (opcionales)",
+      "Tours opcionales del día libre",
+      "Propinas, gastos personales y seguro de viaje",
+    ],
+    note: "Precios en dólares (US$) por persona; el total mostrado es para 2 pasajeros (para 1 pasajero: US$490, adelanto US$245). Noviembre es temporada de alta demanda: el adelanto del 50% asegura tu ingreso a Machu Picchu, que te entregamos desde ya; el saldo se completa al llegar a Cusco. Cambios de fecha sin costo hasta 72 horas antes, según disponibilidad. Entradas y trenes no son reembolsables; si cancelamos nosotros o el clima lo impide, reprogramamos sin costo o devolvemos la parte no realizada. Oficina: Av. El Sol 314, Cusco. Operador autorizado por MINCETUR.",
+  },
 };
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
