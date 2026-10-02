@@ -340,7 +340,11 @@ export default async function QuotePage({ params }: PageProps) {
             )}
           </div>
 
-          <p className="text-xs text-night/50 mt-4">{quote.note}</p>
+          <div className="mt-4 space-y-2 text-xs leading-relaxed text-night/60">
+            {quote.note.split("\n").map((paragraph, i) => (
+              <p key={i}>{renderBold(paragraph)}</p>
+            ))}
+          </div>
 
           <a
             href={waHref}
@@ -373,5 +377,18 @@ function InfoCell({
       </div>
       <div className="font-bold text-night text-sm">{value}</div>
     </div>
+  );
+}
+
+/** Renders `**text**` segments of a quote note in bold. */
+function renderBold(text: string): React.ReactNode[] {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="font-semibold text-night">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
   );
 }
