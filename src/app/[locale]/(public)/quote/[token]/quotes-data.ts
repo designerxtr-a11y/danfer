@@ -374,7 +374,7 @@ export const QUOTES: Record<string, Quote> = {
     ],
     items: [
       { label: "City Tour Cusco", detail: "Bus y guía profesional", unitPrice: 15 },
-      { label: "Valle Sagrado VIP", detail: "Bus, guía y almuerzo buffet", unitPrice: 125 },
+      { label: "Valle Sagrado VIP", detail: "Bus, guía y almuerzo buffet", unitPrice: 32 },
       {
         label: "Machu Picchu 2D/1N",
         detail:
@@ -402,7 +402,7 @@ export const QUOTES: Record<string, Quote> = {
       "Tours opcionales del día libre",
       "Propinas, gastos personales y seguro de viaje",
     ],
-    note: "Precios en **dólares (US$) por persona**. El total mostrado es para **2 pasajeros**; para **1 pasajero: US$490** (adelanto US$245).\n**Noviembre es temporada de alta demanda:** el **adelanto del 50%** asegura tu ingreso a Machu Picchu, que te entregamos desde ya; el **saldo se completa al llegar a Cusco**.\n**Machu Picchu:** **tren turístico** Ollantaytambo–Aguas Calientes, ingreso por el **Circuito 2A**, bus de subida y bajada, y **1 noche de hotel con desayuno**.\n**Cancelación:** cambios de fecha **sin costo hasta 72 horas antes**, según disponibilidad. Entradas y trenes **no son reembolsables**; si cancelamos nosotros o el clima lo impide, **reprogramamos sin costo o devolvemos** la parte no realizada.\n**Operador autorizado por MINCETUR** · Oficina: Av. El Sol 314, Cusco.",
+    note: "Precios en **dólares (US$) por persona**. El total mostrado es para **2 pasajeros**; para **1 pasajero: US$397** (adelanto US$198.50).\n**Noviembre es temporada de alta demanda:** el **adelanto del 50%** asegura tu ingreso a Machu Picchu, que te entregamos desde ya; el **saldo se completa al llegar a Cusco**.\n**Machu Picchu:** **tren turístico** Ollantaytambo–Aguas Calientes, ingreso por el **Circuito 2A**, bus de subida y bajada, y **1 noche de hotel con desayuno**.\n**Cancelación:** cambios de fecha **sin costo hasta 72 horas antes**, según disponibilidad. Entradas y trenes **no son reembolsables**; si cancelamos nosotros o el clima lo impide, **reprogramamos sin costo o devolvemos** la parte no realizada.\n**Operador autorizado por MINCETUR** · Oficina: Av. El Sol 314, Cusco.",
   },
 
   "pareja-chile-febrero": {
@@ -476,7 +476,7 @@ export const QUOTES: Record<string, Quote> = {
     ],
     items: [
       { label: "City Tour Cusco", detail: "Transporte y guía profesional", unitPrice: 15 },
-      { label: "Valle Sagrado VIP", detail: "Transporte, guía y almuerzo buffet", unitPrice: 125 },
+      { label: "Valle Sagrado VIP", detail: "Transporte, guía y almuerzo buffet", unitPrice: 32 },
       {
         label: "Machu Picchu 2D/1N",
         detail:
