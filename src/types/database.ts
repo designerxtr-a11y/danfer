@@ -56,6 +56,8 @@ export interface Tour {
   excludes: LocalizedList;
   what_to_bring: LocalizedList;
   faqs: FAQ[];
+  meta_title?: Localized | null;
+  meta_description?: Localized | null;
   coordinates: Coordinates | null;
   rating: number;
   reviews_count: number;

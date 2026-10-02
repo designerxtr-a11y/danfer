@@ -55,8 +55,9 @@ export async function generateMetadata({ params }: PageProps) {
   const tour = await getTourBySlug(slug);
   if (!tour) return {};
 
-  const title = t(tour.title, lc);
+  const title = t(tour.meta_title, lc) || t(tour.title, lc);
   const description =
+    t(tour.meta_description, lc) ||
     t(tour.short_desc, lc) ||
     t(tour.subtitle, lc) ||
     (lc === "en"
