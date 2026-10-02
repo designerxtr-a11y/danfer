@@ -16,7 +16,7 @@ import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { TourGallery } from "@/components/tours/tour-gallery";
 import { TourItinerary } from "@/components/tours/tour-itinerary";
 import { TourFaqs } from "@/components/tours/tour-faqs";
-import { TourMapLazy } from "@/components/tours/tour-map-lazy";
+import { MeetingPoint } from "@/components/tours/meeting-point";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   tourSchema,
@@ -274,18 +274,13 @@ export default async function TourDetailPage({ params }: PageProps) {
               <TourFaqs faqs={tour.faqs} />
             )}
 
-            {/* Map */}
-            {tour.coordinates && (
-              <div>
-                <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-                  {mx.tourDetail.startPoint}
-                </h2>
-                <TourMapLazy
-                  coordinates={tour.coordinates}
-                  title={t(tour.title, lc)}
-                />
-              </div>
-            )}
+            {/* Meeting point */}
+            <div>
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
+                {mx.tourDetail.startPoint}
+              </h2>
+              <MeetingPoint en={lc === "en"} />
+            </div>
 
             {/* Reviews — solo si hay reseñas reales (number coincide con schema) */}
             {reviewStats.count > 0 && (
