@@ -8,21 +8,22 @@ interface Props {
   reviews: Review[];
   avgRating: number;
   total: number;
+  en?: boolean;
 }
 
-export function TourReviews({ reviews, avgRating, total }: Props) {
+export function TourReviews({ reviews, avgRating, total, en = false }: Props) {
   if (reviews.length === 0) return null;
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
-        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night">Reseñas</h2>
+        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night">{en ? "Reviews" : "Reseñas"}</h2>
         <div className="flex items-center gap-2">
           <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-gold text-gold" />
           <span className="font-display text-xl sm:text-2xl text-night">
             {avgRating.toFixed(1)}
           </span>
-          <span className="text-night/50 text-xs sm:text-sm">({total} reseñas)</span>
+          <span className="text-night/50 text-xs sm:text-sm">({total} {en ? (total === 1 ? "review" : "reviews") : total === 1 ? "reseña" : "reseñas"})</span>
         </div>
       </div>
 

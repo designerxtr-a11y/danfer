@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { LocalizedList } from "@/types/database";
 
 export async function togglePublished(id: string, current: boolean) {
   const supabase = createAdminClient();
@@ -54,10 +55,10 @@ interface TourInput {
   price_usd: number;
   price_pen: number | null;
   discount_pct: number;
-  highlights: string[];
-  includes: string[];
-  excludes: string[];
-  what_to_bring: string[];
+  highlights: LocalizedList;
+  includes: LocalizedList;
+  excludes: LocalizedList;
+  what_to_bring: LocalizedList;
   faqs: { q: { es: string; en?: string }; a: { es: string; en?: string } }[];
   coordinates: { lat: number; lng: number; zoom?: number } | null;
   is_published: boolean;

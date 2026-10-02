@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Coffee, UtensilsCrossed, Moon, Tent } from "lucide-react";
 import type { ItineraryDay } from "@/lib/queries/tours";
-import { t } from "@/types/database";
+import { t, type Locale } from "@/types/database";
 
 const mealIcon: Record<string, typeof Coffee> = {
   breakfast: Coffee,
@@ -11,16 +11,17 @@ const mealIcon: Record<string, typeof Coffee> = {
   dinner: Moon,
 };
 
-const mealLabel: Record<string, string> = {
-  breakfast: "Desayuno",
-  lunch: "Almuerzo",
-  dinner: "Cena",
+const mealLabel: Record<Locale, Record<string, string>> = {
+  es: { breakfast: "Desayuno", lunch: "Almuerzo", dinner: "Cena" },
+  en: { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner" },
 };
 
-export function TourItinerary({ days }: { days: ItineraryDay[] }) {
+export function TourItinerary({ days, locale = "es" }: { days: ItineraryDay[]; locale?: Locale }) {
   return (
     <div>
-      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-8">Itinerario día a día</h2>
+      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-8">
+        {locale === "en" ? "Day-by-day itinerary" : "Itinerario día a día"}
+      </h2>
       <div className="relative">
         <div className="absolute left-5 sm:left-6 top-3 bottom-3 w-px bg-gradient-to-b from-gold via-gold/30 to-transparent" />
 
@@ -40,11 +41,11 @@ export function TourItinerary({ days }: { days: ItineraryDay[] }) {
 
               <div className="bg-white border border-night/8 shadow-soft rounded-2xl p-4 sm:p-6 hover:border-gold/40 hover:shadow-card transition">
                 <h3 className="font-display text-xl sm:text-2xl text-night">
-                  {t(day.title)}
+                  {t(day.title, locale)}
                 </h3>
                 {day.description && (
                   <p className="mt-3 text-night/70 leading-relaxed">
-                    {t(day.description)}
+                    {t(day.description, locale)}
                   </p>
                 )}
 
@@ -57,14 +58,14 @@ export function TourItinerary({ days }: { days: ItineraryDay[] }) {
                         className="flex items-center gap-1.5 text-night/70 bg-stone rounded-full px-3 py-1.5"
                       >
                         <Icon className="w-3.5 h-3.5 text-gold" />
-                        {mealLabel[m]}
+                        {mealLabel[locale][m]}
                       </span>
                     );
                   })}
                   {day.accommodation && (
                     <span className="flex items-center gap-1.5 text-night/70 bg-stone rounded-full px-3 py-1.5">
                       <Tent className="w-3.5 h-3.5 text-gold" />
-                      {t(day.accommodation)}
+                      {t(day.accommodation, locale)}
                     </span>
                   )}
                 </div>

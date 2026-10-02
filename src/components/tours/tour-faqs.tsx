@@ -3,17 +3,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import type { FAQ } from "@/types/database";
+import type { FAQ, Locale } from "@/types/database";
 import { t } from "@/types/database";
 
-export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
+export function TourFaqs({ faqs, locale = "es" }: { faqs: FAQ[]; locale?: Locale }) {
   const [open, setOpen] = useState<number | null>(0);
 
   if (faqs.length === 0) return null;
 
   return (
     <div>
-      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">Preguntas frecuentes</h2>
+      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
+        {locale === "en" ? "Frequently asked questions" : "Preguntas frecuentes"}
+      </h2>
       <div className="space-y-3">
         {faqs.map((faq, i) => {
           const isOpen = open === i;
@@ -27,7 +29,7 @@ export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
                 className="w-full flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 text-left"
               >
                 <span className="font-display text-base sm:text-lg text-night">
-                  {t(faq.q)}
+                  {t(faq.q, locale)}
                 </span>
                 <ChevronDown
                   className={`w-5 h-5 text-gold shrink-0 transition-transform ${
@@ -45,7 +47,7 @@ export function TourFaqs({ faqs }: { faqs: FAQ[] }) {
                     className="overflow-hidden"
                   >
                     <div className="px-4 sm:px-6 pb-5 text-night/75 leading-relaxed text-sm sm:text-base">
-                      {t(faq.a)}
+                      {t(faq.a, locale)}
                     </div>
                   </motion.div>
                 )}

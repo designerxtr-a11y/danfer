@@ -4,16 +4,17 @@ interface Props {
   includes: string[];
   excludes: string[];
   whatToBring: string[];
+  en?: boolean;
 }
 
-export function TourIncludes({ includes, excludes, whatToBring }: Props) {
+export function TourIncludes({ includes, excludes, whatToBring, en = false }: Props) {
   return (
     <div className="grid md:grid-cols-2 gap-8">
       {includes.length > 0 && (
         <div>
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <Check className="w-5 h-5 text-emerald-600" />
-            Incluye
+            {en ? "Included" : "Incluye"}
           </h3>
           <ul className="space-y-2.5">
             {includes.map((item, i) => (
@@ -30,7 +31,7 @@ export function TourIncludes({ includes, excludes, whatToBring }: Props) {
         <div>
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <X className="w-5 h-5 text-rose-600" />
-            No incluye
+            {en ? "Not included" : "No incluye"}
           </h3>
           <ul className="space-y-2.5">
             {excludes.map((item, i) => (
@@ -47,7 +48,7 @@ export function TourIncludes({ includes, excludes, whatToBring }: Props) {
         <div className="md:col-span-2">
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <Backpack className="w-5 h-5 text-gold" />
-            Qué llevar
+            {en ? "What to bring" : "Qué llevar"}
           </h3>
           <ul className="grid sm:grid-cols-2 gap-2.5">
             {whatToBring.map((item, i) => (

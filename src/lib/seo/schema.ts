@@ -1,5 +1,14 @@
 import type { TourWithCategory, Review, FAQ } from "@/types/database";
-import { t } from "@/types/database";
+import { t, tList, type Locale } from "@/types/database";
+
+/** Plain text for schema fields (descriptions may hold HTML). */
+function plain(html: string): string {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function tourUrl(slug: string, locale: Locale): string {
+  return `${SITE}${locale === "en" ? "/en" : ""}/tours/${slug}`;
+}
 import { siteUrl } from "./site-url";
 
 const SITE = siteUrl();
@@ -170,10 +179,11 @@ export function breadcrumbSchema(
 export function tourSchema(
   tour: TourWithCategory,
   reviews: Review[] = [],
-  reviewStats: { count: number; avg: number } = { count: 0, avg: 0 }
+  reviewStats: { count: number; avg: number } = { count: 0, avg: 0 },
+  locale: Locale = "es"
 ) {
-  const title = t(tour.title);
-  const description = t(tour.description) || t(tour.short_desc) || "";
+  const title = t(tour.title, locale);
+  const description = plain(t(tour.description, locale) || t(tour.short_desc, locale) || "");
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -184,10 +194,10 @@ export function tourSchema(
     image: [tour.cover_image, ...tour.gallery.map((g) => g.url)].slice(0, 6),
     brand: { "@type": "Brand", name: ORG_NAME },
     sku: tour.slug,
-    category: tour.category ? t(tour.category.name) : "Tours",
+    category: tour.category ? t(tour.category.name, locale) : "Tours",
     offers: {
       "@type": "Offer",
-      url: `${SITE}/tours/${tour.slug}`,
+      url: tourUrl(tour.slug, locale),
       priceCurrency: "USD",
       price:
         tour.discount_pct > 0
@@ -241,7 +251,7 @@ export function tourSchema(
     },
     offers: {
       "@type": "Offer",
-      url: `${SITE}/tours/${tour.slug}`,
+      url: tourUrl(tour.slug, locale),
       priceCurrency: "USD",
       price: tour.price_usd.toFixed(2),
     },
@@ -262,9 +272,9 @@ export function faqSchema(items: { q: string; a: string }[]) {
   };
 }
 
-export function tourFaqsSchema(faqs: FAQ[]) {
+export function tourFaqsSchema(faqs: FAQ[], locale: Locale = "es") {
   if (faqs.length === 0) return null;
-  return faqSchema(faqs.map((f) => ({ q: t(f.q), a: t(f.a) })));
+  return faqSchema(faqs.map((f) => ({ q: t(f.q, locale), a: t(f.a, locale) })));
 }
 
 /**
@@ -485,19 +495,19 @@ export function topDestinationsSchemas() {
  * Google los muestra en Education / Course rich results y también ayuda en
  * queries tipo "curso/guía de Camino Inca".
  */
-export function courseSchema(tour: TourWithCategory) {
+export function courseSchema(tour: TourWithCategory, locale: Locale = "es") {
   if (tour.duration_days < 2) return null; // solo multi-día
   return {
     "@context": "https://schema.org",
     "@type": "Course",
     "@id": `${SITE}/tours/${tour.slug}#course`,
-    name: t(tour.title),
-    description: t(tour.description) || t(tour.short_desc) || "",
+    name: t(tour.title, locale),
+    description: plain(t(tour.description, locale) || t(tour.short_desc, locale) || ""),
     provider: { "@id": `${SITE}/#organization` },
     courseMode: "onsite",
     educationalLevel: "Beginner to Advanced",
     inLanguage: ["es", "en"],
-    teaches: tour.highlights.slice(0, 8),
+    teaches: tList(tour.highlights, locale).slice(0, 8),
     timeRequired: `P${tour.duration_days}D`,
     hasCourseInstance: {
       "@type": "CourseInstance",
@@ -515,7 +525,7 @@ export function courseSchema(tour: TourWithCategory) {
     },
     offers: {
       "@type": "Offer",
-      url: `${SITE}/tours/${tour.slug}`,
+      url: tourUrl(tour.slug, locale),
       priceCurrency: "USD",
       price:
         tour.discount_pct > 0

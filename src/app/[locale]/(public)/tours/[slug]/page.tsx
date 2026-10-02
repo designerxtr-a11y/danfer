@@ -10,7 +10,7 @@ import {
   getTourReviewStats,
   getRelatedTours,
 } from "@/lib/queries/tours";
-import { t, type Locale } from "@/types/database";
+import { t, tList, type Locale } from "@/types/database";
 import { tr } from "@/lib/i18n/messages";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { TourGallery } from "@/components/tours/tour-gallery";
@@ -106,8 +106,8 @@ export default async function TourDetailPage({ params }: PageProps) {
       ? tour.price_usd * (1 - tour.discount_pct / 100)
       : tour.price_usd;
 
-  const faqLd = tourFaqsSchema(tour.faqs ?? []);
-  const courseLd = courseSchema(tour);
+  const faqLd = tourFaqsSchema(tour.faqs ?? [], lc);
+  const courseLd = courseSchema(tour, lc);
   const crumbs = [
     { name: mx.breadcrumbs.home, url: "/" },
     { name: mx.breadcrumbs.tours, url: "/tours" },
@@ -122,7 +122,7 @@ export default async function TourDetailPage({ params }: PageProps) {
     { name: t(tour.title, lc), url: `/tours/${tour.slug}` },
   ];
   const schemas = [
-    ...tourSchema(tour, reviews, reviewStats),
+    ...tourSchema(tour, reviews, reviewStats, lc),
     breadcrumbSchema(crumbs),
     ...(faqLd ? [faqLd] : []),
     ...(courseLd ? [courseLd] : []),
@@ -238,13 +238,13 @@ export default async function TourDetailPage({ params }: PageProps) {
             </div>
 
             {/* Highlights */}
-            {tour.highlights.length > 0 && (
+            {tList(tour.highlights, lc).length > 0 && (
               <div>
                 <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
                   {mx.tourDetail.highlights}
                 </h2>
                 <ul className="grid sm:grid-cols-2 gap-3">
-                  {tour.highlights.map((h, i) => (
+                  {tList(tour.highlights, lc).map((h, i) => (
                     <li
                       key={i}
                       className="flex items-start gap-3 text-night/80"
@@ -259,19 +259,20 @@ export default async function TourDetailPage({ params }: PageProps) {
 
             {/* Itinerary */}
             {itinerary.length > 0 && (
-              <TourItinerary days={itinerary} />
+              <TourItinerary days={itinerary} locale={lc} />
             )}
 
             {/* Includes / Excludes */}
             <TourIncludes
-              includes={tour.includes}
-              excludes={tour.excludes}
-              whatToBring={tour.what_to_bring}
+              includes={tList(tour.includes, lc)}
+              excludes={tList(tour.excludes, lc)}
+              whatToBring={tList(tour.what_to_bring, lc)}
+              en={lc === "en"}
             />
 
             {/* FAQs */}
             {tour.faqs && tour.faqs.length > 0 && (
-              <TourFaqs faqs={tour.faqs} />
+              <TourFaqs faqs={tour.faqs} locale={lc} />
             )}
 
             {/* Meeting point */}
@@ -288,6 +289,7 @@ export default async function TourDetailPage({ params }: PageProps) {
                 reviews={reviews}
                 avgRating={reviewStats.avg}
                 total={reviewStats.count}
+                en={lc === "en"}
               />
             )}
 
@@ -313,7 +315,7 @@ export default async function TourDetailPage({ params }: PageProps) {
         </section>
 
       {/* Related */}
-      {related.length > 0 && <RelatedTours tours={related} />}
+      {related.length > 0 && <RelatedTours tours={related} en={lc === "en"} />}
     </div>
   );
 }

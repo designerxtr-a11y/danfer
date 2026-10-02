@@ -2,7 +2,6 @@
 
 export type Locale = "es" | "en";
 export type Localized = { es: string; en?: string };
-export type LocalizedList = string[];
 
 export type Difficulty = "easy" | "moderate" | "challenging" | "expert";
 
@@ -52,10 +51,10 @@ export interface Tour {
   price_usd: number;
   price_pen: number | null;
   discount_pct: number;
-  highlights: string[];
-  includes: string[];
-  excludes: string[];
-  what_to_bring: string[];
+  highlights: LocalizedList;
+  includes: LocalizedList;
+  excludes: LocalizedList;
+  what_to_bring: LocalizedList;
   faqs: FAQ[];
   coordinates: Coordinates | null;
   rating: number;
@@ -84,4 +83,13 @@ export interface Review {
 export function t(field: Localized | null | undefined, locale: Locale = "es"): string {
   if (!field) return "";
   return field[locale] ?? field.es ?? "";
+}
+
+/** Tour list field: legacy Spanish-only array, or one list per language. */
+export type LocalizedList = string[] | { es: string[]; en?: string[] };
+
+export function tList(list: LocalizedList | null | undefined, locale: Locale = "es"): string[] {
+  if (!list) return [];
+  if (Array.isArray(list)) return list;
+  return (list[locale]?.length ? list[locale] : list.es) ?? [];
 }

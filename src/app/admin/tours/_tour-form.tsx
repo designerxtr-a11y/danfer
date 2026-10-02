@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, X, MapPin } from "lucide-react";
 import { saveTour } from "./actions";
+import { tList, type LocalizedList } from "@/types/database";
 import { RichText } from "@/app/admin/_components/rich-text";
 import { ImageUploader, GalleryUploader } from "@/app/admin/_components/image-uploader";
 
@@ -32,10 +33,10 @@ export interface TourFormInitial {
   price_usd?: number;
   price_pen?: number | null;
   discount_pct?: number;
-  highlights?: string[];
-  includes?: string[];
-  excludes?: string[];
-  what_to_bring?: string[];
+  highlights?: LocalizedList;
+  includes?: LocalizedList;
+  excludes?: LocalizedList;
+  what_to_bring?: LocalizedList;
   faqs?: { q: { es: string; en?: string }; a: { es: string; en?: string } }[];
   coordinates?: { lat: number; lng: number; zoom?: number } | null;
   is_published?: boolean;
@@ -75,12 +76,14 @@ export function TourForm({ initial = {}, categories }: Props) {
     is_featured: initial.is_featured ?? false,
   });
 
-  const [highlights, setHighlights] = useState<string[]>(initial.highlights ?? []);
-  const [includes, setIncludes] = useState<string[]>(initial.includes ?? []);
-  const [excludes, setExcludes] = useState<string[]>(initial.excludes ?? []);
-  const [whatToBring, setWhatToBring] = useState<string[]>(
-    initial.what_to_bring ?? []
-  );
+  const [highlights, setHighlights] = useState<string[]>(tList(initial.highlights, "es"));
+  const [highlightsEn, setHighlightsEn] = useState<string[]>(enList(initial.highlights));
+  const [includes, setIncludes] = useState<string[]>(tList(initial.includes, "es"));
+  const [includesEn, setIncludesEn] = useState<string[]>(enList(initial.includes));
+  const [excludes, setExcludes] = useState<string[]>(tList(initial.excludes, "es"));
+  const [excludesEn, setExcludesEn] = useState<string[]>(enList(initial.excludes));
+  const [whatToBring, setWhatToBring] = useState<string[]>(tList(initial.what_to_bring, "es"));
+  const [whatToBringEn, setWhatToBringEn] = useState<string[]>(enList(initial.what_to_bring));
   const [gallery, setGallery] = useState<string[]>(
     (initial.gallery ?? []).map((g) => g.url)
   );
@@ -112,10 +115,10 @@ export function TourForm({ initial = {}, categories }: Props) {
         id: initial.id,
         ...form,
         category_id: form.category_id || null,
-        highlights,
-        includes,
-        excludes,
-        what_to_bring: whatToBring,
+        highlights: toList(highlights, highlightsEn),
+        includes: toList(includes, includesEn),
+        excludes: toList(excludes, excludesEn),
+        what_to_bring: toList(whatToBring, whatToBringEn),
         gallery,
         faqs: faqs
           .filter((f) => f.q_es && f.a_es)
@@ -321,10 +324,14 @@ export function TourForm({ initial = {}, categories }: Props) {
       </Card>
 
       <Card title="Listas de contenido">
-        <ListEditor label="Highlights / lo más destacado" items={highlights} setItems={setHighlights} />
-        <ListEditor label="Incluye" items={includes} setItems={setIncludes} />
-        <ListEditor label="No incluye" items={excludes} setItems={setExcludes} />
-        <ListEditor label="Qué llevar" items={whatToBring} setItems={setWhatToBring} />
+        <ListEditor label="Highlights / lo más destacado (ES)" items={highlights} setItems={setHighlights} />
+        <ListEditor label="Highlights (EN)" items={highlightsEn} setItems={setHighlightsEn} />
+        <ListEditor label="Incluye (ES)" items={includes} setItems={setIncludes} />
+        <ListEditor label="Included (EN)" items={includesEn} setItems={setIncludesEn} />
+        <ListEditor label="No incluye (ES)" items={excludes} setItems={setExcludes} />
+        <ListEditor label="Not included (EN)" items={excludesEn} setItems={setExcludesEn} />
+        <ListEditor label="Qué llevar (ES)" items={whatToBring} setItems={setWhatToBring} />
+        <ListEditor label="What to bring (EN)" items={whatToBringEn} setItems={setWhatToBringEn} />
       </Card>
 
       <Card title="Preguntas frecuentes (FAQ)">
@@ -580,6 +587,17 @@ function Checkbox({
       <span className="text-sm text-night">{label}</span>
     </label>
   );
+}
+
+function enList(list: LocalizedList | undefined): string[] {
+  return list && !Array.isArray(list) ? (list.en ?? []) : [];
+}
+
+/** Keeps the legacy plain array when there is no English list yet. */
+function toList(es: string[], en: string[]): LocalizedList {
+  const clean = (l: string[]) => l.map((s) => s.trim()).filter(Boolean);
+  const enClean = clean(en);
+  return enClean.length ? { es: clean(es), en: enClean } : clean(es);
 }
 
 function ListEditor({
