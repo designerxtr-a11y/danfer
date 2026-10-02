@@ -1,18 +1,36 @@
 import { LegalShell } from "@/components/legal/legal-shell";
+import { Link } from "@/i18n/navigation";
+import { buildAlternates } from "@/lib/seo/alternates";
 
-export const metadata = {
-  title: "Términos y condiciones · Danfer Tours Cusco",
-  description:
-    "Términos y condiciones de uso del sitio y de los servicios turísticos de Danfer Tours Cusco.",
-  alternates: { canonical: "/terminos" },
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default function TerminosPage() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const en = locale === "en";
+  return {
+    title: en
+      ? "Terms and conditions · Danfer Tours Cusco"
+      : "Términos y condiciones · Danfer Tours Cusco",
+    description: en
+      ? "Terms and conditions for using the website and the travel services of Danfer Tours Cusco."
+      : "Términos y condiciones de uso del sitio y de los servicios turísticos de Danfer Tours Cusco.",
+    alternates: buildAlternates("/terminos", locale),
+  };
+}
+
+export default async function TerminosPage({ params }: PageProps) {
+  const { locale } = await params;
+  return locale === "en" ? <TermsEn /> : <TerminosEs />;
+}
+
+function TerminosEs() {
   return (
     <LegalShell title="Términos y condiciones" updatedAt="27 de mayo de 2026">
       <p>
-        Bienvenido a <strong>Danfer Tours Cusco</strong> ("nosotros",
-        "nuestra"). Al usar este sitio y reservar nuestros servicios, aceptas
+        Bienvenido a <strong>Danfer Tours Cusco</strong> (&quot;nosotros&quot;,
+        &quot;nuestra&quot;). Al usar este sitio y reservar nuestros servicios, aceptas
         estos términos.
       </p>
 
@@ -54,7 +72,7 @@ export default function TerminosPage() {
 
       <h2>6. Cancelación</h2>
       <p>
-        Consulta nuestra <a href="/cancelacion">política de cancelación</a>{" "}
+        Consulta nuestra <Link href="/cancelacion">política de cancelación</Link>{" "}
         detallada.
       </p>
 
@@ -84,6 +102,91 @@ export default function TerminosPage() {
       <h2>10. Contacto</h2>
       <p>
         Para consultas legales escríbenos a{" "}
+        <a href="mailto:legal@danfertourscusco.com">
+          legal@danfertourscusco.com
+        </a>
+        .
+      </p>
+    </LegalShell>
+  );
+}
+
+function TermsEn() {
+  return (
+    <LegalShell title="Terms and conditions" updatedAt="May 27, 2026" en>
+      <p>
+        Welcome to <strong>Danfer Tours Cusco</strong> (&quot;we&quot;, &quot;us&quot;,
+        &quot;our&quot;). By using this website and booking our services, you
+        agree to these terms.
+      </p>
+
+      <h2>1. Who we are</h2>
+      <p>
+        Danfer Tours Cusco S.A.C. is a tour operator registered with Peru&apos;s
+        Ministry of Foreign Trade and Tourism (MINCETUR), based at Av. El Sol
+        314, Cusco, Peru.
+      </p>
+
+      <h2>2. Bookings</h2>
+      <ul>
+        <li>Bookings are confirmed once full payment (or the agreed deposit) is received.</li>
+        <li>For the Inca Trail and other tours with limited spaces, full payment is required at the time of booking because of official permit availability.</li>
+        <li>Customers are responsible for providing correct passport and contact details.</li>
+      </ul>
+
+      <h2>3. Prices</h2>
+      <p>
+        Prices are in US dollars (USD) unless stated otherwise. They may vary
+        by season or with changes to official rates (entrance tickets,
+        trains). The price shown at the time of booking is the one that applies.
+      </p>
+
+      <h2>4. Traveler responsibilities</h2>
+      <ul>
+        <li>Acclimatize to the altitude before demanding tours (at least 2 days in Cusco).</li>
+        <li>Consult your doctor if you have pre-existing conditions.</li>
+        <li>Carry a valid passport and, if required, a visa.</li>
+        <li>Take out travel insurance (recommended).</li>
+      </ul>
+
+      <h2>5. Itinerary changes</h2>
+      <p>
+        For safety, weather or decisions by the authorities, we may need to
+        change the itinerary. We will always look for an equivalent
+        alternative or refund the part not carried out.
+      </p>
+
+      <h2>6. Cancellation</h2>
+      <p>
+        See our detailed <Link href="/cancelacion">cancellation policy</Link>.
+      </p>
+
+      <h2>7. Limitation of liability</h2>
+      <p>
+        Danfer Tours is not responsible for:
+      </p>
+      <ul>
+        <li>Loss of luggage outside our vehicles.</li>
+        <li>Injuries resulting from not following the guide&apos;s instructions.</li>
+        <li>Schedule changes by third-party providers (trains, flights).</li>
+        <li>Force majeure events (earthquakes, strikes, pandemics).</li>
+      </ul>
+
+      <h2>8. Intellectual property</h2>
+      <p>
+        All website content (texts, photos, logos) belongs to Danfer Tours
+        Cusco S.A.C. and is protected by copyright.
+      </p>
+
+      <h2>9. Jurisdiction</h2>
+      <p>
+        These terms are governed by the laws of Peru. Any dispute will be
+        submitted to the courts of Cusco.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        For legal inquiries, email us at{" "}
         <a href="mailto:legal@danfertourscusco.com">
           legal@danfertourscusco.com
         </a>
