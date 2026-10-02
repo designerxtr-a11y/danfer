@@ -404,6 +404,106 @@ export const QUOTES: Record<string, Quote> = {
     ],
     note: "Precios en dólares (US$) por persona; el total mostrado es para 2 pasajeros (para 1 pasajero: US$490, adelanto US$245). Noviembre es temporada de alta demanda: el adelanto del 50% asegura tu ingreso a Machu Picchu, que te entregamos desde ya; el saldo se completa al llegar a Cusco. Cambios de fecha sin costo hasta 72 horas antes, según disponibilidad. Entradas y trenes no son reembolsables; si cancelamos nosotros o el clima lo impide, reprogramamos sin costo o devolvemos la parte no realizada. Oficina: Av. El Sol 314, Cusco. Operador autorizado por MINCETUR.",
   },
+
+  "pareja-chile-febrero": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Cusco & Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "3 – 9 feb, 2027",
+    duration: "7 días / 6 noches",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · 3 feb",
+        timeLabel: "1–6 pm",
+        title: "City Tour Cusco",
+        desc: "Coricancha, Sacsahuamán, Qenqo, Pucapucara y Tambomachay. Mañana libre para descansar al llegar. Incluye transporte y guía profesional.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · 4 feb",
+        timeLabel: "Desde 7 am",
+        title: "Valle Sagrado + tren a Aguas Calientes",
+        desc: "Chinchero, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo tomas el tren turístico a Aguas Calientes y pasas la noche en hotel con desayuno.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/valle-sagrado-1789099156026.webp",
+        photoAlt: "Valle Sagrado de los Incas",
+      },
+      {
+        day: "Día 3 · 5 feb",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu + retorno a Cusco",
+        desc: "Subes en bus a la ciudadela y haces la visita guiada por el Circuito 2A, el más completo. Por la tarde regresas en tren a Ollantaytambo y en transporte a Cusco.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+      {
+        day: "Día 4 · 6 feb",
+        timeLabel: "Libre",
+        title: "Día libre · descanso",
+        desc: "Ideal para recuperar energía antes de los dos tours de altura. Si quieres, puedes sumar un tour opcional: Walking Tour, Tranvía, Valle Sur o Tour Místico.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Cusco",
+      },
+      {
+        day: "Día 5 · 7 feb",
+        timeLabel: "4:30 am–5 pm",
+        title: "Laguna Humantay",
+        desc: "Caminata a la laguna turquesa, a 4,200 msnm, al pie del nevado Salkantay. Incluye transporte, guía, entrada, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/laguna-humantay/1781143602424-rc9fi8.jpg",
+        photoAlt: "Laguna Humantay",
+      },
+      {
+        day: "Día 6 · 8 feb",
+        timeLabel: "5,036 msnm",
+        title: "Montaña de 7 Colores",
+        desc: "Recojo de madrugada rumbo a Vinicunca y caminata a la montaña de colores. Incluye transporte, guía, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/rainbow-mountain-1789091035693.webp",
+        photoAlt: "Montaña de 7 Colores, Vinicunca",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", detail: "Transporte y guía profesional", unitPrice: 15 },
+      { label: "Valle Sagrado VIP", detail: "Transporte, guía y almuerzo buffet", unitPrice: 125 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Entrada Circuito 2A, tren turístico Ollantaytambo–Aguas Calientes ida y vuelta, bus de subida/bajada, guía, hotel con desayuno y retorno a Cusco",
+        unitPrice: 280,
+      },
+      { label: "Laguna Humantay", detail: "Transporte, guía, entrada, desayuno y almuerzo buffet", unitPrice: 35 },
+      { label: "Montaña de 7 Colores", detail: "Transporte, guía, desayuno y almuerzo buffet", unitPrice: 35 },
+    ],
+    includes: [
+      "Servicio en grupo compartido con guía profesional en cada tour (guía privado a pedido)",
+      "Recojo en tu hotel en el centro de Cusco y transporte turístico en todos los tours",
+      "Entradas: Machu Picchu (Circuito 2A) y Laguna Humantay",
+      "Comidas: almuerzo buffet en el Valle Sagrado; desayuno y almuerzo buffet en Humantay y 7 Colores; desayuno en el hotel de Aguas Calientes",
+      "Machu Picchu: tren turístico (Ollantaytambo–Aguas Calientes, ida y vuelta), bus de subida/bajada, 1 noche de hotel y retorno Ollantaytambo–Cusco",
+    ],
+    excludes: [
+      "Vuelos y hoteles en Cusco",
+      "Traslados de aeropuerto",
+      "Boleto Turístico del Cusco (BTC), se compra aparte",
+      "Cenas y comidas no indicadas",
+      "Caballo y bastones en Humantay y 7 Colores (opcionales)",
+      "Tours opcionales del día libre",
+      "Propinas, gastos personales y seguro de viaje",
+    ],
+    note: "Precios en dólares (US$) por persona. El orden de los tours es ideal para aclimatarse: primero el City Tour, luego el Valle Sagrado y Machu Picchu (más bajos que Cusco), un día de descanso, y Humantay y Vinicunca al final. Febrero es temporada de lluvias: lleven poncho o casaca impermeable y buen calzado. Tren: ida el 4 feb por la tarde y vuelta el 5 feb por la tarde; horas exactas al emitir los boletos. El adelanto del 50% reserva entradas, tren y hotel; el saldo se paga al llegar a Cusco. Cambios de fecha sin costo hasta 72 horas antes, según disponibilidad. Entradas y trenes no son reembolsables; si cancelamos nosotros o el clima lo impide, reprogramamos sin costo o devolvemos la parte no realizada. Oficina: Av. El Sol 314, Cusco. Operador autorizado por MINCETUR.",
+  },
 };
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
