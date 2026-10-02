@@ -108,7 +108,7 @@ export const QUOTES: Record<string, Quote> = {
         title: "Valle Sagrado VIP",
         desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo. Incluye bus, guía y almuerzo buffet.",
         photo:
-          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/salineras-de-maras.jpg",
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
         photoAlt: "Salineras de Maras, Valle Sagrado",
       },
       {
@@ -176,7 +176,7 @@ export const QUOTES: Record<string, Quote> = {
         title: "Valle Sagrado + tren a Aguas Calientes",
         desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo, tren turístico a Aguas Calientes y noche de hotel con desayuno.",
         photo:
-          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/salineras-de-maras.jpg",
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
         photoAlt: "Salineras de Maras, Valle Sagrado",
       },
       {
@@ -253,7 +253,7 @@ export const QUOTES: Record<string, Quote> = {
         title: "Valle Sagrado + tren a Aguas Calientes",
         desc: "Chincheros, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo, tren turístico a Aguas Calientes y noche de hotel con desayuno.",
         photo:
-          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/salineras-de-maras.jpg",
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
         photoAlt: "Salineras de Maras, Valle Sagrado",
       },
       {
@@ -332,7 +332,7 @@ export const QUOTES: Record<string, Quote> = {
         title: "Valle Sagrado VIP",
         desc: "Chinchero, Moray, Salineras de Maras y Ollantaytambo. Incluye bus, guía y almuerzo buffet.",
         photo:
-          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/salineras-de-maras.jpg",
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
         photoAlt: "Salineras de Maras, Valle Sagrado",
       },
       {
@@ -434,7 +434,7 @@ export const QUOTES: Record<string, Quote> = {
         title: "Valle Sagrado + tren a Aguas Calientes",
         desc: "Chinchero, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo tomas el tren turístico a Aguas Calientes y pasas la noche en hotel con desayuno.",
         photo:
-          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/salineras-de-maras.jpg",
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
         photoAlt: "Salineras de Maras, Valle Sagrado",
       },
       {
