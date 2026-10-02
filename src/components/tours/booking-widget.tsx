@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Minus, Plus, MessageCircle, Clock, ShieldCheck } from "lucide-react";
+import { DatePicker } from "./date-picker";
 import type { AvailableDate } from "@/lib/queries/tours";
 import type { Locale } from "@/types/database";
 
@@ -84,18 +85,12 @@ export function BookingWidget({
           {en ? "Departure date" : "Fecha de salida"}
         </label>
         {availability.length === 0 ? (
-          <label className="mt-2 w-full flex items-center gap-2 bg-stone hover:bg-cream rounded-xl px-4 py-3 transition cursor-pointer">
-            <Calendar className="w-4 h-4 text-gold shrink-0" />
-            <input
-              type="date"
-              min={tomorrowIso()}
-              suppressHydrationWarning
-              value={selectedDate ?? ""}
-              onChange={(e) => setSelectedDate(e.target.value || null)}
-              aria-label={en ? "Departure date" : "Fecha de salida"}
-              className="w-full bg-transparent text-night outline-none cursor-pointer"
-            />
-          </label>
+          <DatePicker
+            value={selectedDate}
+            onChange={setSelectedDate}
+            min={tomorrowIso()}
+            locale={locale}
+          />
         ) : (
           <>
           <button
