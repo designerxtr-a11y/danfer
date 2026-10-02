@@ -205,10 +205,12 @@ export function BookingWidget({
   );
 }
 
+/** Tomorrow's date (YYYY-MM-DD) in Cusco's time zone, so the server's UTC clock doesn't skip a day. */
 function tomorrowIso() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toLocaleDateString("en-CA");
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Lima" });
+  const d = new Date(today + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
 }
 
 function formatDate(iso: string, locale: Locale) {
