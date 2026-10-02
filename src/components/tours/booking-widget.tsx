@@ -83,60 +83,77 @@ export function BookingWidget({
         <label className="text-xs uppercase tracking-wider text-night/50">
           {en ? "Departure date" : "Fecha de salida"}
         </label>
-        <button
-          onClick={() => setShowCalendar((v) => !v)}
-          className="mt-2 w-full flex items-center justify-between bg-stone hover:bg-cream rounded-xl px-4 py-3 transition"
-        >
-          <span className="flex items-center gap-2 text-night">
-            <Calendar className="w-4 h-4 text-gold" />
-            {selectedDate
-              ? formatDate(selectedDate, locale)
-              : en
-              ? "Pick a date"
-              : "Selecciona una fecha"}
-          </span>
-          <span className="text-night/40 text-xs">
-            {availability.length} {en ? "dates" : "fechas"}
-          </span>
-        </button>
-
-        {showCalendar && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="mt-2 max-h-56 overflow-y-auto bg-stone rounded-xl p-2 space-y-1"
+        {availability.length === 0 ? (
+          <label className="mt-2 w-full flex items-center gap-2 bg-stone hover:bg-cream rounded-xl px-4 py-3 transition cursor-pointer">
+            <Calendar className="w-4 h-4 text-gold shrink-0" />
+            <input
+              type="date"
+              min={tomorrowIso()}
+              suppressHydrationWarning
+              value={selectedDate ?? ""}
+              onChange={(e) => setSelectedDate(e.target.value || null)}
+              aria-label={en ? "Departure date" : "Fecha de salida"}
+              className="w-full bg-transparent text-night outline-none cursor-pointer"
+            />
+          </label>
+        ) : (
+          <>
+          <button
+            onClick={() => setShowCalendar((v) => !v)}
+            className="mt-2 w-full flex items-center justify-between bg-stone hover:bg-cream rounded-xl px-4 py-3 transition"
           >
-            {availability.slice(0, 30).map((a) => {
-              const spots = a.total_spots - a.booked_spots;
-              const isSelected = a.date === selectedDate;
-              return (
-                <button
-                  key={a.date}
-                  onClick={() => {
-                    setSelectedDate(a.date);
-                    setShowCalendar(false);
-                  }}
-                  disabled={spots === 0}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition ${
-                    isSelected
-                      ? "bg-gold text-white font-semibold"
-                      : spots === 0
-                      ? "text-night/30 cursor-not-allowed"
-                      : "text-night/80 hover:bg-white"
-                  }`}
-                >
-                  <span>{formatDate(a.date, locale)}</span>
-                  <span className="text-xs">
-                    {spots > 0
-                      ? `${spots} ${en ? "spots" : "cupos"}`
-                      : en
-                      ? "Full"
-                      : "Lleno"}
-                  </span>
-                </button>
-              );
-            })}
-          </motion.div>
+            <span className="flex items-center gap-2 text-night">
+              <Calendar className="w-4 h-4 text-gold" />
+              {selectedDate
+                ? formatDate(selectedDate, locale)
+                : en
+                ? "Pick a date"
+                : "Selecciona una fecha"}
+            </span>
+            <span className="text-night/40 text-xs">
+              {availability.length} {en ? "dates" : "fechas"}
+            </span>
+          </button>
+
+          {showCalendar && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-2 max-h-56 overflow-y-auto bg-stone rounded-xl p-2 space-y-1"
+            >
+              {availability.slice(0, 30).map((a) => {
+                const spots = a.total_spots - a.booked_spots;
+                const isSelected = a.date === selectedDate;
+                return (
+                  <button
+                    key={a.date}
+                    onClick={() => {
+                      setSelectedDate(a.date);
+                      setShowCalendar(false);
+                    }}
+                    disabled={spots === 0}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition ${
+                      isSelected
+                        ? "bg-gold text-white font-semibold"
+                        : spots === 0
+                        ? "text-night/30 cursor-not-allowed"
+                        : "text-night/80 hover:bg-white"
+                    }`}
+                  >
+                    <span>{formatDate(a.date, locale)}</span>
+                    <span className="text-xs">
+                      {spots > 0
+                        ? `${spots} ${en ? "spots" : "cupos"}`
+                        : en
+                        ? "Full"
+                        : "Lleno"}
+                    </span>
+                  </button>
+                );
+              })}
+            </motion.div>
+          )}
+          </>
         )}
       </div>
 
@@ -186,6 +203,12 @@ export function BookingWidget({
       </div>
     </motion.div>
   );
+}
+
+function tomorrowIso() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toLocaleDateString("en-CA");
 }
 
 function formatDate(iso: string, locale: Locale) {
