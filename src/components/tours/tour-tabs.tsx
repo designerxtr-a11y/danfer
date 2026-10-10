@@ -55,7 +55,7 @@ export function TourTabs({ tabs }: { tabs: TourTab[] }) {
                 aria-selected={isActive}
                 aria-controls={`panel-${tab.id}`}
                 onClick={() => select(tab.id)}
-                className={`flex-1 min-w-[96px] flex flex-col items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap transition ${
+                className={`flex-auto shrink-0 min-w-[96px] flex flex-col items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap transition ${
                   isActive ? "bg-gold text-white shadow-glow" : "text-white/80 hover:text-white hover:bg-white/5"
                 }`}
               >

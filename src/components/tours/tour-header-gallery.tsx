@@ -53,7 +53,13 @@ export function TourHeaderGallery({
               src={img.url}
               alt={img.alt}
               fill
-              sizes="(min-width:1280px) 320px, 25vw"
+              sizes={
+                thumbSpan(i)
+                  ? "(min-width:1280px) 640px, 50vw"
+                  : thumbs.length === 2
+                    ? "(min-width:1280px) 430px, 34vw"
+                    : "(min-width:1280px) 320px, 25vw"
+              }
               className="object-cover group-hover:scale-105 transition duration-700"
             />
             {i === thumbs.length - 1 && images.length > thumbs.length + 1 && (
