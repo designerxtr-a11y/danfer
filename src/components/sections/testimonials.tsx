@@ -1,12 +1,12 @@
 import { getLocale } from "next-intl/server";
 import { getTopReviews } from "@/lib/queries/reviews";
+import { FACEBOOK_REVIEWS } from "@/lib/facebook-reviews";
 import { tr } from "@/lib/i18n/messages";
 import type { Locale } from "@/types/database";
 import { TestimonialsMarquee } from "./testimonials.client";
 
 export async function Testimonials() {
   const reviews = await getTopReviews(8);
-  if (reviews.length === 0) return null;
 
   const locale = (await getLocale()) as Locale;
   const m = tr(locale);
@@ -22,7 +22,7 @@ export async function Testimonials() {
           </h2>
         </div>
       </div>
-      <TestimonialsMarquee reviews={reviews} locale={locale} />
+      <TestimonialsMarquee reviews={reviews} facebook={FACEBOOK_REVIEWS} locale={locale} />
     </section>
   );
 }

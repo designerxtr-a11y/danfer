@@ -1,14 +1,17 @@
 "use client";
 
-import { Quote, Star } from "lucide-react";
+import { Quote, Star, ThumbsUp } from "lucide-react";
 import type { GlobalReview } from "@/lib/queries/reviews";
+import { FACEBOOK_REVIEWS_URL, type FacebookReview } from "@/lib/facebook-reviews";
 import { t, type Locale } from "@/types/database";
 
 export function TestimonialsMarquee({
   reviews,
+  facebook,
   locale,
 }: {
   reviews: GlobalReview[];
+  facebook: FacebookReview[];
   locale: Locale;
 }) {
   return (
@@ -26,8 +29,61 @@ export function TestimonialsMarquee({
               locale={locale}
             />
           ))}
+          {facebook.map((review) => (
+            <FacebookCard
+              key={`${track}-${review.id}`}
+              review={review}
+              locale={locale}
+            />
+          ))}
         </div>
       ))}
+    </div>
+  );
+}
+
+// Recomendación de Facebook: sin estrellas (Facebook no las da), con enlace
+// a la página para que cualquiera pueda verificarla.
+function FacebookCard({
+  review,
+  locale,
+}: {
+  review: FacebookReview;
+  locale: Locale;
+}) {
+  const date = new Date(`${review.date}T12:00:00Z`).toLocaleDateString(
+    locale === "en" ? "en-US" : "es-PE",
+    { month: "long", year: "numeric" }
+  );
+  return (
+    <div className="w-[340px] sm:w-[400px] shrink-0 rounded-3xl bg-white shadow-card border border-night/5 p-6 sm:p-7 flex flex-col">
+      <Quote className="w-8 h-8 text-gold/40" />
+
+      <a
+        href={FACEBOOK_REVIEWS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 self-start mt-4 mb-3 text-xs font-medium text-[#1877F2] hover:underline"
+      >
+        <ThumbsUp className="w-3.5 h-3.5" />
+        {locale === "en" ? "Recommends us on Facebook" : "Nos recomienda en Facebook"}
+      </a>
+
+      <p className="text-night/70 text-sm leading-relaxed line-clamp-4">
+        {review.body}
+      </p>
+
+      <div className="mt-5 pt-5 border-t border-night/5 flex items-center gap-3">
+        <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-gold to-terracotta grid place-items-center font-display text-lg font-bold text-white">
+          {review.author_name.charAt(0)}
+        </div>
+        <div className="min-w-0">
+          <div className="font-medium text-night text-sm truncate">
+            {review.author_name}
+          </div>
+          <div className="text-night/50 text-xs truncate">Facebook · {date}</div>
+        </div>
+      </div>
     </div>
   );
 }

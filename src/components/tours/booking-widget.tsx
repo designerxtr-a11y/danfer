@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Minus, Plus, MessageCircle, Clock, ShieldCheck } from "lucide-react";
 import { DatePicker } from "./date-picker";
+import { TRIPADVISOR } from "@/lib/social-proof";
 import type { AvailableDate } from "@/lib/queries/tours";
 import type { Locale } from "@/types/database";
 
@@ -11,6 +12,7 @@ interface Props {
   tourId: string;
   tourSlug: string;
   tourTitle: string;
+  durationLabel?: string;
   priceUsd: number;
   originalPrice: number | null;
   maxGroupSize: number;
@@ -21,6 +23,7 @@ interface Props {
 
 export function BookingWidget({
   tourTitle,
+  durationLabel,
   priceUsd,
   originalPrice,
   maxGroupSize,
@@ -68,17 +71,47 @@ export function BookingWidget({
       animate={{ opacity: 1, y: 0 }}
       className="bg-white border border-night/8 rounded-3xl p-4 sm:p-6 shadow-card"
     >
-      <div className="flex items-baseline gap-3 pb-5 border-b border-night/8">
-        {originalPrice && (
-          <span className="text-night/40 line-through text-lg">
-            US${originalPrice.toFixed(0)}
-          </span>
+      <div className="pb-5 border-b border-night/8">
+        <p className="font-display text-xl text-night leading-tight">{tourTitle}</p>
+        {durationLabel && (
+          <p className="mt-1 text-sm text-night/55">{durationLabel}</p>
         )}
-        <span className="font-display text-3xl sm:text-4xl text-gold font-bold">
-          US${priceUsd.toFixed(0)}
-        </span>
-        <span className="text-night/60 text-sm">{en ? "/ person" : "/ persona"}</span>
+        <div className="mt-3 flex items-baseline gap-3">
+          {originalPrice && (
+            <span className="text-night/40 line-through text-lg">
+              US${originalPrice.toFixed(0)}
+            </span>
+          )}
+          <span className="font-display text-3xl sm:text-4xl text-gold font-bold">
+            US${priceUsd.toFixed(0)}
+          </span>
+          <span className="text-night/60 text-sm">{en ? "/ person" : "/ persona"}</span>
+        </div>
       </div>
+
+      <a
+        href={TRIPADVISOR.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="-mx-4 sm:-mx-6 px-4 sm:px-6 py-4 flex items-center gap-3 bg-[#34E0A1]/10 hover:bg-[#34E0A1]/20 border-b border-night/8 transition"
+      >
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-night">Tripadvisor</span>
+            <span className="flex gap-0.5" aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i} className="w-3.5 h-3.5 rounded-full bg-[#00AA6C]" />
+              ))}
+            </span>
+            <span className="font-semibold text-night">{TRIPADVISOR.rating.toFixed(1)}</span>
+          </div>
+          <p className="mt-0.5 text-xs text-night/60">
+            {en
+              ? `${TRIPADVISOR.reviews.toLocaleString("en-US")} reviews · #${TRIPADVISOR.rank} of ${TRIPADVISOR.rankOf.toLocaleString("en-US")} outdoor activities in Cusco`
+              : `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`}
+          </p>
+        </div>
+      </a>
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">

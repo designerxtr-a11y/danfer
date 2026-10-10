@@ -29,6 +29,7 @@ import { TourIncludes } from "@/components/tours/tour-includes";
 import { TourReviews } from "@/components/tours/tour-reviews";
 import { ReviewForm } from "@/components/tours/review-form";
 import { BookingWidget } from "@/components/tours/booking-widget";
+import { MobileBookingBar } from "@/components/tours/mobile-booking-bar";
 import { RelatedTours } from "@/components/tours/related-tours";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 
@@ -300,11 +301,12 @@ export default async function TourDetailPage({ params }: PageProps) {
           </div>
 
           {/* Sticky booking sidebar */}
-          <aside className="lg:sticky lg:top-28 lg:self-start">
+          <aside id="reservar" className="lg:sticky lg:top-28 lg:self-start scroll-mt-24">
             <BookingWidget
               tourId={tour.id}
               tourSlug={tour.slug}
               tourTitle={t(tour.title, lc)}
+              durationLabel={t(tour.duration_label, lc)}
               priceUsd={finalPrice}
               originalPrice={tour.discount_pct > 0 ? tour.price_usd : null}
               maxGroupSize={tour.max_group_size}
@@ -317,6 +319,10 @@ export default async function TourDetailPage({ params }: PageProps) {
 
       {/* Related */}
       {related.length > 0 && <RelatedTours tours={related} en={lc === "en"} />}
+
+      <MobileBookingBar priceUsd={finalPrice} locale={lc} />
+      {/* Espacio para que la barra fija no tape el final de la página en móvil */}
+      <div className="h-20 lg:hidden" aria-hidden="true" />
     </div>
   );
 }

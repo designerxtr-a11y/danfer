@@ -114,7 +114,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[260px] bg-white rounded-2xl shadow-card border border-night/8 p-4 pr-9"
+            className="fixed bottom-24 max-lg:[body:has(#mobile-booking-bar)_&]:bottom-44 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[260px] bg-white rounded-2xl shadow-card border border-night/8 p-4 pr-9"
           >
             <button
               onClick={() => {
@@ -153,7 +153,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[300px] bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden"
+            className="fixed bottom-24 max-lg:[body:has(#mobile-booking-bar)_&]:bottom-44 right-5 z-40 w-[calc(100vw-2.5rem)] max-w-[300px] bg-white rounded-3xl shadow-card border border-night/8 overflow-hidden"
           >
             {/* Header */}
             <div className="bg-[#075E54] text-white px-5 py-4 flex items-start gap-3">
@@ -224,7 +224,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         aria-label={t.open}
-        className="fixed bottom-5 right-5 z-50 grid place-items-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(37,211,102,0.5)] hover:shadow-[0_15px_40px_rgba(37,211,102,0.7)] transition-shadow"
+        className="fixed bottom-5 max-lg:[body:has(#mobile-booking-bar)_&]:bottom-24 right-5 z-50 grid place-items-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(37,211,102,0.5)] hover:shadow-[0_15px_40px_rgba(37,211,102,0.7)] transition-shadow"
       >
         {/* Pulse ring */}
         {!open && (

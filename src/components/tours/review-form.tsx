@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Loader2, Send, CheckCircle2, PenLine } from "lucide-react";
 import { submitTourReview } from "@/lib/actions/submit-review";
@@ -69,6 +69,18 @@ export function ReviewForm({ tourId, lc }: Props) {
     website: "", // honeypot
   });
 
+  // Link directo para pedir reseñas por WhatsApp: /tours/<slug>#resena abre
+  // el formulario y lo trae a la vista.
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.location.hash !== "#resena") return;
+    const t = setTimeout(() => {
+      setOpen(true);
+      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300);
+    return () => clearTimeout(t);
+  }, []);
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -104,7 +116,7 @@ export function ReviewForm({ tourId, lc }: Props) {
   const shown = hover || rating;
 
   return (
-    <div className="mt-12 pt-10 border-t border-night/8">
+    <div id="resena" ref={rootRef} className="mt-12 pt-10 border-t border-night/8 scroll-mt-28">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <span className="font-hand text-gold text-xl">{c.kicker}</span>

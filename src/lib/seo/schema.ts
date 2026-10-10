@@ -10,6 +10,7 @@ function tourUrl(slug: string, locale: Locale): string {
   return `${SITE}${locale === "en" ? "/en" : ""}/tours/${slug}`;
 }
 import { siteUrl } from "./site-url";
+import { TRIPADVISOR } from "@/lib/social-proof";
 
 const SITE = siteUrl();
 const ORG_NAME = "Danfer Tours Cusco";
@@ -95,6 +96,7 @@ export function organizationSchema(
       "https://www.instagram.com/danfertourscusco",
       "https://www.facebook.com/danfertourscusco",
       "https://www.tiktok.com/@danfertourscusco",
+      TRIPADVISOR.url,
     ],
     areaServed: [
       {
