@@ -43,11 +43,7 @@ export function TourItinerary({ days, locale = "es" }: { days: ItineraryDay[]; l
                 <h3 className="font-display text-xl sm:text-2xl text-night">
                   {t(day.title, locale)}
                 </h3>
-                {day.description && (
-                  <p className="mt-3 text-night/70 leading-relaxed">
-                    {t(day.description, locale)}
-                  </p>
-                )}
+                {day.description && <DayDescription text={t(day.description, locale)} />}
 
                 <div className="mt-5 flex flex-wrap items-center gap-2 text-xs">
                   {day.meals.map((m) => {
@@ -74,6 +70,27 @@ export function TourItinerary({ days, locale = "es" }: { days: ItineraryDay[]; l
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** "04:30 – Recojo..." lines render as timed steps; other lines as paragraphs. */
+const TIMED_LINE = /^(\d{1,2}:\d{2}(?:\s?[ap]\.?m\.?)?)\s*[–—-]\s*(.+)$/i;
+
+function DayDescription({ text }: { text: string }) {
+  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  return (
+    <div className="mt-3 space-y-2.5 text-night/70 leading-relaxed">
+      {lines.map((line, i) => {
+        const m = line.match(TIMED_LINE);
+        if (!m) return <p key={i}>{line}</p>;
+        return (
+          <p key={i} className="flex gap-3">
+            <span className="shrink-0 w-[4.5rem] font-semibold text-gold tabular-nums">{m[1]}</span>
+            <span>{m[2]}</span>
+          </p>
+        );
+      })}
     </div>
   );
 }
