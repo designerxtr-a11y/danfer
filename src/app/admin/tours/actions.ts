@@ -59,6 +59,8 @@ interface TourInput {
   includes: LocalizedList;
   excludes: LocalizedList;
   what_to_bring: LocalizedList;
+  important_info: LocalizedList;
+  route_map_url: string | null;
   faqs: { q: { es: string; en?: string }; a: { es: string; en?: string } }[];
   coordinates: { lat: number; lng: number; zoom?: number } | null;
   is_published: boolean;
@@ -88,6 +90,8 @@ export async function saveTour(input: TourInput) {
     includes: input.includes,
     excludes: input.excludes,
     what_to_bring: input.what_to_bring,
+    important_info: input.important_info,
+    route_map_url: input.route_map_url,
     faqs: input.faqs,
     coordinates: input.coordinates,
     is_published: input.is_published,

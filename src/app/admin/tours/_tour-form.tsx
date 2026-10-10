@@ -37,6 +37,8 @@ export interface TourFormInitial {
   includes?: LocalizedList;
   excludes?: LocalizedList;
   what_to_bring?: LocalizedList;
+  important_info?: LocalizedList | null;
+  route_map_url?: string | null;
   faqs?: { q: { es: string; en?: string }; a: { es: string; en?: string } }[];
   coordinates?: { lat: number; lng: number; zoom?: number } | null;
   is_published?: boolean;
@@ -63,6 +65,7 @@ export function TourForm({ initial = {}, categories }: Props) {
     description_es: initial.description?.es ?? "",
     description_en: initial.description?.en ?? "",
     cover_image: initial.cover_image ?? "",
+    route_map_url: initial.route_map_url ?? "",
     duration_days: initial.duration_days ?? 1,
     duration_label_es: initial.duration_label?.es ?? "1 día",
     duration_label_en: initial.duration_label?.en ?? "1 day",
@@ -84,6 +87,8 @@ export function TourForm({ initial = {}, categories }: Props) {
   const [excludesEn, setExcludesEn] = useState<string[]>(enList(initial.excludes));
   const [whatToBring, setWhatToBring] = useState<string[]>(tList(initial.what_to_bring, "es"));
   const [whatToBringEn, setWhatToBringEn] = useState<string[]>(enList(initial.what_to_bring));
+  const [importantInfo, setImportantInfo] = useState<string[]>(tList(initial.important_info ?? [], "es"));
+  const [importantInfoEn, setImportantInfoEn] = useState<string[]>(enList(initial.important_info ?? []));
   const [gallery, setGallery] = useState<string[]>(
     (initial.gallery ?? []).map((g) => g.url)
   );
@@ -119,6 +124,8 @@ export function TourForm({ initial = {}, categories }: Props) {
         includes: toList(includes, includesEn),
         excludes: toList(excludes, excludesEn),
         what_to_bring: toList(whatToBring, whatToBringEn),
+        important_info: toList(importantInfo, importantInfoEn),
+        route_map_url: form.route_map_url || null,
         gallery,
         faqs: faqs
           .filter((f) => f.q_es && f.a_es)
@@ -235,6 +242,15 @@ export function TourForm({ initial = {}, categories }: Props) {
             folder={form.slug || "new-tour"}
           />
         </Field>
+
+        <Field label="Mapa de la ruta (opcional)">
+          <ImageUploader
+            bucket="tour-images"
+            folder={form.slug || "new-tour"}
+            value={form.route_map_url || undefined}
+            onChange={(url) => update("route_map_url", url ?? "")}
+          />
+        </Field>
       </Card>
 
       <Card title="Logística">
@@ -332,6 +348,8 @@ export function TourForm({ initial = {}, categories }: Props) {
         <ListEditor label="Not included (EN)" items={excludesEn} setItems={setExcludesEn} />
         <ListEditor label="Qué llevar (ES)" items={whatToBring} setItems={setWhatToBring} />
         <ListEditor label="What to bring (EN)" items={whatToBringEn} setItems={setWhatToBringEn} />
+        <ListEditor label="Información útil (ES)" items={importantInfo} setItems={setImportantInfo} />
+        <ListEditor label="Useful information (EN)" items={importantInfoEn} setItems={setImportantInfoEn} />
       </Card>
 
       <Card title="Preguntas frecuentes (FAQ)">
