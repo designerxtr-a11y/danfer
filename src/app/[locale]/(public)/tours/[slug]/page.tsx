@@ -29,7 +29,6 @@ import {
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { TourIncludes } from "@/components/tours/tour-includes";
 import { TourReviews } from "@/components/tours/tour-reviews";
-import { ReviewForm } from "@/components/tours/review-form";
 import { BookingWidget } from "@/components/tours/booking-widget";
 import { MobileBookingBar } from "@/components/tours/mobile-booking-bar";
 import { RelatedTours } from "@/components/tours/related-tours";
@@ -399,10 +398,6 @@ export default async function TourDetailPage({ params }: PageProps) {
               en={en}
             />
           )}
-
-          {/* Formulario de reseña de primera mano — siempre visible, para
-              recolectar reseñas reales que (tras moderar) generan estrellas. */}
-          <ReviewForm tourId={tour.id} lc={lc} />
         </div>
 
         {/* Sticky booking sidebar */}
