@@ -55,6 +55,9 @@ export interface Tour {
   includes: LocalizedList;
   excludes: LocalizedList;
   what_to_bring: LocalizedList;
+  // Opcionales: columnas de la migración 00017 (la página funciona sin ellas)
+  important_info?: LocalizedList | null;
+  route_map_url?: string | null;
   faqs: FAQ[];
   meta_title?: Localized | null;
   meta_description?: Localized | null;

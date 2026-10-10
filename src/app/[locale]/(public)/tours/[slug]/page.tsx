@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { ChevronLeft, Star, Clock, Mountain, Users, MapPin } from "lucide-react";
+import {
+  ChevronLeft, Star, Clock, Mountain, Users, MapPin, Check, Zap, ScrollText,
+  ClipboardCheck, CircleHelp, Flag, Backpack, Info, BadgeCheck,
+} from "lucide-react";
 import {
   getTourBySlug,
   getTourItinerary,
@@ -31,6 +34,13 @@ import { ReviewForm } from "@/components/tours/review-form";
 import { BookingWidget } from "@/components/tours/booking-widget";
 import { MobileBookingBar } from "@/components/tours/mobile-booking-bar";
 import { RelatedTours } from "@/components/tours/related-tours";
+import { TourHeaderGallery } from "@/components/tours/tour-header-gallery";
+import { TourQuickFacts } from "@/components/tours/tour-quick-facts";
+import { TourTabs, type TourTab } from "@/components/tours/tour-tabs";
+import { FeaturedReview, ExpertCard } from "@/components/tours/tour-sidebar-extras";
+import { TourRouteMap } from "@/components/tours/tour-route-map";
+import { CertificationsStrip } from "@/components/tours/certifications-strip";
+import { TripadvisorRating } from "@/components/tours/tripadvisor-badge";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 
 interface PageProps {
@@ -98,7 +108,7 @@ export default async function TourDetailPage({ params }: PageProps) {
       getTourItinerary(tour.id),
       getTourAvailability(tour.id),
       getTourReviews(tour.id, 8),
-      getRelatedTours(tour.id, tour.category_id, 3),
+      getRelatedTours(tour.id, tour.category_id, 6),
       getTourReviewStats(tour.id),
       getSettings(),
     ]);
@@ -130,6 +140,124 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(courseLd ? [courseLd] : []),
   ];
 
+  // Fotos sin duplicados (portada + galería). Con 3+ se usa el mosaico.
+  const images = [
+    { url: tour.cover_image, alt: t(tour.title, lc) },
+    ...tour.gallery,
+  ].filter((img, i, arr) => img.url && arr.findIndex((x) => x.url === img.url) === i);
+  const mosaic = images.length >= 3;
+  const en = lc === "en";
+  const title = t(tour.title, lc);
+  const intro = t(tour.short_desc, lc) || t(tour.subtitle, lc);
+  const importantInfo = tour.important_info ? tList(tour.important_info, lc) : [];
+  const whatToBring = tList(tour.what_to_bring, lc);
+  const highlights = tList(tour.highlights, lc);
+  const includes = tList(tour.includes, lc);
+  const excludes = tList(tour.excludes, lc);
+
+  const tabs: TourTab[] = [
+    {
+      id: "resumen",
+      label: en ? "Overview" : "Resumen",
+      icon: <Zap />,
+      content: (
+        <div className="space-y-10">
+          <div>
+            <h2 className="font-display text-2xl sm:text-3xl text-night mb-5">
+              {mx.tourDetail.about}
+            </h2>
+            <div
+              className="prose prose-neutral max-w-none prose-lg [&_h2]:font-display [&_h2]:text-2xl [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:font-display [&_h3]:text-xl [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-night/75 [&_p]:leading-relaxed [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-night/75 [&_li]:my-1 [&_a]:text-gold [&_a]:underline [&_strong]:text-night"
+              dangerouslySetInnerHTML={{ __html: t(tour.description, lc) }}
+            />
+          </div>
+          {highlights.length > 0 && (
+            <div>
+              <h3 className="font-display text-2xl text-night mb-5">{mx.tourDetail.highlights}</h3>
+              <ul className="grid sm:grid-cols-2 gap-3">
+                {highlights.map((h, i) => (
+                  <li key={i} className="flex items-start gap-3 text-night/80">
+                    <Check className="w-4 h-4 text-gold shrink-0 mt-1" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ),
+    },
+    ...(itinerary.length > 0
+      ? [{
+          id: "itinerario",
+          label: en ? "Itinerary" : "Itinerario",
+          icon: <ScrollText />,
+          content: <TourItinerary days={itinerary} locale={lc} />,
+        }]
+      : []),
+    ...(includes.length > 0 || excludes.length > 0
+      ? [{
+          id: "incluye",
+          label: en ? "Included" : "Incluye",
+          icon: <ClipboardCheck />,
+          content: (
+            <>
+              <h2 className="font-display text-2xl sm:text-3xl text-night mb-6">
+                {en ? `What's included and not included in the ${title} tour` : `Qué incluye y qué no incluye el tour ${title}`}
+              </h2>
+              <TourIncludes includes={includes} excludes={excludes} whatToBring={[]} en={en} />
+            </>
+          ),
+        }]
+      : []),
+    ...(tour.faqs && tour.faqs.length > 0
+      ? [{
+          id: "preguntas",
+          label: en ? "FAQ" : "Preguntas frecuentes",
+          icon: <CircleHelp />,
+          content: <TourFaqs faqs={tour.faqs} locale={lc} />,
+        }]
+      : []),
+    ...(importantInfo.length > 0
+      ? [{
+          id: "info",
+          label: en ? "Useful info" : "Información útil",
+          icon: <Flag />,
+          content: (
+            <TabList
+              heading={en ? `Important information for the ${title} tour` : `Información importante del tour ${title}`}
+              items={importantInfo}
+              icon={<Info className="w-4 h-4 text-gold shrink-0 mt-1" />}
+            />
+          ),
+        }]
+      : []),
+    ...(whatToBring.length > 0
+      ? [{
+          id: "que-llevar",
+          label: en ? "What to bring" : "Qué llevar",
+          icon: <Backpack />,
+          content: (
+            <TabList
+              heading={en ? `What to bring on the ${title} tour` : `Qué llevar al tour ${title}`}
+              items={whatToBring}
+              icon={<Check className="w-4 h-4 text-gold shrink-0 mt-1" />}
+            />
+          ),
+        }]
+      : []),
+  ];
+
+  const quickFacts = (
+    <TourQuickFacts
+      duration={t(tour.duration_label, lc)}
+      type={tour.category ? t(tour.category.name, lc) : null}
+      difficulty={mx.difficulty[tour.difficulty]}
+      groupSize={tour.max_group_size}
+      locale={lc}
+    />
+  );
+
   return (
     <div className="pt-24">
       <JsonLd data={schemas} />
@@ -137,11 +265,40 @@ export default async function TourDetailPage({ params }: PageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-3">
         <Breadcrumbs items={crumbs} />
       </div>
-      {/* Hero with cover */}
+
+      {mosaic ? (
+        /* Cabecera en mosaico + título sobre fondo claro */
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <TourHeaderGallery images={images} locale={lc} />
+          <div className="mt-6 md:mt-8 max-w-4xl">
+            {tour.category && (
+              <span className="font-hand text-gold text-xl sm:text-2xl">{t(tour.category.name, lc)}</span>
+            )}
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-night leading-[1.1] mt-1">
+              {title}
+            </h1>
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <TripadvisorRating locale={lc} />
+              <span className="hidden sm:block w-px h-4 bg-night/15" />
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
+                <BadgeCheck className="w-4 h-4 text-gold" />
+                {en ? "Certified local guides" : "Guías locales certificados"}
+              </span>
+              <span className="hidden sm:block w-px h-4 bg-night/15" />
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
+                <MapPin className="w-4 h-4 text-gold" />
+                {en ? "Local operator in Cusco" : "Operador local en Cusco"}
+              </span>
+            </div>
+            {intro && <p className="mt-5 text-night/70 text-base sm:text-lg leading-relaxed">{intro}</p>}
+          </div>
+        </section>
+      ) : (
+        /* Hero con portada (tours con menos de 3 fotos) */
         <section className="relative h-[60vh] sm:h-[70vh] min-h-[420px] sm:min-h-[500px] w-full overflow-hidden">
           <Image
             src={tour.cover_image}
-            alt={t(tour.title, lc)}
+            alt={title}
             fill
             priority
             className="object-cover"
@@ -164,7 +321,7 @@ export default async function TourDetailPage({ params }: PageProps) {
               </span>
             )}
             <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white leading-[1.05] max-w-4xl mt-2">
-              {t(tour.title, lc)}
+              {title}
             </h1>
             {tour.subtitle && (
               <p className="mt-3 sm:mt-4 text-base sm:text-xl text-white/70 max-w-2xl">
@@ -172,7 +329,6 @@ export default async function TourDetailPage({ params }: PageProps) {
               </p>
             )}
 
-            {/* Quick stats */}
             <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-6 text-white/80 text-sm sm:text-base">
               {reviewStats.count > 0 && (
                 <>
@@ -214,116 +370,87 @@ export default async function TourDetailPage({ params }: PageProps) {
             </div>
           </div>
         </section>
+      )}
 
-        {/* Main content + sticky booking */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16 grid lg:grid-cols-3 gap-10 lg:gap-12">
-          <div className="lg:col-span-2 space-y-16">
-            {/* Gallery */}
-            {tour.gallery.length > 0 && (
-              <TourGallery
-                images={[
-                  { url: tour.cover_image, alt: t(tour.title, lc) },
-                  ...tour.gallery,
-                ]}
-              />
-            )}
+      {/* Main content + sticky booking */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-12 grid lg:grid-cols-3 gap-10 lg:gap-12">
+        <div className="lg:col-span-2 space-y-10 min-w-0">
+          {quickFacts}
 
-            {/* Overview */}
-            <div>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-                {mx.tourDetail.about}
-              </h2>
-              <div
-                className="prose prose-neutral max-w-none prose-lg [&_h2]:font-display [&_h2]:text-2xl [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:font-display [&_h3]:text-xl [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-night/75 [&_p]:leading-relaxed [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-night/75 [&_li]:my-1 [&_a]:text-gold [&_a]:underline [&_strong]:text-night"
-                dangerouslySetInnerHTML={{ __html: t(tour.description, lc) }}
-              />
-            </div>
+          {/* Galería en el contenido solo en modo hero (en mosaico ya está arriba) */}
+          {!mosaic && tour.gallery.length > 0 && <TourGallery images={images} />}
 
-            {/* Highlights */}
-            {tList(tour.highlights, lc).length > 0 && (
-              <div>
-                <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-                  {mx.tourDetail.highlights}
-                </h2>
-                <ul className="grid sm:grid-cols-2 gap-3">
-                  {tList(tour.highlights, lc).map((h, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-night/80"
-                    >
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+          <TourTabs tabs={tabs} />
 
-            {/* Itinerary */}
-            {itinerary.length > 0 && (
-              <TourItinerary days={itinerary} locale={lc} />
-            )}
-
-            {/* Includes / Excludes */}
-            <TourIncludes
-              includes={tList(tour.includes, lc)}
-              excludes={tList(tour.excludes, lc)}
-              whatToBring={tList(tour.what_to_bring, lc)}
-              en={lc === "en"}
-            />
-
-            {/* FAQs */}
-            {tour.faqs && tour.faqs.length > 0 && (
-              <TourFaqs faqs={tour.faqs} locale={lc} />
-            )}
-
-            {/* Meeting point */}
-            <div>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-                {mx.tourDetail.startPoint}
-              </h2>
-              <MeetingPoint en={lc === "en"} />
-            </div>
-
-            {/* Reviews — solo si hay reseñas reales (number coincide con schema) */}
-            {reviewStats.count > 0 && (
-              <TourReviews
-                reviews={reviews}
-                avgRating={reviewStats.avg}
-                total={reviewStats.count}
-                en={lc === "en"}
-              />
-            )}
-
-            {/* Formulario de reseña de primera mano — siempre visible, para
-                recolectar reseñas reales que (tras moderar) generan estrellas. */}
-            <ReviewForm tourId={tour.id} lc={lc} />
+          {/* Meeting point */}
+          <div>
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
+              {mx.tourDetail.startPoint}
+            </h2>
+            <MeetingPoint en={en} />
           </div>
 
-          {/* Sticky booking sidebar */}
-          <aside id="reservar" className="lg:sticky lg:top-28 lg:self-start scroll-mt-24">
-            <BookingWidget
-              tourId={tour.id}
-              tourSlug={tour.slug}
-              tourTitle={t(tour.title, lc)}
-              durationLabel={t(tour.duration_label, lc)}
-              priceUsd={finalPrice}
-              originalPrice={tour.discount_pct > 0 ? tour.price_usd : null}
-              maxGroupSize={tour.max_group_size}
-              availability={availability}
-              whatsapp={normalizeWhatsApp(settings.whatsapp)}
-              locale={lc}
+          {/* Reviews — solo si hay reseñas reales (number coincide con schema) */}
+          {reviewStats.count > 0 && (
+            <TourReviews
+              reviews={reviews}
+              avgRating={reviewStats.avg}
+              total={reviewStats.count}
+              en={en}
             />
-          </aside>
-        </section>
+          )}
+
+          {/* Formulario de reseña de primera mano — siempre visible, para
+              recolectar reseñas reales que (tras moderar) generan estrellas. */}
+          <ReviewForm tourId={tour.id} lc={lc} />
+        </div>
+
+        {/* Sticky booking sidebar */}
+        <aside id="reservar" className="lg:sticky lg:top-28 lg:self-start scroll-mt-24 space-y-5">
+          <BookingWidget
+            tourId={tour.id}
+            tourSlug={tour.slug}
+            tourTitle={title}
+            durationLabel={t(tour.duration_label, lc)}
+            priceUsd={finalPrice}
+            originalPrice={tour.discount_pct > 0 ? tour.price_usd : null}
+            maxGroupSize={tour.max_group_size}
+            availability={availability}
+            whatsapp={normalizeWhatsApp(settings.whatsapp)}
+            locale={lc}
+          />
+          <FeaturedReview review={reviews[0] ?? null} locale={lc} />
+          <ExpertCard whatsapp={normalizeWhatsApp(settings.whatsapp)} tourTitle={title} locale={lc} />
+        </aside>
+      </section>
+
+      {tour.route_map_url && <TourRouteMap url={tour.route_map_url} title={title} locale={lc} />}
 
       {/* Related */}
-      {related.length > 0 && <RelatedTours tours={related} en={lc === "en"} />}
+      {related.length > 0 && <RelatedTours tours={related} en={en} />}
+
+      <CertificationsStrip locale={lc} />
 
       <MobileBookingBar priceUsd={finalPrice} locale={lc} />
       {/* Espacio para que la barra fija no tape el final de la página en móvil */}
       <div className="h-20 lg:hidden" aria-hidden="true" />
     </div>
+  );
+}
+
+function TabList({ heading, items, icon }: { heading: string; items: string[]; icon: React.ReactNode }) {
+  return (
+    <>
+      <h2 className="font-display text-2xl sm:text-3xl text-night mb-6">{heading}</h2>
+      <ul className="space-y-3">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-start gap-3 text-night/80">
+            {icon}
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
