@@ -89,12 +89,10 @@ export function BookingWidget({
         </div>
       </div>
 
-      <a
-        href={TRIPADVISOR.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="-mx-4 sm:-mx-6 px-4 sm:px-6 py-4 flex items-center gap-3 bg-[#34E0A1]/10 hover:bg-[#34E0A1]/20 border-b border-night/8 transition"
-      >
+      <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 py-4 flex items-center gap-3 bg-[#34E0A1]/10 border-b border-night/8">
+        <span className="w-11 h-11 shrink-0 rounded-full bg-[#34E0A1] grid place-items-center">
+          <TripadvisorLogo className="w-7 h-7 text-night" />
+        </span>
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-night">Tripadvisor</span>
@@ -111,7 +109,7 @@ export function BookingWidget({
               : `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`}
           </p>
         </div>
-      </a>
+      </div>
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">
@@ -230,6 +228,15 @@ export function BookingWidget({
         </div>
       </div>
     </motion.div>
+  );
+}
+
+/** Búho de Tripadvisor (Simple Icons). */
+function TripadvisorLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} role="img" aria-label="Tripadvisor">
+      <path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 0 0 4.04 10.43 5.976 5.976 0 0 0 4.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 0 0 4.072 1.598 6 6 0 0 0 6-5.998 5.982 5.982 0 0 0-1.957-4.432L24 6.648h-4.35a13.573 13.573 0 0 0-7.644-2.353zM12 6.255c1.531 0 3.063.303 4.504.903C13.943 8.138 12 10.43 12 13.1c0-2.671-1.942-4.962-4.504-5.942A11.72 11.72 0 0 1 12 6.256zM6.002 9.157a4.059 4.059 0 1 1 0 8.118 4.059 4.059 0 0 1 0-8.118zm11.992.002a4.057 4.057 0 1 1 .003 8.115 4.057 4.057 0 0 1-.003-8.115zm-11.992 1.93a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256zm11.992 0a2.128 2.128 0 0 0 0 4.256 2.128 2.128 0 0 0 0-4.256z" />
+    </svg>
   );
 }
 
