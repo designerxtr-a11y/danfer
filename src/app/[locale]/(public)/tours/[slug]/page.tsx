@@ -19,7 +19,6 @@ import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { TourGallery } from "@/components/tours/tour-gallery";
 import { TourItinerary } from "@/components/tours/tour-itinerary";
 import { TourFaqs } from "@/components/tours/tour-faqs";
-import { MeetingPoint } from "@/components/tours/meeting-point";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   tourSchema,
@@ -258,6 +257,31 @@ export default async function TourDetailPage({ params }: PageProps) {
     />
   );
 
+  const titleBlock = (
+    <div>
+      {tour.category && (
+        <span className="font-hand text-gold text-xl sm:text-2xl">{t(tour.category.name, lc)}</span>
+      )}
+      <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-night leading-[1.1] mt-1">
+        {title}
+      </h1>
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <TripadvisorRating locale={lc} />
+        <span className="hidden sm:block w-px h-4 bg-night/15" />
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
+          <BadgeCheck className="w-4 h-4 text-gold" />
+          {en ? "Certified local guides" : "Guías locales certificados"}
+        </span>
+        <span className="hidden sm:block w-px h-4 bg-night/15" />
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
+          <MapPin className="w-4 h-4 text-gold" />
+          {en ? "Local operator in Cusco" : "Operador local en Cusco"}
+        </span>
+      </div>
+      {intro && <p className="mt-5 text-night/70 text-base sm:text-lg leading-relaxed">{intro}</p>}
+    </div>
+  );
+
   return (
     <div className="pt-24">
       <JsonLd data={schemas} />
@@ -270,28 +294,6 @@ export default async function TourDetailPage({ params }: PageProps) {
         /* Cabecera en mosaico + título sobre fondo claro */
         <section className="max-w-7xl mx-auto px-4 sm:px-6">
           <TourHeaderGallery images={images} locale={lc} />
-          <div className="mt-6 md:mt-8 max-w-4xl">
-            {tour.category && (
-              <span className="font-hand text-gold text-xl sm:text-2xl">{t(tour.category.name, lc)}</span>
-            )}
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-night leading-[1.1] mt-1">
-              {title}
-            </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-              <TripadvisorRating locale={lc} />
-              <span className="hidden sm:block w-px h-4 bg-night/15" />
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
-                <BadgeCheck className="w-4 h-4 text-gold" />
-                {en ? "Certified local guides" : "Guías locales certificados"}
-              </span>
-              <span className="hidden sm:block w-px h-4 bg-night/15" />
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
-                <MapPin className="w-4 h-4 text-gold" />
-                {en ? "Local operator in Cusco" : "Operador local en Cusco"}
-              </span>
-            </div>
-            {intro && <p className="mt-5 text-night/70 text-base sm:text-lg leading-relaxed">{intro}</p>}
-          </div>
         </section>
       ) : (
         /* Hero con portada (tours con menos de 3 fotos) */
@@ -373,22 +375,20 @@ export default async function TourDetailPage({ params }: PageProps) {
       )}
 
       {/* Main content + sticky booking */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-12 grid lg:grid-cols-3 gap-10 lg:gap-12">
+      <section
+        className={`max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-3 gap-10 lg:gap-12 ${
+          mosaic ? "pt-6 md:pt-8 pb-10 md:pb-12" : "py-10 md:py-12"
+        }`}
+      >
         <div className="lg:col-span-2 space-y-10 min-w-0">
+          {/* En modo mosaico el título va en la columna izquierda, así la reserva arranca a su altura */}
+          {mosaic && titleBlock}
           {quickFacts}
 
           {/* Galería en el contenido solo en modo hero (en mosaico ya está arriba) */}
           {!mosaic && tour.gallery.length > 0 && <TourGallery images={images} />}
 
           <TourTabs tabs={tabs} />
-
-          {/* Meeting point */}
-          <div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-              {mx.tourDetail.startPoint}
-            </h2>
-            <MeetingPoint en={en} />
-          </div>
 
           {/* Reviews — solo si hay reseñas reales (number coincide con schema) */}
           {reviewStats.count > 0 && (
