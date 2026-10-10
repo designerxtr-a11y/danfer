@@ -60,7 +60,7 @@ function FacebookCard({
       <Quote className="w-8 h-8 text-gold/40" />
 
       <a
-        href={FACEBOOK_REVIEWS_URL}
+        href={review.url ?? FACEBOOK_REVIEWS_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 self-start mt-4 mb-3 text-xs font-medium text-[#1877F2] hover:underline"
