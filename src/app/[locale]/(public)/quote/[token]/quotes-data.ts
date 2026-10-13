@@ -504,6 +504,75 @@ export const QUOTES: Record<string, Quote> = {
     ],
     note: "Precios en **dólares (US$) por persona**.\n**Beneficio por contratar los 5 tours:** la **noche de hotel en Aguas Calientes con desayuno** va incluida, para que lleguen descansados a Machu Picchu.\n**Servicio:** tours en **grupo compartido** con **guía profesional de turismo** (guía privado a pedido) y **recojo en su hotel** del centro histórico de Cusco.\n**Horarios de recojo:** City Tour **1:00 pm** · Valle Sagrado **7:00 am** (continúa a Machu Picchu) · Laguna Humantay **4:30 am** · Montaña de 7 Colores **de madrugada**. La hora exacta se confirma el día anterior.\n**Machu Picchu:** **tren turístico**, ida el **4 feb por la tarde** y vuelta el **5 feb por la tarde** (horas exactas al emitir los boletos). Ingreso por el **Circuito 2A**.\n**Aclimatación:** el orden es **ideal**: primero el City Tour, luego el Valle Sagrado y Machu Picchu (más bajos que Cusco), un día de descanso, y **Humantay y Vinicunca al final**.\n**Febrero es temporada de lluvias:** lleven poncho o casaca impermeable y buen calzado.\n**Pago:** **adelanto del 50% por PayPal** para reservar entradas, tren y hotel; el **saldo se paga al llegar a Cusco**.\n**Cancelación:** reembolso del **100% si cancelas con más de 7 días**, **50% entre 3 y 7 días** y sin reembolso con menos de 72 horas. Cambios de fecha **sin costo hasta 72 horas antes**, según disponibilidad. Si cancelamos nosotros o el clima lo impide, **reprogramamos sin costo o devolvemos el 100%**.\n**Operador autorizado por MINCETUR** · Oficina: Av. El Sol 314, Cusco. Precio cerrado en dólares sin sorpresas, recojo puntual y guías profesionales en cada tour.",
   },
+
+  "pareja-brasil-noviembre": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Machu Picchu, Moray & Maras",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "17 – 18 nov, 2026",
+    duration: "2 días / 1 noche",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · mar 17 nov",
+        timeLabel: "Desde 13:45",
+        title: "Moray, Maras y tren a Aguas Calientes",
+        desc: "Un auto privado los recoge en el aeropuerto de Cusco (vuelo 13:45) y los lleva por el Valle Sagrado a los andenes circulares de Moray y a las Salineras de Maras. Luego continúan a Ollantaytambo, donde a las 19:04 toman el tren Vistadome a Aguas Calientes (llegada 20:45).",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
+        photoAlt: "Salineras de Maras, Valle Sagrado",
+      },
+      {
+        day: "Día 2 · mié 18 nov",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu + retorno a Cusco",
+        desc: "Nuestro guía los acompaña: suben en bus a la ciudadela para la visita guiada por el Circuito 1, ruta 1A (aprox. 2 h 30). Bajan a Aguas Calientes, almuerzan con calma y a las 14:55 toman el tren Vistadome a Ollantaytambo, disfrutando del paisaje de día. Nuestro transporte los deja en Cusco hacia las 18:30.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+    ],
+    items: [
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Entrada Circuito 1 ruta 1A, tren Vistadome ida y vuelta, bus, guía y traslados · sin hotel · servicio en grupo compartido",
+        unitPrice: 330,
+      },
+      {
+        label: "Auto privado · solo ida",
+        detail: "Aeropuerto → Moray → Salineras de Maras → Ollantaytambo · para los dos",
+        unitPrice: 86,
+        perTraveler: false,
+      },
+      { label: "Boleto turístico", detail: "Entrada a Moray", unitPrice: 11 },
+      { label: "Entrada a las Salineras de Maras", unitPrice: 6 },
+    ],
+    includes: [
+      "Auto privado de ida: aeropuerto de Cusco → Moray → Salineras de Maras → Ollantaytambo",
+      "Entradas a Moray y a las Salineras de Maras",
+      "Tren panorámico Vistadome Ollantaytambo–Aguas Calientes, ida y vuelta",
+      "Bus de subida y bajada a Machu Picchu",
+      "Entrada a Machu Picchu (Circuito 1, ruta 1A)",
+      "Guía profesional (grupo compartido)",
+      "Traslado de retorno Ollantaytambo–Cusco",
+    ],
+    excludes: [
+      "Vuelos",
+      "Hotel en Aguas Calientes",
+      "Almuerzos y cenas",
+      "Huayna Picchu o Montaña Machu Picchu (opcional, costo extra)",
+      "Aguas termales",
+      "Propinas, gastos personales y seguro de viaje",
+    ],
+    note: "Precios en **dólares (US$)**.\n**Trenes (PeruRail Vistadome):** ida el **17 nov a las 19:04** desde Ollantaytambo (llegada 20:45) · retorno el **18 nov a las 14:55** desde Aguas Calientes (llegada a Ollantaytambo 16:31 y a Cusco aprox. 18:30). Equipaje: **1 maleta de mano o mochila de hasta 5 kg por persona**.\n**Entradas a Machu Picchu:** hay entradas **disponibles online** para el **Circuito 1, ruta 1A** el 18 de noviembre; las compramos con anticipación. La hora de ingreso se elige al comprar y se la confirmamos en ese momento.\n**Sobre su vuelo:** el tiempo para Moray y Maras es ajustado y depende del horario de cierre de ese día. Si el vuelo se retrasa, priorizamos uno de los dos; el tren de las 19:04 no corre riesgo. Les pedimos el número de vuelo para seguirlo.\n**Pago:** **adelanto del 50% por PayPal** para asegurar tren y entradas; el **saldo se paga al llegar a Cusco**.\n**Para reservar:** nombre completo, **número de pasaporte**, nacionalidad y **número de vuelo** de cada viajero.\n**Cambios y cancelación:** tren, bus y traslados **se pueden reprogramar**, sujeto a disponibilidad. Las entradas a Machu Picchu, una vez compradas, **no se pueden cambiar ni reembolsar**. Si cancelan, devolvemos lo pagado **menos los servicios ya comprados** que no son reembolsables (entradas y boletos de tren).\nTraigan su **pasaporte original** (se revisa en el tren y en la entrada), ropa abrigadora, poncho para lluvia y bloqueador solar.",
+  },
 };
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
