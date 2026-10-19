@@ -573,6 +573,40 @@ export const QUOTES: Record<string, Quote> = {
     ],
     note: "Precios en **dólares (US$)**.\n**Trenes (PeruRail Vistadome):** ida el **17 nov a las 19:04** desde Ollantaytambo (llegada 20:45) · retorno el **18 nov a las 14:55** desde Aguas Calientes (llegada a Ollantaytambo 16:31 y a Cusco aprox. 18:30). Equipaje: **1 maleta de mano o mochila de hasta 5 kg por persona**.\n**Entradas a Machu Picchu:** hay entradas **disponibles online** para el **Circuito 1, ruta 1A** el 18 de noviembre; las compramos con anticipación. La hora de ingreso se elige al comprar y se la confirmamos en ese momento.\n**Sobre su vuelo:** el tiempo para Moray y Maras es ajustado y depende del horario de cierre de ese día. Si el vuelo se retrasa, priorizamos uno de los dos; el tren de las 19:04 no corre riesgo. Les pedimos el número de vuelo para seguirlo.\n**Pago:** **adelanto del 50% por PayPal** para asegurar tren y entradas; el **saldo se paga al llegar a Cusco**.\n**Para reservar:** nombre completo, **número de pasaporte**, nacionalidad y **número de vuelo** de cada viajero.\n**Cambios y cancelación:** tren, bus y traslados **se pueden reprogramar**, sujeto a disponibilidad. Las entradas a Machu Picchu, una vez compradas, **no se pueden cambiar ni reembolsar**. Si cancelan, devolvemos lo pagado **menos los servicios ya comprados** que no son reembolsables (entradas y boletos de tren).\nTraigan su **pasaporte original** (se revisa en el tren y en la entrada), ropa abrigadora, poncho para lluvia y bloqueador solar.",
   },
+  "yuto-octubre": {
+    lang: "en",
+    clientName: "Yuto",
+    destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
+    dates: "Oct 31 – Nov 2, 2026",
+    duration: "3 days / 2 nights",
+    travelers: 1,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [],
+    items: [
+      {
+        label: "Machu Picchu tour",
+        detail: "Machu Picchu entrance ticket, train tickets and hotel, as agreed",
+        unitPrice: 380,
+      },
+      {
+        label: "Extra hotel night",
+        detail: "Hotel for the nights of October 31 and November 1",
+        unitPrice: 27,
+      },
+    ],
+    includes: [
+      "Machu Picchu entrance ticket (already secured)",
+      "Train tickets",
+      "Hotel for the nights of October 31 and November 1",
+    ],
+    excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
+    note: "Prices in **US dollars (USD)**. Total: **USD 407** (USD 380 for the tour + USD 27 for the extra night).\n**Payment:** **50% deposit (USD 203.50) via PayPal**, card payments accepted (PayPal adds its processing fee). The **remaining 50% is paid upon arrival in Cusco**.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu ticket, train tickets and hotel. These are bought directly from the providers and, **once purchased, they are non-refundable**. That's why we check availability before buying.\nBring your **original passport** (it is checked on the train and at the entrance).",
+  },
 };
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
