@@ -40,6 +40,8 @@ export interface Quote {
   acceptsPaypal: boolean;
   /** % of the total charged via PayPal now; the rest is paid in person on arrival. Omit for full payment (100%). */
   depositPercent?: number;
+  /** Fixed PayPal charge (USD) when a different amount was already promised to the client; overrides the grossed-up fee. */
+  paypalChargeOverride?: number;
   /** When true, the page shows a canceled notice instead of the quote. */
   canceled?: boolean;
 }
@@ -586,6 +588,7 @@ export const QUOTES: Record<string, Quote> = {
     currency: "$",
     acceptsPaypal: true,
     depositPercent: 50,
+    paypalChargeOverride: 214.79,
     itinerary: [],
     items: [
       {
@@ -632,6 +635,7 @@ export const PAYPAL_FEE_RATE = 0.054;
 export const PAYPAL_FEE_FIXED = 0.3;
 
 export function quotePaypalCharge(quote: Quote): number {
+  if (quote.paypalChargeOverride !== undefined) return quote.paypalChargeOverride;
   const base = depositAmount(quote);
   const charge = (base + PAYPAL_FEE_FIXED) / (1 - PAYPAL_FEE_RATE);
   return Math.round(charge * 100) / 100;
