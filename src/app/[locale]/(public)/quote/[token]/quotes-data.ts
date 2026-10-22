@@ -610,6 +610,125 @@ export const QUOTES: Record<string, Quote> = {
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
     note: "Prices in **US dollars (USD)**. Total: **USD 407** (USD 380 for the tour + USD 27 for the extra night).\n**Payment:** **50% deposit (USD 203.50) via PayPal**, card payments accepted (PayPal adds its processing fee). The **remaining 50% is paid upon arrival in Cusco**.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu ticket, train tickets and hotel. These are bought directly from the providers and, **once purchased, they are non-refundable**. That's why we check availability before buying.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
+
+  "pareja-semana-santa-marzo": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Cusco & Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "21 – 27 mar, 2027",
+    duration: "7 días / 6 noches",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    itinerary: [
+      {
+        day: "Día 1 · dom 21 mar",
+        timeLabel: "1–6 pm",
+        title: "City Tour Cusco",
+        desc: "Coricancha, Sacsahuamán, Qenqo, Pucapucara y Tambomachay. Mañana libre para descansar al llegar. Es Domingo de Ramos: verán las palmas tejidas a la venta en la Plaza de Armas.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Qorikancha, Cusco",
+      },
+      {
+        day: "Día 2 · lun 22 mar",
+        timeLabel: "Libre",
+        title: "Día libre · Lunes Santo",
+        desc: "Por la tarde sale la procesión del Señor de los Temblores, patrono del Cusco, por el centro histórico: el día más importante de la Semana Santa cusqueña. Además, les sirve para aclimatarse. Tour opcional: Walking Tour, Tranvía, Valle Sur o Tour Místico.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/quotes/city-tour-cusco.jpg",
+        photoAlt: "Cusco",
+      },
+      {
+        day: "Día 3 · mar 23 mar",
+        timeLabel: "Desde 7 am",
+        title: "Valle Sagrado + tren a Aguas Calientes",
+        desc: "Chinchero, Moray, Salineras de Maras y Ollantaytambo, con almuerzo buffet. Desde Ollantaytambo toman el tren turístico a Aguas Calientes y pasan la noche en hotel con desayuno.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
+        photoAlt: "Salineras de Maras, Valle Sagrado",
+      },
+      {
+        day: "Día 4 · mié 24 mar",
+        timeLabel: "2,430 msnm",
+        title: "Machu Picchu + retorno a Cusco",
+        desc: "Suben en bus a la ciudadela y hacen la visita guiada por el Circuito 2A, el más completo. Por la tarde regresan en tren a Ollantaytambo y en transporte a Cusco.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+      {
+        day: "Día 5 · jue 25 mar",
+        timeLabel: "4:30 am–5 pm",
+        title: "Laguna Humantay",
+        desc: "Caminata a la laguna turquesa, a 4,200 msnm, al pie del nevado Salkantay. Incluye transporte, guía, entrada, desayuno y almuerzo buffet.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/laguna-humantay/1781143602424-rc9fi8.jpg",
+        photoAlt: "Laguna Humantay",
+      },
+      {
+        day: "Día 6 · vie 26 mar",
+        timeLabel: "5,036 msnm",
+        title: "Montaña de 7 Colores",
+        desc: "Recojo de madrugada rumbo a Vinicunca y caminata a la montaña de colores. Incluye transporte, guía, desayuno y almuerzo buffet. Es Viernes Santo: al volver, prueben los tradicionales 12 platos.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/rainbow-mountain-1789091035693.webp",
+        photoAlt: "Montaña de 7 Colores, Vinicunca",
+      },
+    ],
+    items: [
+      { label: "City Tour Cusco", detail: "Transporte y guía profesional", unitPrice: 15 },
+      { label: "Valle Sagrado VIP", detail: "Transporte, guía y almuerzo buffet", unitPrice: 32 },
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Entrada Circuito 2A, tren turístico Ollantaytambo–Aguas Calientes ida y vuelta, bus de subida/bajada, guía, hotel con desayuno y retorno a Cusco",
+        unitPrice: 380,
+      },
+      { label: "Laguna Humantay", detail: "Transporte, guía, entrada, desayuno y almuerzo buffet", unitPrice: 30 },
+      { label: "Montaña de 7 Colores", detail: "Transporte, guía, desayuno y almuerzo buffet", unitPrice: 30 },
+    ],
+    includes: [
+      "Servicio en grupo compartido con guía profesional en cada tour (guía privado a pedido)",
+      "Recojo en tu hotel en el centro de Cusco y transporte turístico en todos los tours",
+      "Entradas: Machu Picchu (Circuito 2A) y Laguna Humantay",
+      "Comidas: almuerzo buffet en el Valle Sagrado; desayuno y almuerzo buffet en Humantay y 7 Colores; desayuno en el hotel de Aguas Calientes",
+      "Machu Picchu: tren turístico (Ollantaytambo–Aguas Calientes, ida y vuelta), bus de subida/bajada, 1 noche de hotel y retorno Ollantaytambo–Cusco",
+    ],
+    excludes: [
+      "Vuelos y hoteles en Cusco",
+      "Traslados de aeropuerto",
+      "Boleto Turístico del Cusco (BTC), se compra aparte",
+      "Cenas y comidas no indicadas",
+      "Caballo y bastones en Humantay y 7 Colores (opcionales)",
+      "Tours opcionales del día libre",
+      "Propinas, gastos personales y seguro de viaje",
+    ],
+    note: "Precios en **dólares (US$) por persona**.\n**Beneficio por contratar los 5 tours:** la **noche de hotel en Aguas Calientes con desayuno** va incluida, para que lleguen descansados a Machu Picchu.\n**Servicio:** tours en **grupo compartido** con **guía profesional de turismo** (guía privado a pedido) y **recojo en su hotel** del centro histórico de Cusco.\n**Horarios de recojo:** City Tour **1:00 pm** · Valle Sagrado **7:00 am** (continúa a Machu Picchu) · Laguna Humantay **4:30 am** · Montaña de 7 Colores **de madrugada**. La hora exacta se confirma el día anterior.\n**Machu Picchu:** **tren turístico**, ida el **23 mar por la tarde** y vuelta el **24 mar por la tarde** (horas exactas al emitir los boletos). Ingreso por el **Circuito 2A**.\n**Semana Santa es temporada de alta demanda:** las entradas a Machu Picchu y los trenes se agotan semanas antes. Con el adelanto reservamos desde ya su ingreso, tren y hotel.\n**Aclimatación:** primero el City Tour y un día libre, luego el Valle Sagrado y Machu Picchu (más bajos que Cusco), y **Humantay y Vinicunca al final**.\n**Marzo es el final de la temporada de lluvias:** lleven poncho o casaca impermeable y buen calzado.\n**Pago:** **adelanto del 50% por PayPal** para reservar entradas, tren y hotel; el **saldo se paga al llegar a Cusco**.\n**Cancelación:** reembolso del **100% si cancelas con más de 7 días**, **50% entre 3 y 7 días** y sin reembolso con menos de 72 horas. Cambios de fecha **sin costo hasta 72 horas antes**, según disponibilidad. Si cancelamos nosotros o el clima lo impide, **reprogramamos sin costo o devolvemos el 100%**.\n**Operador autorizado por MINCETUR** · Oficina: Av. El Sol 314, Cusco. Precio cerrado en dólares sin sorpresas, recojo puntual y guías profesionales en cada tour.",
+  },
+
+  "servicio-video": {
+    lang: "es",
+    clientName: "viajero",
+    destination: "Servicio de video",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu",
+    dates: "Según tu tour",
+    duration: "Servicio adicional",
+    travelers: 1,
+    currency: "$",
+    acceptsPaypal: true,
+    itinerary: [],
+    items: [{ label: "Servicio de video", detail: "Grabación y edición del video de tu tour", unitPrice: 25 }],
+    includes: ["Grabación y edición del video de tu tour"],
+    excludes: [],
+    note: "Precio en **dólares (US$)**. Pago del **100% por PayPal**, que acepta **tarjeta de crédito o débito** (PayPal agrega su comisión).",
+  },
 };
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
