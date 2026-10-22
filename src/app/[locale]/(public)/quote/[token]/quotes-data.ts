@@ -726,7 +726,7 @@ export const QUOTES: Record<string, Quote> = {
     itinerary: [],
     items: [{ label: "Servicio de video", detail: "Grabación y edición del video de tu tour", unitPrice: 25 }],
     includes: ["Grabación y edición del video de tu tour"],
-    excludes: [],
+    excludes: ["Tours, entradas y transporte (se cotizan aparte)"],
     note: "Precio en **dólares (US$)**. Pago del **100% por PayPal**, que acepta **tarjeta de crédito o débito** (PayPal agrega su comisión).",
   },
 };
