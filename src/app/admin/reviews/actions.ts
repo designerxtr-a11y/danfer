@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerSupa } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 async function assertAdmin(): Promise<boolean> {
   const userClient = await createServerSupa();
@@ -110,6 +111,7 @@ export async function bulkImportReviews(raw: string): Promise<{
   if (error) return { ok: false, error: error.message, errors };
 
   revalidatePath("/admin/reviews");
+  revalidatePublicSite();
   return { ok: true, inserted: rows.length, errors };
 }
 
@@ -148,6 +150,7 @@ export async function addReview(formData: FormData): Promise<{ ok: boolean; erro
 
   if (error) return { ok: false, error: error.message };
   revalidatePath("/admin/reviews");
+  revalidatePublicSite();
   return { ok: true };
 }
 
@@ -163,6 +166,7 @@ export async function setReviewPublished(
     .eq("id", id);
   if (error) return { ok: false, error: error.message };
   revalidatePath("/admin/reviews");
+  revalidatePublicSite();
   return { ok: true };
 }
 
@@ -172,5 +176,6 @@ export async function deleteReview(id: string): Promise<{ ok: boolean; error?: s
   const { error } = await supabase.from("reviews").delete().eq("id", id);
   if (error) return { ok: false, error: error.message };
   revalidatePath("/admin/reviews");
+  revalidatePublicSite();
   return { ok: true };
 }

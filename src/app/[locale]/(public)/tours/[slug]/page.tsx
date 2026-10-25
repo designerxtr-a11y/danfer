@@ -40,6 +40,7 @@ import { TourRouteMap } from "@/components/tours/tour-route-map";
 import { CertificationsStrip } from "@/components/tours/certifications-strip";
 import { TripadvisorRating } from "@/components/tours/tripadvisor-badge";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -96,6 +97,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function TourDetailPage({ params }: PageProps) {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const mx = tr(lc);
   const tour = await getTourBySlug(slug);

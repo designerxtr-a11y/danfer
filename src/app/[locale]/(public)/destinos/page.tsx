@@ -8,6 +8,7 @@ import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { tr } from "@/lib/i18n/messages";
 import { type Locale } from "@/types/database";
+import { setRequestLocale } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -48,6 +49,7 @@ export default async function DestinationsIndexPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const mx = tr(lc);
   const destinations = listDestinations(lc);

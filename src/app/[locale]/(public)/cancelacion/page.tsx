@@ -1,5 +1,6 @@
 import { LegalShell } from "@/components/legal/legal-shell";
 import { buildAlternates } from "@/lib/seo/alternates";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function CancelacionPage({ params }: PageProps) {
   const { locale } = await params;
+  setRequestLocale(locale);
   return locale === "en" ? <CancellationEn /> : <CancelacionEs />;
 }
 

@@ -4,6 +4,7 @@ import { pickAdapter, fetchHtml, type ScrapedTour, type ScrapedReview } from "@/
 import { createAdminClient } from "@/lib/supabase/admin";
 import { importImages } from "@/lib/scrapers/image-importer";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 // =====================================================
 // 1) Scrape: fetch URL or parse pasted HTML
@@ -116,6 +117,7 @@ export async function saveScrapedTour(
   }
 
   revalidatePath("/admin/tours");
+  revalidatePublicSite();
   return { ok: true, id: created?.id };
 }
 
@@ -148,5 +150,6 @@ export async function saveScrapedReviews(
   if (error) return { ok: false, error: error.message };
 
   revalidatePath("/admin/tours");
+  revalidatePublicSite();
   return { ok: true, count: reviews.length };
 }

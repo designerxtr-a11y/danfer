@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/public";
 import type { Tour, TourWithCategory, Review } from "@/types/database";
 
 export async function getFeaturedTours(limit = 6): Promise<TourWithCategory[]> {

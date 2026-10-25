@@ -1,5 +1,8 @@
 import { AdminSidebar } from "./_components/sidebar";
 import { createClient } from "@/lib/supabase/server";
+import { RootHtml, rootMetadata } from "@/components/layout/root-html";
+
+export const metadata = rootMetadata;
 
 export default async function AdminLayout({
   children,
@@ -7,10 +10,12 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Login page renders without sidebar
-  if (!user) return <>{children}</>;
+  if (!user) return <RootHtml lang="es">{children}</RootHtml>;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -19,14 +24,16 @@ export default async function AdminLayout({
     .maybeSingle();
 
   return (
-    <div className="min-h-screen bg-stone flex">
-      <AdminSidebar
-        userEmail={user.email ?? ""}
-        userName={profile?.full_name ?? ""}
-      />
-      <div className="flex-1 ml-64">
-        <div className="px-8 py-8 max-w-7xl mx-auto">{children}</div>
+    <RootHtml lang="es">
+      <div className="min-h-screen bg-stone flex">
+        <AdminSidebar
+          userEmail={user.email ?? ""}
+          userName={profile?.full_name ?? ""}
+        />
+        <div className="flex-1 ml-64">
+          <div className="px-8 py-8 max-w-7xl mx-auto">{children}</div>
+        </div>
       </div>
-    </div>
+    </RootHtml>
   );
 }

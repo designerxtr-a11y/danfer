@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/public";
 import type { Category, TourWithCategory } from "@/types/database";
 
 export interface CategoryWithTours extends Category {

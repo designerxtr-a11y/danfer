@@ -26,6 +26,7 @@ import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { tr } from "@/lib/i18n/messages";
 import { siteUrl } from "@/lib/seo/site-url";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -78,6 +79,7 @@ function matchTours(
 
 export default async function DestinationPage({ params }: PageProps) {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const mx = tr(lc);
   const destination = getDestinationBySlug(slug, lc);

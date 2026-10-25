@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
 import { Playfair_Display, Inter, Caveat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import "./globals.css";
+import "@/app/globals.css";
 import { siteUrl } from "@/lib/seo/site-url";
 
 const playfair = Playfair_Display({
@@ -26,7 +25,7 @@ const caveat = Caveat({
 
 const SITE = siteUrl();
 
-export const metadata: Metadata = {
+export const rootMetadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
     default: "Danfer Tours Cusco · Tours en Machu Picchu y Valle Sagrado",
@@ -87,16 +86,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+// <html>/<body> compartido por los layouts raíz ([locale] y admin). El
+// idioma llega por params en vez de getLocale(): leerlo de los headers de la
+// request volvía dinámico TODO el sitio (cada visita = render en servidor).
+export function RootHtml({
+  lang,
   children,
-}: Readonly<{ children: React.ReactNode }>) {
-  // Locale real de la request (middleware next-intl). En /en el html debe
-  // declarar lang="en" — Google usa lang + hreflang para indexar el inglés.
-  // Para /admin (fuera del árbol [locale]) cae al default "es".
-  const locale = await getLocale();
+}: Readonly<{ lang: string; children: React.ReactNode }>) {
   return (
     <html
-      lang={locale}
+      lang={lang}
       data-scroll-behavior="smooth"
       className={`${playfair.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >

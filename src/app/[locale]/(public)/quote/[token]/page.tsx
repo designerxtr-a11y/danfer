@@ -5,6 +5,7 @@ import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { PassportUpload } from "./passport-upload";
 import { PaypalButton } from "./paypal-button";
 import { QUOTES, quoteTotal, quotePaypalCharge, depositAmount, itemSubtotal } from "./quotes-data";
+import { setRequestLocale } from "next-intl/server";
 
 const COPY = {
   en: {
@@ -73,6 +74,12 @@ interface PageProps {
   params: Promise<{ token: string; locale: string }>;
 }
 
+// Sin params en build: cada página se genera en su primera visita y queda en
+// caché (ISR). Sin esto la ruta se renderiza en cada request.
+export function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { token } = await params;
   const quote = QUOTES[token];
@@ -100,7 +107,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function QuotePage({ params }: PageProps) {
-  const { token } = await params;
+  const { token, locale } = await params;
+  setRequestLocale(locale);
   const quote = QUOTES[token];
   if (!quote) notFound();
   const t = COPY[quote.lang];

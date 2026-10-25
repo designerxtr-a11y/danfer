@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 import { redirect } from "next/navigation";
 import { scrapeBlogUrl, type ScrapedBlogPost } from "@/lib/scrapers/blog-scraper";
 
@@ -115,7 +116,7 @@ export async function createPost(
     .select("id")
     .single();
   if (error) return { error: error.message };
-  revalidatePath("/blog");
+  revalidatePublicSite();
   revalidatePath("/admin/blog");
   redirect(`/admin/blog/${data.id}/edit?ok=created`);
 }
@@ -145,8 +146,7 @@ export async function updatePost(
     .update(row)
     .eq("id", input.id);
   if (error) return { error: error.message };
-  revalidatePath("/blog");
-  revalidatePath(`/blog/${input.slug}`);
+  revalidatePublicSite();
   revalidatePath("/admin/blog");
   return { ok: true };
 }
@@ -157,7 +157,7 @@ export async function deletePost(
   const supabase = createAdminClient();
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/blog");
+  revalidatePublicSite();
   revalidatePath("/admin/blog");
   return { ok: true };
 }
@@ -190,7 +190,7 @@ export async function togglePublished(
     })
     .eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/blog");
+  revalidatePublicSite();
   revalidatePath("/admin/blog");
   return { ok: true };
 }

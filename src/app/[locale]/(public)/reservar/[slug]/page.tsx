@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { ChevronLeft, Shield, Zap, RotateCcw } from "lucide-react";
 import { buildAlternates } from "@/lib/seo/alternates";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -28,6 +29,7 @@ export async function generateMetadata({
 
 export default async function ReservarPage({ params, searchParams }: PageProps) {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const { date, travelers } = await searchParams;
 

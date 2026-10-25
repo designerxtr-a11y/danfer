@@ -13,6 +13,11 @@ import {
   speakableSchema,
   topDestinationsSchemas,
 } from "@/lib/seo/schema";
+import { setRequestLocale } from "next-intl/server";
+
+// Red de seguridad: refresca cada hora aunque el dato se edite directo en
+// Supabase (fuera del admin, que ya revalida al guardar).
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -26,7 +31,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   // Organization + WebSite los emite el layout público (todas las páginas).
   const settings = await getSettings();
   return (

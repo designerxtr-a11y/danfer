@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 import { redirect } from "next/navigation";
 import type { LocalizedList } from "@/types/database";
 
@@ -12,8 +13,7 @@ export async function togglePublished(id: string, current: boolean) {
     .update({ is_published: !current })
     .eq("id", id);
   revalidatePath("/admin/tours");
-  revalidatePath("/");
-  revalidatePath("/tours");
+  revalidatePublicSite();
 }
 
 export async function toggleFeatured(id: string, current: boolean) {
@@ -23,15 +23,14 @@ export async function toggleFeatured(id: string, current: boolean) {
     .update({ is_featured: !current })
     .eq("id", id);
   revalidatePath("/admin/tours");
-  revalidatePath("/");
+  revalidatePublicSite();
 }
 
 export async function deleteTour(id: string) {
   const supabase = createAdminClient();
   await supabase.from("tours").delete().eq("id", id);
   revalidatePath("/admin/tours");
-  revalidatePath("/");
-  revalidatePath("/tours");
+  revalidatePublicSite();
 }
 
 interface TourInput {
@@ -110,8 +109,6 @@ export async function saveTour(input: TourInput) {
   }
 
   revalidatePath("/admin/tours");
-  revalidatePath("/");
-  revalidatePath("/tours");
-  revalidatePath(`/tours/${input.slug}`);
+  revalidatePublicSite();
   redirect("/admin/tours");
 }

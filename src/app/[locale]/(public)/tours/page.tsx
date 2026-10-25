@@ -1,5 +1,5 @@
 import { getAllTours } from "@/lib/queries/tours";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/public";
 import { ToursPageClient } from "./page.client";
 import type { Category, Locale } from "@/types/database";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -12,6 +12,11 @@ import {
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { tr } from "@/lib/i18n/messages";
+import { setRequestLocale } from "next-intl/server";
+
+// Red de seguridad: refresca cada hora aunque el dato se edite directo en
+// Supabase (fuera del admin, que ya revalida al guardar).
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -52,6 +57,7 @@ export default async function ToursIndexPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const mx = tr(lc);
   const supabase = await createClient();

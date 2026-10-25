@@ -9,6 +9,7 @@ import { getCategoriesWithTours } from "@/lib/queries/categories";
 import { t } from "@/types/database";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
+import { setRequestLocale } from "next-intl/server";
 
 export default async function PublicLayout({
   children,
@@ -18,6 +19,7 @@ export default async function PublicLayout({
   params: Promise<{ locale: string }>;
 }) {
   const [{ locale }, settings] = await Promise.all([params, getSettings()]);
+  setRequestLocale(locale);
   const typedLocale: Locale = locale === "en" ? "en" : "es";
   const mx = tr(typedLocale);
 

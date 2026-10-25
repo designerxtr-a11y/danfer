@@ -1,6 +1,7 @@
 import { LegalShell } from "@/components/legal/legal-shell";
 import { Link } from "@/i18n/navigation";
 import { buildAlternates } from "@/lib/seo/alternates";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function TerminosPage({ params }: PageProps) {
   const { locale } = await params;
+  setRequestLocale(locale);
   return locale === "en" ? <TermsEn /> : <TerminosEs />;
 }
 

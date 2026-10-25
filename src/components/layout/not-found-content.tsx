@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Home, Map, MessageCircle } from "lucide-react";
 
-export const metadata = {
+export const notFoundMetadata = {
   title: "Página no encontrada · Danfer Tours Cusco",
   description:
     "La página que buscas no existe. Explora nuestros tours a Machu Picchu, Valle Sagrado y Camino Inca, o contáctanos.",
   robots: { index: false, follow: true },
 };
 
-export default function NotFound() {
+export function NotFoundContent() {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-night">
       {/* Background image */}

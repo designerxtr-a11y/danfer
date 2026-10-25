@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    globalNotFound: true,
   },
   // Ya no hay favicon.ico estático (era el placeholder del template y los
   // navegadores lo preferían sobre el /icon dinámico de Ajustes). Los

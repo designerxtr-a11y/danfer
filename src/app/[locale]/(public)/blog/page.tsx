@@ -4,6 +4,11 @@ import { Clock, Calendar } from "lucide-react";
 import { getPublishedPosts } from "@/lib/queries/blog";
 import { t, type Locale } from "@/types/database";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
+import { setRequestLocale } from "next-intl/server";
+
+// Red de seguridad: refresca cada hora aunque el dato se edite directo en
+// Supabase (fuera del admin, que ya revalida al guardar).
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -38,6 +43,7 @@ export default async function BlogIndex({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const posts = await getPublishedPosts(60);
 

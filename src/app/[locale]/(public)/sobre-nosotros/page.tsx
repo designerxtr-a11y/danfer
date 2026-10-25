@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { Shield, Award, Heart, Mountain, Users, Sparkles, ArrowRight } from "lucide-react";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import type { Locale } from "@/types/database";
+import { setRequestLocale } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -110,6 +111,7 @@ export default async function SobreNosotrosPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   return (
     <div className="pt-24 md:pt-32 pb-16 md:pb-24">

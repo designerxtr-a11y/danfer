@@ -36,6 +36,11 @@ import { headingSlug, extractH2s } from "@/lib/heading-slug";
 import { ReadingProgress } from "@/components/blog/reading-progress";
 import { PostToc } from "@/components/blog/post-toc";
 import { PostCta } from "@/components/blog/post-cta";
+import { setRequestLocale } from "next-intl/server";
+
+// Red de seguridad: refresca cada hora aunque el dato se edite directo en
+// Supabase (fuera del admin, que ya revalida al guardar).
+export const revalidate = 3600;
 
 /** Texto plano de los children de un heading MDX (para generar su id). */
 function childrenText(children: React.ReactNode): string {
@@ -100,6 +105,12 @@ interface PageProps {
 
 const SITE = siteUrl();
 
+// Sin params en build: cada página se genera en su primera visita y queda en
+// caché (ISR). Sin esto la ruta se renderiza en cada request.
+export function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { slug, locale } = await params;
   const lc: Locale = locale === "en" ? "en" : "es";
@@ -130,6 +141,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const post = await getPostBySlug(slug);
   if (!post) notFound();

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicSite } from "@/lib/revalidate-public";
 
 type SettingValue = string | number | boolean | object | null;
 
@@ -38,6 +39,7 @@ export async function updateSetting(
 
   // Revalida toda la app — settings impactan layout/footer/whatsapp/etc
   revalidatePath("/", "layout");
+  revalidatePublicSite();
   return { ok: true };
 }
 
@@ -133,6 +135,7 @@ export async function updateSettingsForm(
   }
 
   revalidatePath("/", "layout");
+  revalidatePublicSite();
   revalidatePath("/admin/settings");
   return { ok: true };
 }

@@ -6,6 +6,7 @@ import { breadcrumbSchema } from "@/lib/seo/schema";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import type { Locale } from "@/types/database";
+import { setRequestLocale } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -42,6 +43,7 @@ export default async function ContactoPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const lc: Locale = locale === "en" ? "en" : "es";
   const settings = await getSettings();
   const waNumber = normalizeWhatsApp(settings.whatsapp);
