@@ -37,6 +37,8 @@ import { ReadingProgress } from "@/components/blog/reading-progress";
 import { PostToc } from "@/components/blog/post-toc";
 import { PostCta } from "@/components/blog/post-cta";
 import { WhatsAppCta, postWhatsAppHref } from "@/components/blog/whatsapp-cta";
+import { TourCta } from "@/components/blog/tour-cta";
+import { getToursBySlugs } from "@/lib/queries/tours";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { setRequestLocale } from "next-intl/server";
 
@@ -148,21 +150,30 @@ export default async function BlogPostPage({ params }: PageProps) {
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const [related, settings] = await Promise.all([
+  const body = t(post.body_md, lc);
+  const ctaSlugs = [
+    ...new Set([...body.matchAll(/<TourCta\s+slug="([a-z0-9-]+)"/g)].map((m) => m[1])),
+  ];
+  const [related, settings, ctaTours] = await Promise.all([
     getRelatedPosts(slug, 3),
     getSettings(),
+    getToursBySlugs(ctaSlugs),
   ]);
-  const body = t(post.body_md, lc);
-  const waHref = postWhatsAppHref(
-    normalizeWhatsApp(settings.whatsapp),
-    t(post.title, lc),
-    lc
-  );
+  const whatsapp = normalizeWhatsApp(settings.whatsapp);
+  const postTitle = t(post.title, lc);
+  const waHref = postWhatsAppHref(whatsapp, postTitle, lc);
   const mdxComponents = {
     ...headingComponents,
     WhatsAppCta: (props: { title?: string; children?: React.ReactNode }) => (
       <WhatsAppCta {...props} href={waHref} locale={lc} />
     ),
+    // Un slug despublicado o mal escrito no rompe el post: el recuadro no se muestra.
+    TourCta: ({ slug: tourSlug }: { slug: string }) => {
+      const tour = ctaTours.find((x) => x.slug === tourSlug);
+      return tour ? (
+        <TourCta tour={tour} locale={lc} whatsapp={whatsapp} postTitle={postTitle} />
+      ) : null;
+    },
   };
 
   const articleSchema = blogPostingSchema({

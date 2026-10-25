@@ -52,6 +52,23 @@ export async function getTourBySlug(
   return data as unknown as TourWithCategory | null;
 }
 
+/** Tours referenced by <TourCta slug="..."> boxes inside a blog post. */
+export async function getToursBySlugs(slugs: string[]): Promise<Tour[]> {
+  if (slugs.length === 0) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tours")
+    .select("*")
+    .in("slug", slugs)
+    .eq("is_published", true);
+
+  if (error) {
+    console.error("[getToursBySlugs]", error);
+    return [];
+  }
+  return (data ?? []) as unknown as Tour[];
+}
+
 export interface ItineraryDay {
   id: string;
   day_number: number;
