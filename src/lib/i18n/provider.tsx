@@ -23,6 +23,9 @@ export function I18nProvider({
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
     document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
+    // El middleware de next-intl redirige según NEXT_LOCALE: si sigue en "en",
+    // ir a /tours devuelve a /en/tours y el cambio a español no funciona.
+    document.cookie = `NEXT_LOCALE=${l}; path=/; max-age=31536000; samesite=lax`;
     // Route to /en or back to / based on locale
     const path = window.location.pathname.replace(/^\/en/, "");
     window.location.href = l === "en" ? `/en${path || "/"}` : path || "/";
