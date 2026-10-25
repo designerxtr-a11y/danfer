@@ -611,6 +611,67 @@ export const QUOTES: Record<string, Quote> = {
     note: "Prices in **US dollars (USD)**. Total: **USD 407** (USD 380 for the tour + USD 27 for the extra night).\n**Payment:** **50% deposit (USD 203.50) via PayPal**, card payments accepted (PayPal adds its processing fee). The **remaining 50% is paid upon arrival in Cusco**.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu ticket, train tickets and hotel. These are bought directly from the providers and, **once purchased, they are non-refundable**. That's why we check availability before buying.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
+  "verity-chloe-easter": {
+    lang: "en",
+    clientName: "Verity & Chloe",
+    destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
+    dates: "Mar 27 – 28, 2027",
+    duration: "2 days / 1 night",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    // Amount already quoted by WhatsApp (USD 380 deposit + PayPal fee).
+    paypalChargeOverride: 400.82,
+    itinerary: [
+      {
+        day: "Day 1 · Sat, Mar 27",
+        timeLabel: "Cusco → Aguas Calientes",
+        title: "Bus to Ollantaytambo + tourist train",
+        desc: "We pick you up in Cusco and take you by bus to Ollantaytambo station in the Sacred Valley (about 2 hours), where you board the tourist train to Aguas Calientes. Overnight at the hotel with breakfast.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/valle-sagrado-vip/maras.jpg",
+        photoAlt: "Sacred Valley",
+      },
+      {
+        day: "Day 2 · Sun, Mar 28",
+        timeLabel: "2,430 m",
+        title: "Machu Picchu + return to Cusco",
+        desc: "Bus up to the citadel and guided visit. In the afternoon, tourist train back to Ollantaytambo and bus to Cusco, arriving in the evening.",
+        photo:
+          "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+        photoAlt: "Machu Picchu",
+      },
+    ],
+    items: [
+      {
+        label: "Machu Picchu 2 Days / 1 Night",
+        detail:
+          "Bus Cusco–Ollantaytambo and back, round-trip tourist train, bus up and down, entrance ticket, professional guide and 1 hotel night with breakfast",
+        unitPrice: 380,
+      },
+    ],
+    includes: [
+      "Bus from Cusco to Ollantaytambo station and back to Cusco",
+      "Round-trip tourist train Ollantaytambo – Aguas Calientes",
+      "Bus up and down to Machu Picchu",
+      "Machu Picchu entrance ticket",
+      "Professional guide",
+      "1 hotel night in Aguas Calientes, breakfast included",
+    ],
+    excludes: [
+      "Lunch and dinner",
+      "Huayna Picchu entrance (extra)",
+      "Tips",
+      "Personal expenses",
+      "Travel insurance",
+    ],
+    note: "Prices in **US dollars (USD) per person**. Total for **2 travelers: USD 760**.\n**Easter weekend is peak season in Peru:** Machu Picchu tickets and trains sell out weeks in advance. The deposit lets us secure your tickets, train and hotel right away.\n**Payment:** **50% deposit (USD 380) via PayPal**, card payments accepted (PayPal adds its processing fee: USD 400.82 in total). The **remaining USD 380 is paid upon arrival in Cusco**.\n**Train times** are confirmed when we issue the tickets.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu tickets, train tickets and hotel. These are bought directly from the providers and, **once purchased, they cannot be changed or refunded**. Please make sure your passport details are correct.\nBring your **original passport** (it is checked on the train, at the hotel and at the entrance).",
+  },
+
   "pareja-semana-santa-marzo": {
     lang: "es",
     clientName: "viajero",
