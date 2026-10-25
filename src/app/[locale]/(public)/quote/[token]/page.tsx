@@ -27,6 +27,7 @@ const COPY = {
     passportBody: "To book your tourist train ticket and hotel reservation, we need a photo of each traveler's passport or ID.",
     quoteDetail: "Quote detail",
     flatFee: "flat fee",
+    gift: "Gift from Danfer",
     total: "Total",
     tripTotal: "Trip total",
     depositDue: (pct: number) => `Deposit due now (${pct}%)`,
@@ -57,6 +58,7 @@ const COPY = {
     passportBody: "Para reservar tu tren turístico y el hotel, necesitamos una foto del pasaporte o DNI de cada pasajero.",
     quoteDetail: "Detalle de la cotización",
     flatFee: "tarifa fija",
+    gift: "Cortesía de Danfer",
     total: "Total",
     tripTotal: "Total del viaje",
     depositDue: (pct: number) => `Depósito a pagar ahora (${pct}%)`,
@@ -269,15 +271,23 @@ export default async function QuotePage({ params }: PageProps) {
                     <div className="min-w-0">
                       <div className="text-night font-semibold">{item.label}</div>
                       {item.detail && <div className="text-night/55 text-xs mt-0.5">{item.detail}</div>}
-                      <div className="text-night/50 text-xs mt-0.5">
-                        {quote.currency}
-                        {item.unitPrice}
-                        {item.perTraveler === false ? ` (${t.flatFee})` : ` × ${quote.travelers}`}
-                      </div>
+                      {item.unitPrice > 0 && (
+                        <div className="text-night/50 text-xs mt-0.5">
+                          {quote.currency}
+                          {item.unitPrice}
+                          {item.perTraveler === false ? ` (${t.flatFee})` : ` × ${quote.travelers}`}
+                        </div>
+                      )}
                     </div>
                     <div className="font-semibold text-night shrink-0">
-                      {quote.currency}
-                      {itemSubtotal(item, quote.travelers)}
+                      {item.unitPrice > 0 ? (
+                        <>
+                          {quote.currency}
+                          {itemSubtotal(item, quote.travelers)}
+                        </>
+                      ) : (
+                        <span className="text-gold">{t.gift}</span>
+                      )}
                     </div>
                   </div>
                 ))}
