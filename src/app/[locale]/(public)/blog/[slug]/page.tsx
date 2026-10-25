@@ -36,6 +36,8 @@ import { headingSlug, extractH2s } from "@/lib/heading-slug";
 import { ReadingProgress } from "@/components/blog/reading-progress";
 import { PostToc } from "@/components/blog/post-toc";
 import { PostCta } from "@/components/blog/post-cta";
+import { WhatsAppCta, postWhatsAppHref } from "@/components/blog/whatsapp-cta";
+import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { setRequestLocale } from "next-intl/server";
 
 // Red de seguridad: refresca cada hora aunque el dato se edite directo en
@@ -81,7 +83,7 @@ function iconForHeading(text: string): LucideIcon {
 // contextual (según palabras clave del propio título) para que el cuerpo
 // del artículo no se sienta un bloque continuo de texto plano.
 // scroll-mt compensa el navbar fijo al saltar al ancla.
-const mdxComponents = {
+const headingComponents = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
     const text = childrenText(props.children);
     const Icon = iconForHeading(text);
@@ -146,8 +148,22 @@ export default async function BlogPostPage({ params }: PageProps) {
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const related = await getRelatedPosts(slug, 3);
+  const [related, settings] = await Promise.all([
+    getRelatedPosts(slug, 3),
+    getSettings(),
+  ]);
   const body = t(post.body_md, lc);
+  const waHref = postWhatsAppHref(
+    normalizeWhatsApp(settings.whatsapp),
+    t(post.title, lc),
+    lc
+  );
+  const mdxComponents = {
+    ...headingComponents,
+    WhatsAppCta: (props: { title?: string; children?: React.ReactNode }) => (
+      <WhatsAppCta {...props} href={waHref} locale={lc} />
+    ),
+  };
 
   const articleSchema = blogPostingSchema({
     slug: post.slug,
@@ -156,7 +172,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     bodyText: body,
     coverImage: post.cover_image,
     publishedAt: post.published_at ?? post.created_at,
-    updatedAt: post.published_at ?? post.created_at,
+    updatedAt: post.updated_at ?? post.published_at ?? post.created_at,
     authorName: post.author_name,
     authorAvatar: post.author_avatar,
     readMinutes: post.read_minutes,
@@ -272,7 +288,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
         </div>
 
-        <PostCta locale={lc} />
+        <PostCta locale={lc} whatsappHref={waHref} />
       </article>
 
       {related.length > 0 && (

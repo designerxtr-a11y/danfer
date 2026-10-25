@@ -5,7 +5,13 @@ import { ArrowRight, MessageCircle } from "lucide-react";
  * Tarjeta de conversión al final de cada post — el blog es donde aterriza
  * el tráfico orgánico y antes terminaba sin un camino visual a la reserva.
  */
-export function PostCta({ locale }: { locale: "es" | "en" }) {
+export function PostCta({
+  locale,
+  whatsappHref,
+}: {
+  locale: "es" | "en";
+  whatsappHref: string;
+}) {
   const en = locale === "en";
   return (
     <aside className="mt-14 relative overflow-hidden rounded-3xl bg-night px-6 py-10 sm:px-10 sm:py-12 text-center">
@@ -36,13 +42,15 @@ export function PostCta({ locale }: { locale: "es" | "en" }) {
             {en ? "Browse tours" : "Ver los tours"}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
           </Link>
-          <Link
-            href="/contacto"
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3.5 text-white/85 text-sm sm:text-base hover:border-gold hover:text-gold transition"
           >
             <MessageCircle className="w-4 h-4" />
-            {en ? "Ask us anything" : "Escríbenos"}
-          </Link>
+            {en ? "Ask us on WhatsApp" : "Escríbenos por WhatsApp"}
+          </a>
         </div>
       </div>
     </aside>

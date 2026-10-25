@@ -17,6 +17,7 @@ export interface BlogPost {
   meta_title: Localized | null;
   meta_description: Localized | null;
   created_at: string;
+  updated_at?: string | null;
 }
 
 export async function getPublishedPosts(limit = 24): Promise<BlogPost[]> {
