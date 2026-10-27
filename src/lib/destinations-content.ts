@@ -36,7 +36,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     ],
     metaTitle: "Tours a Machu Picchu desde Cusco 2026",
     metaDescription:
-      "Tours guiados a Machu Picchu desde Cusco. Tren panorámico, entrada oficial, guía bilingüe. Desde US$380, grupos pequeños, 12+ años de experiencia.",
+      "Tours guiados a Machu Picchu desde Cusco. Tren panorámico, entrada oficial, guía bilingüe. Desde US$320, grupos pequeños, 12+ años de experiencia.",
     h1: "Tours a Machu Picchu desde Cusco",
     tagline: "La ciudadela inca del siglo XV · 7 Maravillas del Mundo Moderno",
     hero: {
@@ -87,7 +87,7 @@ export const DESTINATIONS: Record<string, DestinationContent> = {
     faq: [
       {
         q: "¿Cuánto cuesta visitar Machu Picchu en 2026?",
-        a: "El tour Full Day a Machu Picchu desde Cusco con Danfer Tours cuesta desde US$380 por persona, incluyendo tren panorámico ida y vuelta, bus de subida y bajada, entrada oficial al santuario, guía profesional bilingüe (español/inglés) y almuerzo buffet en Aguas Calientes. La entrada sola al santuario cuesta S/152 (~US$40) para extranjeros adultos.",
+        a: "El tour Full Day a Machu Picchu desde Cusco con Danfer Tours cuesta desde US$320 por persona, incluyendo tren panorámico ida y vuelta, bus de subida y bajada, entrada oficial al santuario y guía profesional bilingüe (español/inglés). Las comidas no están incluidas. La entrada sola al santuario cuesta S/152 (~US$40) para extranjeros adultos.",
       },
       {
         q: "¿Cuánto tiempo se necesita para conocer Machu Picchu?",

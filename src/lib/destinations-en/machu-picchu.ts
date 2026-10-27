@@ -11,7 +11,7 @@ export const machuPicchuEn: DestinationContent = {
   ],
   metaTitle: "Machu Picchu Tours from Cusco 2026",
   metaDescription:
-    "Guided Machu Picchu tours from Cusco. Panoramic train, official entrance ticket, bilingual guide. From US$380, small groups, 12+ years of experience.",
+    "Guided Machu Picchu tours from Cusco. Panoramic train, official entrance ticket, bilingual guide. From US$320, small groups, 12+ years of experience.",
   h1: "Machu Picchu Tours from Cusco",
   tagline: "The 15th-century Inca citadel · One of the 7 Wonders of the Modern World",
   hero: {
@@ -62,7 +62,7 @@ export const machuPicchuEn: DestinationContent = {
   faq: [
     {
       q: "How much does it cost to visit Machu Picchu in 2026?",
-      a: "The Full Day tour to Machu Picchu from Cusco with Danfer Tours starts at US$380 per person, including the round-trip panoramic train, the shuttle bus up and down the mountain, the official sanctuary entrance ticket, a professional bilingual guide (Spanish/English), and a buffet lunch in Aguas Calientes. The sanctuary entrance ticket on its own costs S/152 (~US$40) for adult foreign visitors.",
+      a: "The Full Day tour to Machu Picchu from Cusco with Danfer Tours starts at US$320 per person, including the round-trip panoramic train, the shuttle bus up and down the mountain, the official sanctuary entrance ticket and a professional bilingual guide (Spanish/English). Meals are not included. The sanctuary entrance ticket on its own costs S/152 (~US$40) for adult foreign visitors.",
     },
     {
       q: "How much time do you need to see Machu Picchu?",

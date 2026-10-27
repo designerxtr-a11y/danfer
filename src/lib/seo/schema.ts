@@ -640,7 +640,7 @@ export function homepageFaqSchema() {
     },
     {
       q: "¿Cuánto cuesta un tour a Machu Picchu desde Cusco?",
-      a: "Un tour Full Day a Machu Picchu desde Cusco con Danfer Tours cuesta desde US$380 por persona, incluyendo transporte en tren panorámico, entrada a la ciudadela, guía profesional bilingüe y almuerzo buffet en Aguas Calientes. El Camino Inca de 4 días desde US$750.",
+      a: "Un tour Full Day a Machu Picchu desde Cusco con Danfer Tours cuesta desde US$320 por persona, incluyendo transporte en tren panorámico, entrada a la ciudadela y guía profesional bilingüe. Las comidas no están incluidas. El Camino Inca de 4 días desde US$750.",
     },
     {
       q: "¿Cuántos días se necesitan para conocer Cusco y Machu Picchu?",
