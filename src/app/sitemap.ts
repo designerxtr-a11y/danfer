@@ -3,9 +3,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { listDestinations } from "@/lib/destinations-content";
 import { siteUrl } from "@/lib/seo/site-url";
 
-// Regenera el sitemap cada hora (ISR) en vez de congelarlo en el build.
-// Así los posts/tours nuevos creados desde /admin aparecen sin redeploy.
-export const revalidate = 3600;
+// Se genera en cada pedido. Con `revalidate = 3600` (ISR) Vercel nunca lo
+// regeneraba: quedaba congelado en el build y los posts nuevos no entraban.
+// Solo lo piden Google y otros bots unas pocas veces al día: el costo de CPU es mínimo.
+export const dynamic = "force-dynamic";
 
 const SITE = siteUrl();
 

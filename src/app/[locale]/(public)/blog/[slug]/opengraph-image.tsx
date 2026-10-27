@@ -1,10 +1,11 @@
 import { ImageResponse } from "next/og";
 import { getPostBySlug } from "@/lib/queries/blog";
 import { t, type Locale } from "@/types/database";
+import { coverDataUrl, ogJpeg } from "@/lib/og/cover-data-url";
 
 export const alt = "Blog de Danfer Tours Cusco";
 export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 
 export default async function Image({
   params,
@@ -26,98 +27,105 @@ export default async function Image({
         { day: "numeric", month: "long", year: "numeric" }
       )
     : null;
+  const cover = await coverDataUrl(post.cover_image);
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          position: "relative",
-          fontFamily: "Inter, system-ui",
-          background: "#0B1929",
-        }}
-      >
-        {post.cover_image && (
-          <img
-            src={post.cover_image}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        )}
+  return ogJpeg(
+    new ImageResponse(
+      (
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(135deg, rgba(11,25,41,0.88) 0%, rgba(11,25,41,0.45) 100%)",
-          }}
-        />
-
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            padding: 70,
-            color: "#fff",
             width: "100%",
+            height: "100%",
+            display: "flex",
+            position: "relative",
+            fontFamily: "Inter, system-ui",
+            background: "#0B1929",
           }}
         >
+          {cover && (
+            <img
+              src={cover}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          )}
           <div
             style={{
+              // satori no soporta `inset`: sin top/left/width/height el velo mide 0
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background:
+                "linear-gradient(135deg, rgba(11,25,41,0.88) 0%, rgba(11,25,41,0.45) 100%)",
+            }}
+          />
+
+          <div
+            style={{
+              position: "relative",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "space-between",
-              alignItems: "center",
+              padding: 70,
+              color: "#fff",
+              width: "100%",
             }}
           >
-            <div style={{ display: "flex", gap: 10 }}>
-              <span style={{ color: "#E8B043", fontWeight: 800, letterSpacing: 3, fontSize: 24 }}>DANFER</span>
-              <span style={{ color: "#fff", fontWeight: 800, letterSpacing: 3, fontSize: 24 }}>TOURS</span>
-            </div>
             <div
               style={{
-                background: "rgba(255,255,255,0.15)",
-                padding: "8px 18px",
-                borderRadius: 999,
-                fontSize: 18,
-                letterSpacing: 2,
-                textTransform: "uppercase",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              {tag ?? "Blog"}
+              <div style={{ display: "flex", gap: 10 }}>
+                <span style={{ color: "#E8B043", fontWeight: 800, letterSpacing: 3, fontSize: 24 }}>DANFER</span>
+                <span style={{ color: "#fff", fontWeight: 800, letterSpacing: 3, fontSize: 24 }}>TOURS</span>
+              </div>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  padding: "8px 18px",
+                  borderRadius: 999,
+                  fontSize: 18,
+                  letterSpacing: 2,
+                  textTransform: "uppercase",
+                }}
+              >
+                {tag ?? "Blog"}
+              </div>
+            </div>
+
+            <h1
+              style={{
+                fontSize: title.length > 60 ? 60 : 76,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                margin: 0,
+                maxWidth: 1020,
+              }}
+            >
+              {title}
+            </h1>
+
+            <div style={{ display: "flex", gap: 30, fontSize: 22 }}>
+              {date && <span style={{ color: "#E8B043" }}>{date}</span>}
+              <span style={{ color: "rgba(255,255,255,0.75)" }}>
+                {post.read_minutes} {lc === "en" ? "min read" : "min de lectura"}
+              </span>
             </div>
           </div>
-
-          <h1
-            style={{
-              fontSize: title.length > 60 ? 60 : 76,
-              fontWeight: 800,
-              lineHeight: 1.05,
-              margin: 0,
-              maxWidth: 1020,
-            }}
-          >
-            {title}
-          </h1>
-
-          <div style={{ display: "flex", gap: 30, fontSize: 22 }}>
-            {date && <span style={{ color: "#E8B043" }}>{date}</span>}
-            <span style={{ color: "rgba(255,255,255,0.75)" }}>
-              {post.read_minutes} {lc === "en" ? "min read" : "min de lectura"}
-            </span>
-          </div>
         </div>
-      </div>
-    ),
-    { ...size }
+      ),
+      { ...size }
+    )
   );
 }

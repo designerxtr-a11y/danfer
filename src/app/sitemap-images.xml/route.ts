@@ -3,7 +3,9 @@ import { siteUrl } from "@/lib/seo/site-url";
 
 const SITE = siteUrl();
 
-export const revalidate = 3600;
+// Igual que sitemap.ts: con ISR quedaba congelado en el build. El CDN lo cachea
+// una hora por el s-maxage de la respuesta.
+export const dynamic = "force-dynamic";
 
 function xmlEscape(s: string): string {
   return s
