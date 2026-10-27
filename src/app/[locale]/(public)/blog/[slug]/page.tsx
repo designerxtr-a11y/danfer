@@ -38,7 +38,8 @@ import { PostToc } from "@/components/blog/post-toc";
 import { PostCta } from "@/components/blog/post-cta";
 import { WhatsAppCta, postWhatsAppHref } from "@/components/blog/whatsapp-cta";
 import { TourCta } from "@/components/blog/tour-cta";
-import { getToursBySlugs } from "@/lib/queries/tours";
+import { getToursBySlugs, getTourAvailability } from "@/lib/queries/tours";
+import { BookingWidget } from "@/components/tours/booking-widget";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { setRequestLocale } from "next-intl/server";
 
@@ -143,6 +144,22 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+// Tour del widget de reserva lateral: el primer <TourCta> del post o, si no
+// tiene, el que corresponde al tema del post. Por defecto, el más vendido.
+const SIDEBAR_TOUR_BY_TOPIC: [RegExp, string][] = [
+  [/rainbow|7-colores|vinicunca|palccoyo|ausangate/, "rainbow-mountain"],
+  [/humantay/, "laguna-humantay"],
+  [/valle-sagrado|maras|moray|ollantaytambo|pisac|chinchero/, "valle-sagrado-vip"],
+  [/city-tour|sacsayhuaman|qorikancha|boleto-turistico/, "city-tour-cusco"],
+  [/full-day/, "machu-picchu-full-day"],
+];
+
+function sidebarTourSlug(postSlug: string, tags: string[], ctaSlugs: string[]): string {
+  if (ctaSlugs[0]) return ctaSlugs[0];
+  const haystack = [postSlug, ...tags].join(" ");
+  return SIDEBAR_TOUR_BY_TOPIC.find(([re]) => re.test(haystack))?.[1] ?? "machu-picchu-2d-1n";
+}
+
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug, locale } = await params;
   setRequestLocale(locale);
@@ -154,11 +171,14 @@ export default async function BlogPostPage({ params }: PageProps) {
   const ctaSlugs = [
     ...new Set([...body.matchAll(/<TourCta\s+slug="([a-z0-9-]+)"/g)].map((m) => m[1])),
   ];
+  const sidebarSlug = sidebarTourSlug(slug, post.tags, ctaSlugs);
   const [related, settings, ctaTours] = await Promise.all([
     getRelatedPosts(slug, 3),
     getSettings(),
-    getToursBySlugs(ctaSlugs),
+    getToursBySlugs([...new Set([...ctaSlugs, sidebarSlug])]),
   ]);
+  const sidebarTour = ctaTours.find((x) => x.slug === sidebarSlug);
+  const sidebarAvailability = sidebarTour ? await getTourAvailability(sidebarTour.id) : [];
   const whatsapp = normalizeWhatsApp(settings.whatsapp);
   const postTitle = t(post.title, lc);
   const waHref = postWhatsAppHref(whatsapp, postTitle, lc);
@@ -212,7 +232,8 @@ export default async function BlogPostPage({ params }: PageProps) {
         ]}
       />
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
+      <article className="max-w-3xl mx-auto lg:mx-0 min-w-0">
         <Breadcrumbs items={crumbs} className="mb-6" />
 
         <Link
@@ -301,6 +322,37 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <PostCta locale={lc} whatsappHref={waHref} />
       </article>
+
+      {/* Reserva fija a la derecha, igual que en las fichas de tour. En móvil
+          ya están el <TourCta> del cuerpo y el CTA del final. */}
+      {sidebarTour && (
+        <aside className="hidden lg:block lg:sticky lg:top-28 lg:self-start">
+          <BookingWidget
+            tourId={sidebarTour.id}
+            tourSlug={sidebarTour.slug}
+            tourTitle={t(sidebarTour.title, lc)}
+            durationLabel={t(sidebarTour.duration_label, lc)}
+            priceUsd={
+              sidebarTour.discount_pct > 0
+                ? sidebarTour.price_usd * (1 - sidebarTour.discount_pct / 100)
+                : sidebarTour.price_usd
+            }
+            originalPrice={sidebarTour.discount_pct > 0 ? sidebarTour.price_usd : null}
+            maxGroupSize={sidebarTour.max_group_size}
+            availability={sidebarAvailability}
+            whatsapp={whatsapp}
+            locale={lc}
+          />
+          <Link
+            href={`/tours/${sidebarTour.slug}`}
+            className="mt-3 flex items-center justify-center gap-1.5 text-sm font-semibold text-night/70 hover:text-gold transition"
+          >
+            {lc === "en" ? "See the full tour" : "Ver el tour completo"}
+            <ChevronLeft className="w-4 h-4 rotate-180" />
+          </Link>
+        </aside>
+      )}
+      </div>
 
       {related.length > 0 && (
         <section className="max-w-5xl mx-auto px-4 sm:px-6 mt-16 md:mt-24 pt-12 md:pt-16 border-t border-night/8">
