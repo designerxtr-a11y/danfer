@@ -33,7 +33,8 @@ for (const p of posts) {
     read_minutes: p.read_minutes,
     tags: p.tags,
     is_published: true,
-    published_at: now.toISOString(),
+    // published_at futuro = post programado: el blog lo muestra desde esa fecha.
+    published_at: p.published_at ?? now.toISOString(),
     meta_title: p.meta_title,
     meta_description: p.meta_description,
   };

@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { siteUrl } from "@/lib/seo/site-url";
+import { publishedNow } from "@/lib/queries/blog";
 
 const SITE = siteUrl();
 
@@ -46,7 +47,8 @@ export async function GET() {
     supabase
       .from("blog_posts")
       .select("slug,title,cover_image,excerpt")
-      .eq("is_published", true),
+      .eq("is_published", true)
+      .or(publishedNow()),
   ]);
 
   const urls: string[] = [];

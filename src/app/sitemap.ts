@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { listDestinations } from "@/lib/destinations-content";
 import { siteUrl } from "@/lib/seo/site-url";
+import { publishedNow } from "@/lib/queries/blog";
 
 // Se genera en cada pedido. Con `revalidate = 3600` (ISR) Vercel nunca lo
 // regeneraba: quedaba congelado en el build y los posts nuevos no entraban.
@@ -51,7 +52,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase
       .from("blog_posts")
       .select("slug, updated_at, published_at, title, body_md")
-      .eq("is_published", true),
+      .eq("is_published", true)
+      .or(publishedNow()),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
