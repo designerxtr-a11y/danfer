@@ -7,6 +7,13 @@ export const alt = "Tour en Cusco";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/jpeg";
 
+// Se genera una vez y queda en caché un día: sin esto cada bot que lee las
+// meta tags volvía a correr sharp + satori (lo que más CPU gasta en Vercel).
+export const revalidate = 86400;
+export function generateStaticParams() {
+  return [];
+}
+
 export default async function Image({
   params,
 }: {

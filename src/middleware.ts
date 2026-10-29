@@ -84,6 +84,8 @@ async function handleAdmin(request: NextRequest) {
 }
 
 export const config = {
-  // Match everything except Next.js internals
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Match everything except Next.js internals y archivos con extensión
+  // (imágenes de /public, robots.txt, sitemaps): el middleware igual los
+  // dejaba pasar sin tocar, pero cada invocación cuenta como CPU en Vercel.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
