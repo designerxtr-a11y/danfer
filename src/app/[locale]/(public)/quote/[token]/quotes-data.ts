@@ -610,6 +610,41 @@ export const QUOTES: Record<string, Quote> = {
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
     note: "Prices in **US dollars (USD)**. Total: **USD 407** (USD 380 for the tour + USD 27 for the extra night).\n**Payment:** **50% deposit (USD 203.50) via PayPal**, card payments accepted (PayPal adds its processing fee). The **remaining 50% is paid upon arrival in Cusco**.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu ticket, train tickets and hotel. These are bought directly from the providers and, **once purchased, they are non-refundable**. That's why we check availability before buying.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
+  // Balance link for Yuto: deposit already paid, charged at exactly USD 203.50 (no fee added).
+  "yuto-saldo": {
+    lang: "en",
+    clientName: "Yuto",
+    destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
+    dates: "Oct 31 – Nov 2, 2026",
+    duration: "3 days / 2 nights",
+    travelers: 1,
+    currency: "$",
+    acceptsPaypal: true,
+    paypalChargeOverride: 203.5,
+    itinerary: [],
+    items: [
+      {
+        label: "Remaining balance",
+        detail: "Machu Picchu trip, Oct 31 – Nov 2 (50% deposit already paid)",
+        unitPrice: 203.5,
+      },
+    ],
+    includes: [
+      "Transportation between Cusco and Ollantaytambo",
+      "Bonus: Sacred Valley tour with buffet lunch",
+      "Round-trip train tickets",
+      "2 nights of hotel accommodation with breakfast",
+      "Round-trip bus tickets to Machu Picchu",
+      "Circuit 1C entrance ticket",
+      "English-speaking guide",
+      "Assistance with purchasing an additional circuit ticket",
+    ],
+    excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
+    note: "Remaining balance of **USD 203.50**. Your deposit has already been received.",
+  },
 
   "verity-chloe-easter": {
     lang: "en",
