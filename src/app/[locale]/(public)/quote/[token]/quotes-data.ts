@@ -610,7 +610,7 @@ export const QUOTES: Record<string, Quote> = {
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
     note: "Prices in **US dollars (USD)**. Total: **USD 407** (USD 380 for the tour + USD 27 for the extra night).\n**Payment:** **50% deposit (USD 203.50) via PayPal**, card payments accepted (PayPal adds its processing fee). The **remaining 50% is paid upon arrival in Cusco**.\n**Refunds:** the deposit is used right away to purchase your Machu Picchu ticket, train tickets and hotel. These are bought directly from the providers and, **once purchased, they are non-refundable**. That's why we check availability before buying.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
-  // Balance link for Yuto: deposit already paid, charged at exactly USD 203.50 (no fee added).
+  // Balance link for Yuto: deposit already paid, Tourist Ticket (S/70 = USD 20.29 at 3.45) deducted; charged at exactly USD 183.21 (no fee added).
   "yuto-saldo": {
     lang: "en",
     clientName: "Yuto",
@@ -623,13 +623,13 @@ export const QUOTES: Record<string, Quote> = {
     travelers: 1,
     currency: "$",
     acceptsPaypal: true,
-    paypalChargeOverride: 203.5,
+    paypalChargeOverride: 183.21,
     itinerary: [],
     items: [
       {
         label: "Remaining balance",
-        detail: "Machu Picchu trip, Oct 31 – Nov 2 (50% deposit already paid)",
-        unitPrice: 203.5,
+        detail: "Machu Picchu trip, Oct 31 – Nov 2 (50% deposit already paid). USD 203.50 minus USD 20.29 for the Tourist Ticket (S/70), covered by us.",
+        unitPrice: 183.21,
       },
     ],
     includes: [
@@ -643,7 +643,7 @@ export const QUOTES: Record<string, Quote> = {
       "Assistance with purchasing an additional circuit ticket",
     ],
     excludes: ["Meals not specified", "Tips", "Personal expenses", "Travel insurance"],
-    note: "Remaining balance of **USD 203.50**. Your deposit has already been received.",
+    note: "Remaining balance of **USD 183.21** (USD 203.50 minus **USD 20.29** for the Tourist Ticket, S/70 at 3.45, which we are covering). Your deposit has already been received.",
   },
 
   "verity-chloe-easter": {
