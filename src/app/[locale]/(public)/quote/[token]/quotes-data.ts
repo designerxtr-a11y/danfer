@@ -684,7 +684,7 @@ export const QUOTES: Record<string, Quote> = {
       "Meals not specified",
       "Tips and personal expenses",
     ],
-    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people.\n**Payment:** **50% deposit (USD 380)** to secure the train, hotel and entrance tickets. Paying by **credit or debit card adds 5%**, so the deposit charged online is **USD 399.00**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** the circuit and entry time depend on availability for Nov 10; we confirm them with you when we buy them.\n**To book:** full name, nationality and passport number of each traveler.\n**Important:** Machu Picchu tickets and train tickets **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
+    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people.\n**Payment:** **50% deposit (USD 380)** to secure the train, hotel and entrance tickets. Paying by **credit card adds 5%**, so the deposit charged online is **USD 399.00**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** the circuit and entry time depend on availability for Nov 10; we confirm them with you when we buy them.\n**To book:** full name, nationality and passport number of each traveler.\n**Important:** Machu Picchu tickets and train tickets **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
   "verity-chloe-easter": {
