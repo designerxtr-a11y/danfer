@@ -646,6 +646,47 @@ export const QUOTES: Record<string, Quote> = {
     note: "Remaining balance of **USD 162.41** (USD 203.50 minus **USD 26.09** for the Sacred Valley entrance fees we are covering: Tourist Ticket S/70 + Maras salt mines S/20, at 3.45, and an additional **USD 15.00** deduction). Your deposit has already been received.",
   },
 
+  // DT-1104-02 · 50% deposit by card/PayPal + 5% card fee: 380 × 1.05 = 399.00
+  "machu-picchu-9-nov": {
+    lang: "en",
+    clientName: "traveler",
+    destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
+    dates: "Nov 9 – 10, 2026",
+    duration: "2 days / 1 night",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    paypalChargeOverride: 399,
+    itinerary: [],
+    items: [
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Hotel pickup in Cusco, round-trip tourist train, 1 night of hotel in Aguas Calientes with breakfast, bus, entrance ticket, English-speaking guide and return to Cusco",
+        unitPrice: 380,
+      },
+    ],
+    includes: [
+      "Day 1 · Mon Nov 9: hotel pickup in Cusco and transportation to Ollantaytambo",
+      "Round-trip tourist train Ollantaytambo – Aguas Calientes",
+      "1 night of hotel in Aguas Calientes with breakfast",
+      "Day 2 · Tue Nov 10: round-trip bus to Machu Picchu",
+      "Machu Picchu entrance ticket",
+      "English-speaking guide",
+      "Return transportation Ollantaytambo – Cusco",
+    ],
+    excludes: [
+      "Huayna Picchu or Machu Picchu Mountain (optional, extra cost)",
+      "Meals not specified",
+      "Tips and personal expenses",
+    ],
+    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people.\n**Payment:** **50% deposit (USD 380)** to secure the train, hotel and entrance tickets. Paying by **credit or debit card adds 5%**, so the deposit charged online is **USD 399.00**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** the circuit and entry time depend on availability for Nov 10; we confirm them with you when we buy them.\n**To book:** full name, nationality and passport number of each traveler.\n**Important:** Machu Picchu tickets and train tickets **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
+  },
+
   "verity-chloe-easter": {
     lang: "en",
     clientName: "Verity & Chloe",
