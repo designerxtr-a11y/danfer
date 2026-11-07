@@ -17,6 +17,7 @@ export function ContactForm() {
     email: "",
     phone: "",
     message: "",
+    website: "",
   });
 
   function onSubmit(e: React.FormEvent) {
@@ -67,7 +68,7 @@ export function ContactForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-white border border-night/8 rounded-3xl p-6 md:p-8 shadow-soft space-y-5"
+      className="relative bg-white border border-night/8 rounded-3xl p-6 md:p-8 shadow-soft space-y-5"
     >
       <div className="grid md:grid-cols-2 gap-5">
         <Field label={L(locale, { es: "Nombre", en: "Name", ja: "お名前" })} required>
@@ -88,6 +89,20 @@ export function ContactForm() {
             className="w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-night focus:outline-none focus:border-gold focus:bg-white transition"
           />
         </Field>
+      </div>
+
+      {/* Campo trampa anti-bots: oculto para personas y lectores de pantalla */}
+      <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+        <label>
+          Website
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.website}
+            onChange={(e) => setForm({ ...form, website: e.target.value })}
+          />
+        </label>
       </div>
 
       <Field label={L(locale, { es: "Teléfono / WhatsApp", en: "Phone / WhatsApp", ja: "電話 / WhatsApp" })}>

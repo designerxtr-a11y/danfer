@@ -91,29 +91,17 @@ export const PACKAGES: Mp2027Package[] = [
   {
     id: "fullday", price: 320, tourSlug: "machu-picchu-full-day", minHour: "10:00",
     name: { es: "Full Day", en: "Full Day", ja: "日帰り" },
-    desc: {
-      es: "Ida y vuelta el mismo día en tren turístico, bus, entrada y guía.",
-      en: "Same-day round trip by tourist train, bus, entrance ticket and guide.",
-      ja: "観光列車で日帰り往復、バス、入場券、ガイド付き。",
-    },
+    desc: { es: "Ida y vuelta el mismo día.", en: "Same-day round trip.", ja: "日帰り往復。" },
   },
   {
     id: "2d1n", price: 380, tourSlug: "machu-picchu-2d-1n",
     name: { es: "2 días / 1 noche", en: "2 days / 1 night", ja: "1泊2日" },
-    desc: {
-      es: "Llegas a Aguas Calientes el día anterior, duermes en hotel con desayuno y entras temprano sin apuro.",
-      en: "Arrive in Aguas Calientes the day before, sleep in a hotel with breakfast and enter early, unhurried.",
-      ja: "前日にアグアスカリエンテスに到着し、朝食付きホテルに宿泊。翌朝ゆっくり入場できます。",
-    },
+    desc: { es: "Noche en Aguas Calientes, entras temprano.", en: "Night in Aguas Calientes, early entry.", ja: "アグアスカリエンテス1泊、朝早く入場。" },
   },
   {
     id: "2d1n-valle", price: 420, tourSlug: "machu-picchu-2d-1n",
     name: { es: "2D/1N + Valle Sagrado", en: "2D/1N + Sacred Valley", ja: "1泊2日＋聖なる谷" },
-    desc: {
-      es: "El día anterior haces el Valle Sagrado (Chinchero, Moray, Maras, Ollantaytambo) y desde Ollantaytambo tomas el tren.",
-      en: "The day before you tour the Sacred Valley (Chinchero, Moray, Maras, Ollantaytambo) and catch the train from Ollantaytambo.",
-      ja: "前日に聖なる谷（チンチェロ、モライ、マラス、オリャンタイタンボ）を観光し、オリャンタイタンボから列車に乗ります。",
-    },
+    desc: { es: "Valle Sagrado + noche en Aguas Calientes.", en: "Sacred Valley + night in Aguas Calientes.", ja: "聖なる谷＋アグアスカリエンテス1泊。" },
   },
 ];
 

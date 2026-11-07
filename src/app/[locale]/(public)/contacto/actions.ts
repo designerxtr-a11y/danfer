@@ -1,18 +1,24 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isSpamInquiry } from "@/lib/spam";
 
 interface InquiryInput {
   name: string;
   email: string;
   phone?: string;
   message?: string;
+  /** Campo trampa: invisible para personas, los bots lo rellenan. */
+  website?: string;
 }
 
 export async function submitInquiry(input: InquiryInput) {
   if (!input.name || !input.email) {
     return { ok: false, error: "Nombre y email son requeridos." };
   }
+
+  // Spam: se responde ok para no darle pistas al bot, pero no se guarda.
+  if (input.website || isSpamInquiry(input)) return { ok: true };
 
   const supabase = createAdminClient();
   const { error } = await supabase.from("inquiries").insert({
