@@ -14,8 +14,10 @@ export interface Mp2027Route {
   recommended?: boolean;
   /** Horas de ingreso preferidas (se confirman al comprar el boleto). */
   hours: string[];
-  /** Foto real tomada con ese boleto (URL pública). Opcional. */
+  /** Foto de la ruta (URL pública). Opcional. */
   photo?: string;
+  /** Crédito si la foto es de terceros (licencia libre). Sin crédito = foto propia de Danfer. */
+  photoCredit?: string;
 }
 
 const DAY_HOURS = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00"];
@@ -24,6 +26,7 @@ const MOUNTAIN_HOURS = ["07:00", "08:00", "09:00", "10:00"];
 export const ROUTES: Mp2027Route[] = [
   {
     id: "1A", circuit: 1, mountain: true, hours: MOUNTAIN_HOURS,
+    photo: "/images/rutas-mp/1a.jpg", photoCredit: "EnriqueGuia, CC BY-SA 4.0 (Wikimedia Commons)",
     name: { es: "Montaña Machupicchu", en: "Machupicchu Mountain", ja: "マチュピチュ山" },
     desc: { es: "Subida larga con la vista más alta de la ciudadela y el valle.", en: "Long climb to the highest viewpoint over the citadel and valley.", ja: "長い登りで、遺跡と谷を一番高い所から見渡せます。" },
   },
@@ -34,11 +37,13 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "1C", circuit: 1, mountain: true, hours: MOUNTAIN_HOURS,
+    photo: "/images/rutas-mp/1c.jpg", photoCredit: "Christoph Strässler, CC BY-SA 2.0 (Wikimedia Commons)",
     name: { es: "Portada Intipunku", en: "Inti Punku Sun Gate", ja: "インティプンク（太陽の門）" },
     desc: { es: "Caminata a la Puerta del Sol, final del Camino Inca.", en: "Hike to the Sun Gate, the end of the Inca Trail.", ja: "インカ道の終点、太陽の門までのハイキング。" },
   },
   {
     id: "1D", circuit: 1, mountain: false, hours: DAY_HOURS,
+    photo: "/images/rutas-mp/1d.jpg", photoCredit: "Kuruman, CC BY 2.0 (Wikimedia Commons)",
     name: { es: "Puente Inca", en: "Inca Bridge", ja: "インカ橋" },
     desc: { es: "Sendero corto al puente inca sobre el precipicio.", en: "Short trail to the Inca bridge on the cliff.", ja: "断崖のインカ橋までの短い散策路。" },
   },
@@ -49,11 +54,13 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "2B", circuit: 2, mountain: false, hours: DAY_HOURS,
+    photo: "/images/rutas-mp/2b.jpg", photoCredit: "Cédric Liénart, CC BY-SA 2.0 (Wikimedia Commons)",
     name: { es: "Terraza inferior", en: "Lower terrace", ja: "下部テラス" },
     desc: { es: "Recorrido por la ciudad desde la parte baja, con los templos principales.", en: "City tour from the lower level, with the main temples.", ja: "下の段から市街地と主要な神殿をめぐります。" },
   },
   {
     id: "3A", circuit: 3, mountain: true, hours: MOUNTAIN_HOURS,
+    photo: "/images/rutas-mp/3a.jpg", photoCredit: "Pavel Špindler, CC BY 3.0 (Wikimedia Commons)",
     name: { es: "Huayna Picchu", en: "Huayna Picchu", ja: "ワイナピチュ" },
     desc: { es: "La montaña de las fotos: subida empinada y vistas de vértigo.", en: "The mountain in the photos: steep climb and dizzying views.", ja: "写真でおなじみの山。急な登りと迫力の眺め。" },
   },
@@ -65,6 +72,7 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "3C", circuit: 3, mountain: true, hours: MOUNTAIN_HOURS,
+    photo: "/images/rutas-mp/3c.jpg", photoCredit: "Mx. Granger, CC0 (Wikimedia Commons)",
     name: { es: "Gran Caverna", en: "Great Cavern", ja: "大洞窟" },
     desc: { es: "Caminata al Templo de la Luna por la ladera de Huayna Picchu.", en: "Hike to the Temple of the Moon along Huayna Picchu.", ja: "ワイナピチュの斜面を通り月の神殿へ。" },
   },

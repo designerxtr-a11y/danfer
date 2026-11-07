@@ -237,11 +237,13 @@ export function Mp2027Booking({
                         <div className="relative -mx-4 -mt-4 mb-3 aspect-[16/9] overflow-hidden rounded-t-2xl">
                           <Image src={x.photo} alt={L(locale, x.name)} fill sizes="(min-width:640px) 400px, 100vw" className="object-cover" />
                           <span className="absolute bottom-0 inset-x-0 bg-night/60 text-white text-[11px] px-3 py-1.5">
-                            {L(locale, {
-                              es: `Foto tomada con el boleto Ruta ${x.id}`,
-                              en: `Photo taken with the Route ${x.id} ticket`,
-                              ja: `ルート${x.id}のチケットで撮影`,
-                            })}
+                            {x.photoCredit
+                              ? `${L(locale, { es: "Vista de referencia", en: "Reference view", ja: "参考写真" })} · ${L(locale, { es: "Foto", en: "Photo", ja: "写真" })}: ${x.photoCredit}`
+                              : L(locale, {
+                                  es: `Foto tomada con el boleto Ruta ${x.id}`,
+                                  en: `Photo taken with the Route ${x.id} ticket`,
+                                  ja: `ルート${x.id}のチケットで撮影`,
+                                })}
                           </span>
                         </div>
                       )}
