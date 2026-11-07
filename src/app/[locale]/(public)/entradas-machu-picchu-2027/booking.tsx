@@ -34,9 +34,9 @@ const input =
   "w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-night focus:outline-none focus:border-gold focus:bg-white transition";
 const usd = (n: number) => `US$ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+function Step({ n, title, id, children }: { n: number; title: string; id?: string; children: React.ReactNode }) {
   return (
-    <section className="scroll-mt-28">
+    <section id={id} className="scroll-mt-28">
       <div className="flex items-center gap-3 mb-4">
         <span className="w-9 h-9 rounded-full bg-night text-white grid place-items-center font-display font-bold">{n}</span>
         <h2 className="font-display text-2xl sm:text-3xl text-night">{title}</h2>
@@ -73,6 +73,15 @@ export function Mp2027Booking({
   const [payError, setPayError] = useState<string | null>(null);
 
   const r = route ? routeById(route) : undefined;
+
+  // Los pasos 2-6 aparecen recién al elegir fecha; la primera vez bajamos al paso 2.
+  function pickDate(d: string | null) {
+    const first = !date && d;
+    setDate(d);
+    if (first) {
+      setTimeout(() => document.getElementById("mp-paso-2")?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+    }
+  }
   const pkg = packageById(pkgId)!;
   const hours = r ? hoursFor(r, pkg) : [];
   const totals = mp2027Total(travelers.length, pkgId);
@@ -163,10 +172,23 @@ export function Mp2027Booking({
   return (
     <div className="space-y-12">
       <Step n={1} title={L(locale, { es: "Elige tu fecha en 2027", en: "Pick your 2027 date", ja: "2027年の日付を選ぶ" })}>
-        <Mp2027Calendar locale={locale} value={date} onChange={setDate} booked={booked} />
+        <Mp2027Calendar locale={locale} value={date} onChange={pickDate} booked={booked} />
+        {!date && (
+          <p className="mt-4 text-center text-sm text-night/55">
+            {L(locale, {
+              es: "Elige un día para ver paquetes, rutas y precios.",
+              en: "Pick a day to see packages, routes and prices.",
+              ja: "日付を選ぶとプラン・ルート・料金が表示されます。",
+            })}
+          </p>
+        )}
       </Step>
 
-      <Step n={2} title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
+      {date && (
+      <div className="space-y-12 animate-[mpReveal_.4s_ease-out]">
+      <style>{`@keyframes mpReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
+
+      <Step n={2} id="mp-paso-2" title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
         <div className="grid md:grid-cols-3 gap-3 items-stretch">
           {PACKAGES.map((p) => {
             const sel = p.id === pkgId;
@@ -443,6 +465,8 @@ export function Mp2027Booking({
           </div>
         </div>
       </Step>
+      </div>
+      )}
     </div>
   );
 }
