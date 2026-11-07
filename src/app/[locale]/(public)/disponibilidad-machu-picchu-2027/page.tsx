@@ -108,9 +108,9 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
           </h1>
           <p className="mt-4 text-night/65 text-lg max-w-2xl mx-auto">
             {L(lc, {
-              es: "Asegura tu fecha antes de que abra la venta oficial. Compramos tu entrada apenas el Ministerio de Cultura habilite el 2027.",
-              en: "Lock in your date before official sales open. We buy your ticket the moment Peru's Ministry of Culture releases 2027.",
-              ja: "公式販売の前に日付を確保しましょう。文化省が2027年分を公開したらすぐにチケットを購入します。",
+              es: "Asegura tu fecha todo el 2027.",
+              en: "Secure your date anytime in 2027.",
+              ja: "2027年のご希望日を今すぐ確保。",
             })}
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-night/70">
