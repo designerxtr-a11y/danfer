@@ -687,6 +687,47 @@ export const QUOTES: Record<string, Quote> = {
     note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people.\n**Payment:** **50% deposit (USD 380)** to secure the train, hotel and entrance tickets. Paying by **credit card adds 5%**, so the deposit charged online is **USD 399.00**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** the circuit and entry time depend on availability for Nov 10; we confirm them with you when we buy them.\n**To book:** full name, nationality and passport number of each traveler.\n**Important:** Machu Picchu tickets and train tickets **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
+  // DT-1107-01 · 2 of 3 travelers (the third pays separately). 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82, as told by WhatsApp.
+  "machu-picchu-20-nov": {
+    lang: "en",
+    clientName: "traveler",
+    destination: "Machu Picchu",
+    heroImage:
+      "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
+    heroImageAlt: "Machu Picchu citadel",
+    dates: "Nov 20 – 21, 2026",
+    duration: "2 days / 1 night",
+    travelers: 2,
+    currency: "$",
+    acceptsPaypal: true,
+    depositPercent: 50,
+    paypalChargeOverride: 400.82,
+    itinerary: [],
+    items: [
+      {
+        label: "Machu Picchu 2D/1N",
+        detail:
+          "Hotel pickup in Cusco at 4:00 am, round-trip tourist train, 1 night of hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
+        unitPrice: 380,
+      },
+    ],
+    includes: [
+      "Day 1 · Fri Nov 20: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
+      "Round-trip tourist train Ollantaytambo – Aguas Calientes",
+      "Machu Picchu entrance ticket, purchased for you at the in-person sale in Aguas Calientes",
+      "1 night of hotel in Aguas Calientes with breakfast",
+      "Day 2 · Sat Nov 21: bus up and down to Machu Picchu",
+      "Professional guide",
+      "Return transportation Ollantaytambo – Cusco (arrival between 8:00 and 10:00 pm)",
+    ],
+    excludes: [
+      "Lunch and dinner",
+      "Huayna Picchu (optional, extra cost)",
+      "Tips and personal expenses",
+    ],
+    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people (USD 380 per person). The third traveler pays separately.\n**Payment:** **50% deposit (USD 380)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 400.82**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco at **4:00 am** and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
+  },
+
   "verity-chloe-easter": {
     lang: "en",
     clientName: "Verity & Chloe",
