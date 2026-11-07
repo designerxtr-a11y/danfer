@@ -1,7 +1,7 @@
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ["es", "en"],
+  locales: ["es", "en", "ja"],
   defaultLocale: "es",
   // El locale por defecto NO lleva prefijo. EN sí: /en/tours
   localePrefix: "as-needed",

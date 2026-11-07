@@ -1,7 +1,7 @@
 // Tipos manuales del schema (luego generamos con supabase gen types)
 
-export type Locale = "es" | "en";
-export type Localized = { es: string; en?: string };
+export type Locale = "es" | "en" | "ja";
+export type Localized = { es: string; en?: string; ja?: string };
 
 export type Difficulty = "easy" | "moderate" | "challenging" | "expert";
 
@@ -87,14 +87,24 @@ export interface Review {
 // Helper para obtener texto localizado con fallback
 export function t(field: Localized | null | undefined, locale: Locale = "es"): string {
   if (!field) return "";
+  // Japonés sin traducir cae a inglés (más útil al turista japonés que el ES).
+  if (locale === "ja") return field.ja || field.en || field.es || "";
   return field[locale] ?? field.es ?? "";
 }
 
 /** Tour list field: legacy Spanish-only array, or one list per language. */
-export type LocalizedList = string[] | { es: string[]; en?: string[] };
+export type LocalizedList = string[] | { es: string[]; en?: string[]; ja?: string[] };
 
 export function tList(list: LocalizedList | null | undefined, locale: Locale = "es"): string[] {
   if (!list) return [];
   if (Array.isArray(list)) return list;
+  if (locale === "ja") {
+    return (list.ja?.length ? list.ja : list.en?.length ? list.en : list.es) ?? [];
+  }
   return (list[locale]?.length ? list[locale] : list.es) ?? [];
+}
+
+/** El campo tiene traducción japonesa propia (para hreflang/canonical). */
+export function hasJa(field: Localized | null | undefined): boolean {
+  return !!field?.ja?.trim();
 }
