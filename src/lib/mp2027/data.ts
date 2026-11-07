@@ -14,6 +14,11 @@ export interface Mp2027Route {
   recommended?: boolean;
   /** Horas de ingreso preferidas (se confirman al comprar el boleto). */
   hours: string[];
+  /** Tiempo aproximado total dentro del santuario. */
+  time: string;
+  level: "easy" | "moderate" | "hard";
+  /** Qué tener en cuenta al elegirla. */
+  tip: T3;
   /** Foto de la ruta (URL pública). Opcional. */
   photo?: string;
   /** Crédito si la foto es de terceros (licencia libre). Sin crédito = foto propia de Danfer. */
@@ -26,60 +31,80 @@ const MOUNTAIN_HOURS = ["07:00", "08:00", "09:00", "10:00"];
 export const ROUTES: Mp2027Route[] = [
   {
     id: "1A", circuit: 1, mountain: true, hours: MOUNTAIN_HOURS,
+    time: "3:30–5 h", level: "hard",
+    tip: { es: "Subida larga con muchas escaleras hasta unos 3,060 m. Lleva agua y buen calzado; no se recomienda con vértigo.", en: "Long climb with many steps up to about 3,060 m. Bring water and good shoes; not advised if you have vertigo.", ja: "標高約3,060mまで階段の多い長い登り。水と歩きやすい靴を。高所恐怖症の方には不向き。" },
     photo: "/images/rutas-mp/1a.jpg",
     name: { es: "Montaña Machupicchu", en: "Machupicchu Mountain", ja: "マチュピチュ山" },
     desc: { es: "Subida larga con la vista más alta de la ciudadela y el valle.", en: "Long climb to the highest viewpoint over the citadel and valley.", ja: "長い登りで、遺跡と谷を一番高い所から見渡せます。" },
   },
   {
     id: "1B", circuit: 1, mountain: false, hours: DAY_HOURS,
+    time: "1:30–2 h", level: "easy",
+    tip: { es: "Ideal para la foto clásica desde arriba. No entra a los templos de la ciudad.", en: "Best for the classic photo from above. Does not enter the city temples.", ja: "上から定番写真を撮るのに最適。市街地の神殿には入りません。" },
     photo: "/images/rutas-mp/1b.jpg",
     name: { es: "Terraza superior", en: "Upper terrace", ja: "上部テラス" },
     desc: { es: "La foto panorámica clásica desde arriba. No baja a la ciudad.", en: "The classic panoramic photo from above. Does not go down into the city.", ja: "上から見る定番のパノラマ写真。市街地には下りません。" },
   },
   {
     id: "1C", circuit: 1, mountain: true, hours: MOUNTAIN_HOURS,
+    time: "2–3 h", level: "moderate",
+    tip: { es: "Camino de subida constante; ve temprano para evitar el sol fuerte.", en: "Steady uphill trail; go early to avoid strong sun.", ja: "上り坂が続く道。日差しが強くなる前の早い時間がおすすめ。" },
     photo: "/images/rutas-mp/1c.jpg", photoCredit: "Christoph Strässler, CC BY-SA 2.0 (Wikimedia Commons)",
     name: { es: "Portada Intipunku", en: "Inti Punku Sun Gate", ja: "インティプンク（太陽の門）" },
     desc: { es: "Caminata a la Puerta del Sol, final del Camino Inca.", en: "Hike to the Sun Gate, the end of the Inca Trail.", ja: "インカ道の終点、太陽の門までのハイキング。" },
   },
   {
     id: "1D", circuit: 1, mountain: false, hours: DAY_HOURS,
+    time: "1–1.5 h", level: "easy",
+    tip: { es: "Sendero angosto junto al precipicio, casi plano. Corto y tranquilo.", en: "Narrow, almost flat path along the cliff. Short and relaxed.", ja: "断崖沿いのほぼ平らな細い道。短く気軽に歩けます。" },
     photo: "/images/rutas-mp/1d.jpg", photoCredit: "Kuruman, CC BY 2.0 (Wikimedia Commons)",
     name: { es: "Puente Inca", en: "Inca Bridge", ja: "インカ橋" },
     desc: { es: "Sendero corto al puente inca sobre el precipicio.", en: "Short trail to the Inca bridge on the cliff.", ja: "断崖のインカ橋までの短い散策路。" },
   },
   {
     id: "2A", circuit: 2, mountain: false, recommended: true, hours: DAY_HOURS,
+    time: "2–3 h", level: "moderate",
+    tip: { es: "La más completa: foto postal y templos principales. Tiene escaleras; la mejor para la primera visita.", en: "The most complete: postcard photo and main temples. Has stairs; best for a first visit.", ja: "最も充実したルート。絵はがきの景色と主要な神殿。階段あり、初めての方に最適。" },
     photo: "/images/rutas-mp/2a.jpg",
     name: { es: "Clásica (diseñada)", en: "Classic (designed)", ja: "クラシックルート" },
     desc: { es: "La foto postal y el recorrido completo por templos y plazas. Ideal para la primera visita.", en: "The postcard photo plus the full tour of temples and plazas. Best for a first visit.", ja: "絵はがきの景色と神殿・広場をすべて回るルート。初めての方におすすめ。" },
   },
   {
     id: "2B", circuit: 2, mountain: false, hours: DAY_HOURS,
+    time: "2–2.5 h", level: "moderate",
+    tip: { es: "Recorre la ciudad por la parte baja. La foto panorámica es desde un punto más bajo que la 2A.", en: "Tours the city from the lower level. The panoramic photo is taken from a lower point than 2A.", ja: "市街地を下の段からめぐります。パノラマ写真は2Aより低い位置から。" },
     photo: "/images/rutas-mp/2b.jpg", photoCredit: "Cédric Liénart, CC BY-SA 2.0 (Wikimedia Commons)",
     name: { es: "Terraza inferior", en: "Lower terrace", ja: "下部テラス" },
     desc: { es: "Recorrido por la ciudad desde la parte baja, con los templos principales.", en: "City tour from the lower level, with the main temples.", ja: "下の段から市街地と主要な神殿をめぐります。" },
   },
   {
     id: "3A", circuit: 3, mountain: true, hours: MOUNTAIN_HOURS,
+    time: "3–4 h", level: "hard",
+    tip: { es: "Subida empinada con escalones angostos y tramos expuestos. Necesitas buena condición física; cupos muy limitados.", en: "Steep climb with narrow steps and exposed sections. Requires good fitness; very limited spots.", ja: "狭い階段と切り立った区間のある急な登り。体力が必要で、枠はごくわずか。" },
     photo: "/images/rutas-mp/3a.jpg", photoCredit: "Pavel Špindler, CC BY 3.0 (Wikimedia Commons)",
     name: { es: "Huayna Picchu", en: "Huayna Picchu", ja: "ワイナピチュ" },
     desc: { es: "La montaña de las fotos: subida empinada y vistas de vértigo.", en: "The mountain in the photos: steep climb and dizzying views.", ja: "写真でおなじみの山。急な登りと迫力の眺め。" },
   },
   {
     id: "3B", circuit: 3, mountain: false, hours: DAY_HOURS,
+    time: "1:30–2 h", level: "easy",
+    tip: { es: "Ritmo tranquilo por el sector de la realeza. Buena para segunda visita o personas mayores.", en: "Relaxed pace through the royal sector. Good for a second visit or older travelers.", ja: "王族区域をゆったり歩くルート。2回目の訪問や年配の方に。" },
     photo: "/images/rutas-mp/3b.jpg",
     name: { es: "Realeza (diseñada)", en: "Royalty (designed)", ja: "王族ルート" },
     desc: { es: "Sector de la realeza y templos del nivel inferior. Ritmo tranquilo.", en: "Royal sector and lower-level temples. Relaxed pace.", ja: "王族の区域と下層の神殿。ゆったり歩けます。" },
   },
   {
     id: "3C", circuit: 3, mountain: true, hours: MOUNTAIN_HOURS,
+    time: "3:30–4:30 h", level: "hard",
+    tip: { es: "Caminata larga con bajadas y subidas por la selva hasta el Templo de la Luna. Lleva agua y repelente.", en: "Long hike down and up through the jungle to the Temple of the Moon. Bring water and insect repellent.", ja: "ジャングルを上り下りして月の神殿へ向かう長いハイキング。水と虫よけを。" },
     photo: "/images/rutas-mp/3c.jpg", photoCredit: "Mx. Granger, CC0 (Wikimedia Commons)",
     name: { es: "Gran Caverna", en: "Great Cavern", ja: "大洞窟" },
     desc: { es: "Caminata al Templo de la Luna por la ladera de Huayna Picchu.", en: "Hike to the Temple of the Moon along Huayna Picchu.", ja: "ワイナピチュの斜面を通り月の神殿へ。" },
   },
   {
     id: "3D", circuit: 3, mountain: true, hours: MOUNTAIN_HOURS,
+    time: "2:30–3 h", level: "moderate",
+    tip: { es: "Subida corta (unos 30 min) con buena vista de la ciudadela. Opción más suave que el Huayna Picchu.", en: "Short climb (about 30 min) with a good view of the citadel. A gentler option than Huayna Picchu.", ja: "約30分の短い登りで遺跡を一望。ワイナピチュより楽な選択肢。" },
     name: { es: "Huchuy Picchu", en: "Huchuy Picchu", ja: "ウチュイピチュ" },
     desc: { es: "Montaña pequeña y corta, buena opción para todos.", en: "Small, short mountain, a good option for everyone.", ja: "小さく短い山で、どなたにもおすすめ。" },
   },

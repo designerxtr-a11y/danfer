@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Check, CheckCircle2, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
+import { Check, CheckCircle2, Clock, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
 import { L } from "@/lib/i18n/pick";
 import { ROUTES, PACKAGES, MAX_TRAVELERS, mp2027Total, routeById, packageById, hoursFor, type RouteId, type PackageId } from "@/lib/mp2027/data";
 import type { Locale } from "@/types/database";
@@ -19,6 +19,17 @@ declare global {
 }
 
 const DATE_LOCALE: Record<Locale, string> = { es: "es-PE", en: "en-US", ja: "ja-JP" };
+
+const LEVEL_LABEL = {
+  easy: { es: "Fácil", en: "Easy", ja: "やさしい" },
+  moderate: { es: "Moderada", en: "Moderate", ja: "普通" },
+  hard: { es: "Exigente", en: "Challenging", ja: "きつい" },
+} as const;
+const LEVEL_STYLE = {
+  easy: "bg-emerald-50 text-emerald-700",
+  moderate: "bg-amber-50 text-amber-700",
+  hard: "bg-rose-50 text-rose-700",
+} as const;
 const input =
   "w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-night focus:outline-none focus:border-gold focus:bg-white transition";
 const usd = (n: number) => `US$ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -264,6 +275,19 @@ export function Mp2027Booking({
                         )}
                       </div>
                       <p className="mt-1.5 text-sm text-night/60">{L(locale, x.desc)}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-night/5 text-night/70 px-2 py-0.5">
+                          <Clock className="w-3 h-3" />
+                          {L(locale, { es: "aprox.", en: "approx.", ja: "約" })} {x.time}
+                        </span>
+                        <span className={`rounded-full px-2 py-0.5 ${LEVEL_STYLE[x.level]}`}>
+                          {L(locale, LEVEL_LABEL[x.level])}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-[13px] text-night/70 leading-snug">
+                        <span className="font-semibold text-night">{L(locale, { es: "Ten en cuenta:", en: "Keep in mind:", ja: "ポイント：" })}</span>{" "}
+                        {L(locale, x.tip)}
+                      </p>
                     </button>
                   );
                 })}
