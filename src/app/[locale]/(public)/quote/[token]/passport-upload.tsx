@@ -23,6 +23,15 @@ const COPY = {
     tooBig: "El archivo es muy pesado. Envía una foto más liviana o mándanosla por WhatsApp.",
     failed: "No se pudo subir. Inténtalo de nuevo o mándanos la foto por WhatsApp.",
   },
+  ja: {
+    uploadLabel: "写真をアップロード",
+    uploading: "アップロード中…",
+    done: "受け付けました。ありがとうございます！",
+    hint: "パスポートまたは身分証の写真かスキャン（氏名、顔写真、番号がはっきり写っているもの）。",
+    traveler: (n: number) => `旅行者 ${n}`,
+    tooBig: "ファイルが大きすぎます。小さい写真を送るか、WhatsAppでお送りください。",
+    failed: "アップロードできませんでした。もう一度お試しいただくか、WhatsAppで写真をお送りください。",
+  },
 };
 
 // Server actions arrive at Vercel with a ~4MB cap; phone photos are often bigger.
@@ -57,7 +66,7 @@ function UploadSlot({
 }: {
   token: string;
   index: number;
-  lang: "en" | "es";
+  lang: "en" | "es" | "ja";
 }) {
   const t = COPY[lang];
   const [status, setStatus] = useState<"idle" | "uploading" | "done" | "error">("idle");
@@ -145,7 +154,7 @@ export function PassportUpload({
 }: {
   token: string;
   travelers: number;
-  lang?: "en" | "es";
+  lang?: "en" | "es" | "ja";
 }) {
   const t = COPY[lang];
   return (

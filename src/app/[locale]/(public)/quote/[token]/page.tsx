@@ -70,6 +70,38 @@ const COPY = {
     waMessage: (destination: string, dates: string, travelers: number) =>
       `Hola! Quisiera confirmar mi cotización de ${destination} (${dates}) para ${travelers} personas.`,
   },
+  ja: {
+    travelQuote: "旅行のお見積もり",
+    hi: (name: string) => `${name}様、お見積もりをお送りします`,
+    thanks: (destination: string) =>
+      `お問い合わせありがとうございます。${destination}への旅行の詳細はこちらです。`,
+    destination: "目的地",
+    dates: "日程",
+    duration: "期間",
+    travelers: "人数",
+    itinerary: "行程",
+    included: "含まれるもの",
+    notIncluded: "含まれないもの",
+    canceledTitle: "このお見積もりはキャンセルされました",
+    canceledBody: "このお見積もりは現在ご利用いただけません。新しいお見積もりをご希望の場合はWhatsAppでご連絡ください。",
+    contactWhatsapp: "WhatsAppで問い合わせる →",
+    passportTitle: "パスポートまたは身分証の写真",
+    passportBody: "観光列車とホテルを予約するため、旅行者全員のパスポートまたは身分証の写真が必要です。",
+    quoteDetail: "お見積もりの内訳",
+    flatFee: "定額",
+    gift: "Danferからのプレゼント",
+    total: "合計",
+    tripTotal: "旅行代金合計",
+    depositDue: (pct: number) => `今お支払いいただく前金（${pct}%）`,
+    paypalFee: "PayPal手数料",
+    totalViaPaypal: "PayPalでのお支払い合計",
+    balanceDue: (amount: string) => `残金${amount}は現地到着時にお支払いください。`,
+    paymentsNotReady: "オンライン決済はまだ準備中です。ご予約の確定はWhatsAppでお願いします。",
+    confirmWhatsapp: "WhatsAppで確定する →",
+    // WhatsApp lo lee el equipo: en inglés
+    waMessage: (destination: string, dates: string, travelers: number) =>
+      `Hi! I'd like to confirm my ${destination} quote (${dates}) for ${travelers} people.`,
+  },
 };
 
 interface PageProps {
@@ -90,11 +122,15 @@ export async function generateMetadata({ params }: PageProps) {
   const title =
     quote.lang === "es"
       ? `Cotización para ${quote.clientName} — ${quote.destination}`
-      : `Quote for ${quote.clientName} — ${quote.destination}`;
+      : quote.lang === "ja"
+        ? `${quote.clientName}様のお見積もり — ${quote.destination}`
+        : `Quote for ${quote.clientName} — ${quote.destination}`;
   const description =
     quote.lang === "es"
       ? `Cotización privada de viaje: ${quote.destination}, ${quote.dates}.`
-      : `Private travel quote: ${quote.destination}, ${quote.dates}.`;
+      : quote.lang === "ja"
+        ? `旅行のお見積もり：${quote.destination}、${quote.dates}`
+        : `Private travel quote: ${quote.destination}, ${quote.dates}.`;
 
   return {
     title,

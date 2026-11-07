@@ -22,7 +22,7 @@ export interface QuoteItem {
 }
 
 export interface Quote {
-  lang: "en" | "es";
+  lang: "en" | "es" | "ja";
   clientName: string;
   destination: string;
   heroImage: string;
