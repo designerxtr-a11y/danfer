@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/favicon.ico", destination: "/icon", permanent: false },
+      // Slug renombrado (2026-11-07) por SEO: "entradas machu picchu 2027".
+      { source: "/disponibilidad-machu-picchu-2027", destination: "/entradas-machu-picchu-2027", permanent: true },
+      { source: "/:locale(en|ja|es)/disponibilidad-machu-picchu-2027", destination: "/:locale/entradas-machu-picchu-2027", permanent: true },
     ];
   },
 };

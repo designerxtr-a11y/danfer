@@ -41,8 +41,8 @@ export default async function PublicLayout({
       label: mx.nav.machuPicchuTours,
       items: [
         {
-          label: L(typedLocale, { es: "Disponibilidad 2027", en: "Availability 2027", ja: "2027年の空き状況" }),
-          href: "/disponibilidad-machu-picchu-2027",
+          label: L(typedLocale, { es: "Entradas 2027", en: "Tickets 2027", ja: "2027年チケット" }),
+          href: "/entradas-machu-picchu-2027",
         },
         ...toTourLinks(["machu-picchu"]),
       ],

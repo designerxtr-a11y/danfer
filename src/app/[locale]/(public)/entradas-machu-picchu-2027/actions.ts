@@ -172,7 +172,7 @@ export async function captureMp2027Order(orderId: string): Promise<{ ok: true; c
       .update({ status: "confirmed", payment_status: "paid", updated_at: new Date().toISOString() })
       .eq("id", booking.id);
     // Marca la fecha en el calendario público
-    revalidatePath("/[locale]/disponibilidad-machu-picchu-2027", "page");
+    revalidatePath("/[locale]/entradas-machu-picchu-2027", "page");
     return { ok: true, code: booking.booking_code };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "PayPal error" };

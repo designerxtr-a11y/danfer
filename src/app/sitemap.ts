@@ -64,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     withLangs("/tours", 0.9, "daily", STATIC_LASTMOD, true, true),
     withLangs("/destinos", 0.9, "weekly", STATIC_LASTMOD, true, true),
     withLangs("/blog", 0.8, "weekly", STATIC_LASTMOD, true, true),
-    withLangs("/disponibilidad-machu-picchu-2027", 0.9, "weekly", new Date("2026-11-07"), true, true),
+    withLangs("/entradas-machu-picchu-2027", 0.9, "weekly", new Date("2026-11-07"), true, true),
     withLangs("/sobre-nosotros", 0.5, "monthly"),
     withLangs("/contacto", 0.4, "yearly", STATIC_LASTMOD, true, true),
     withLangs("/terminos", 0.3, "yearly"),

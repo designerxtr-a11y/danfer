@@ -404,7 +404,7 @@ export default async function TourDetailPage({ params }: PageProps) {
         <aside id="reservar" className="lg:sticky lg:top-28 lg:self-start scroll-mt-24 space-y-5">
           {tour.slug === "machu-picchu-2d-1n" && (
             <Link
-              href="/disponibilidad-machu-picchu-2027"
+              href="/entradas-machu-picchu-2027"
               className="block rounded-2xl border border-gold/40 bg-gold/10 px-5 py-4 text-sm text-night hover:bg-gold/20 transition"
             >
               <span className="font-semibold">

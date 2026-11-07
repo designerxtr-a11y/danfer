@@ -29,7 +29,7 @@ async function bookedDates(): Promise<Record<string, number>> {
   return out;
 }
 
-const PATH = "/disponibilidad-machu-picchu-2027";
+const PATH = "/entradas-machu-picchu-2027";
 
 const TITLE = {
   es: "Entradas Machu Picchu 2027: Reserva tu Ticket Ya",
@@ -94,7 +94,7 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
   const [settings, booked] = await Promise.all([getSettings(), bookedDates()]);
   const crumbs = [
     { name: L(lc, { es: "Inicio", en: "Home", ja: "ホーム" }), url: "/" },
-    { name: L(lc, { es: "Disponibilidad 2027", en: "Availability 2027", ja: "2027年の空き状況" }), url: PATH },
+    { name: L(lc, { es: "Entradas 2027", en: "Tickets 2027", ja: "2027年チケット" }), url: PATH },
   ];
   const faqList = faqs(lc);
 
