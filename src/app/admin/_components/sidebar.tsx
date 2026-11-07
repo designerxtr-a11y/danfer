@@ -14,6 +14,7 @@ import {
   Download,
   Newspaper,
   Star,
+  IdCard,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/import", label: "Importar", icon: Download },
   { href: "/admin/bookings", label: "Reservas", icon: Calendar },
+  { href: "/admin/documents", label: "Pasaportes", icon: IdCard },
   { href: "/admin/inquiries", label: "Consultas", icon: MessageSquare },
   { href: "/admin/users", label: "Usuarios", icon: Users },
   { href: "/admin/settings", label: "Ajustes", icon: Settings },
