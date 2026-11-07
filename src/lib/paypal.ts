@@ -71,5 +71,9 @@ export async function capturePaypalOrder(orderId: string) {
   if (!res.ok) {
     throw new Error(data?.message || `PayPal capture failed (${res.status})`);
   }
-  return data as { status: string; id: string };
+  return data as {
+    status: string;
+    id: string;
+    purchase_units?: { payments?: { captures?: { amount?: { value?: string; currency_code?: string } }[] } }[];
+  };
 }
