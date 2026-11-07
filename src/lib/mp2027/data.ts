@@ -59,6 +59,7 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "3B", circuit: 3, mountain: false, hours: DAY_HOURS,
+    photo: "/images/rutas-mp/3b.jpg",
     name: { es: "Realeza (diseñada)", en: "Royalty (designed)", ja: "王族ルート" },
     desc: { es: "Sector de la realeza y templos del nivel inferior. Ritmo tranquilo.", en: "Royal sector and lower-level temples. Relaxed pace.", ja: "王族の区域と下層の神殿。ゆったり歩けます。" },
   },
