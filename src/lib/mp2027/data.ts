@@ -49,6 +49,7 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "2A", circuit: 2, mountain: false, recommended: true, hours: DAY_HOURS,
+    photo: "/images/rutas-mp/2a.jpg",
     name: { es: "Clásica (diseñada)", en: "Classic (designed)", ja: "クラシックルート" },
     desc: { es: "La foto postal y el recorrido completo por templos y plazas. Ideal para la primera visita.", en: "The postcard photo plus the full tour of temples and plazas. Best for a first visit.", ja: "絵はがきの景色と神殿・広場をすべて回るルート。初めての方におすすめ。" },
   },
