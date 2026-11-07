@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { toLocale } from "@/lib/i18n/pick";
 import { ArrowRight, Mountain, MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { listDestinations } from "@/lib/destinations-content";
@@ -16,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<import("next").Metadata> {
   const { locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   return {
     title:
       lc === "en"
@@ -26,7 +27,7 @@ export async function generateMetadata({
       lc === "en"
         ? "Explore all of Cusco's tourist destinations with Danfer Tours: Machu Picchu, Inca Trail, Sacred Valley, Rainbow Mountain, Humantay Lake. Certified local guides."
         : "Explora todos los destinos turísticos del Cusco con Danfer Tours: Machu Picchu, Camino Inca, Valle Sagrado, Rainbow Mountain, Laguna Humantay. Guías locales certificados.",
-    alternates: buildAlternates("/destinos", lc),
+    alternates: buildAlternates("/destinos", lc, { jaAvailable: true }),
     openGraph: {
       title:
         lc === "en"
@@ -50,7 +51,7 @@ export default async function DestinationsIndexPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const mx = tr(lc);
   const destinations = listDestinations(lc);
 

@@ -23,7 +23,9 @@ function withLangs(
   changeFrequency: Entry["changeFrequency"] = "weekly",
   lastModified: Date = STATIC_LASTMOD,
   // false para contenido solo-ES (la URL /en es duplicado, no alternate)
-  enAvailable = true
+  enAvailable = true,
+  // true solo si la página tiene interfaz/contenido japonés propio
+  jaAvailable = false
 ): Entry {
   return {
     url: `${SITE}${path}`,
@@ -34,6 +36,7 @@ function withLangs(
       languages: {
         es: `${SITE}${path}`,
         ...(enAvailable && { en: `${SITE}/en${path}` }),
+        ...(jaAvailable && { ja: `${SITE}/ja${path === "/" ? "" : path}` }),
         "x-default": `${SITE}${path}`,
       },
     },
@@ -46,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [{ data: tours }, { data: posts }] = await Promise.all([
     supabase
       .from("tours")
-      .select("slug, updated_at")
+      .select("slug, updated_at, title")
       .eq("is_published", true)
       .order("updated_at", { ascending: false }),
     supabase
@@ -57,12 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
-    withLangs("/", 1.0, "daily"),
-    withLangs("/tours", 0.9, "daily"),
-    withLangs("/destinos", 0.9, "weekly"),
-    withLangs("/blog", 0.8, "weekly"),
+    withLangs("/", 1.0, "daily", STATIC_LASTMOD, true, true),
+    withLangs("/tours", 0.9, "daily", STATIC_LASTMOD, true, true),
+    withLangs("/destinos", 0.9, "weekly", STATIC_LASTMOD, true, true),
+    withLangs("/blog", 0.8, "weekly", STATIC_LASTMOD, true, true),
     withLangs("/sobre-nosotros", 0.5, "monthly"),
-    withLangs("/contacto", 0.4, "yearly"),
+    withLangs("/contacto", 0.4, "yearly", STATIC_LASTMOD, true, true),
     withLangs("/terminos", 0.3, "yearly"),
     withLangs("/privacidad", 0.3, "yearly"),
     withLangs("/cancelacion", 0.3, "yearly"),
@@ -73,7 +76,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   const tourPages: MetadataRoute.Sitemap = (tours ?? []).map((tour) =>
-    withLangs(`/tours/${tour.slug}`, 0.8, "weekly", new Date(tour.updated_at))
+    withLangs(
+      `/tours/${tour.slug}`,
+      0.8,
+      "weekly",
+      new Date(tour.updated_at),
+      true,
+      Boolean(tour.title?.ja)
+    )
   );
 
   // NO incluir /tours?category=X: esas URLs canonicalizan a /tours
@@ -88,7 +98,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       0.7,
       "monthly",
       new Date(p.updated_at ?? p.published_at ?? Date.now()),
-      enAvailable
+      enAvailable,
+      Boolean(p.title?.ja && p.body_md?.ja)
     );
   });
 

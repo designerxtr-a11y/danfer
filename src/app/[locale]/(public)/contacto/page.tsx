@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, MessageCircle, Clock } from "lucide-react";
+import { toLocale } from "@/lib/i18n/pick";
 import { ContactForm } from "./contact-form";
 import { getSettings, normalizeWhatsApp, publicPhone } from "@/lib/queries/settings";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -14,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<import("next").Metadata> {
   const { locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const title =
     lc === "en"
       ? "Contact · Danfer Tours Cusco"
@@ -26,7 +27,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates("/contacto", lc),
+    alternates: buildAlternates("/contacto", lc, { jaAvailable: true }),
     openGraph: {
       title,
       description,
@@ -44,7 +45,7 @@ export default async function ContactoPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const settings = await getSettings();
   const waNumber = normalizeWhatsApp(settings.whatsapp);
   const phone = publicPhone(settings);

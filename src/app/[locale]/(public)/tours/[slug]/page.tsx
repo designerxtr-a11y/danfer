@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import {
@@ -13,7 +14,7 @@ import {
   getTourReviewStats,
   getRelatedTours,
 } from "@/lib/queries/tours";
-import { t, tList, type Locale } from "@/types/database";
+import { t, tList, hasJa, type Locale } from "@/types/database";
 import { tr } from "@/lib/i18n/messages";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { TourGallery } from "@/components/tours/tour-gallery";
@@ -61,7 +62,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug, locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const tour = await getTourBySlug(slug);
   if (!tour) return {};
 
@@ -77,7 +78,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title,
     description,
-    alternates: buildAlternates(`/tours/${tour.slug}`, lc),
+    alternates: buildAlternates(`/tours/${tour.slug}`, lc, { jaAvailable: hasJa(tour.title) }),
     openGraph: {
       title: `${title} · Danfer Tours Cusco`,
       description,
@@ -98,7 +99,7 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function TourDetailPage({ params }: PageProps) {
   const { slug, locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const mx = tr(lc);
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();

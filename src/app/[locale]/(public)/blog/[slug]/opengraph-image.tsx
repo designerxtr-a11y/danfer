@@ -20,7 +20,8 @@ export default async function Image({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { slug, locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  // OG sin fuente japonesa (satori): /ja usa el texto EN.
+  const lc: Locale = locale === "es" ? "es" : "en";
   const post = await getPostBySlug(slug);
   if (!post) {
     return new ImageResponse(<div>Not found</div>, { ...size });

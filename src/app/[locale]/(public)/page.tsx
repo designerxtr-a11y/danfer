@@ -26,7 +26,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return {
-    alternates: buildAlternates("/", locale),
+    alternates: buildAlternates("/", locale, { jaAvailable: true }),
     openGraph: { locale: ogLocale(locale) },
   };
 }

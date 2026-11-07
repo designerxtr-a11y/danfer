@@ -1,4 +1,5 @@
 import { getAllTours } from "@/lib/queries/tours";
+import { toLocale } from "@/lib/i18n/pick";
 import { createClient } from "@/lib/supabase/public";
 import { ToursPageClient } from "./page.client";
 import type { Category, Locale } from "@/types/database";
@@ -24,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<import("next").Metadata> {
   const { locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const title =
     lc === "en"
       ? "All Cusco Tours · Machu Picchu, Inca Trail & more"
@@ -36,7 +37,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates("/tours", lc),
+    alternates: buildAlternates("/tours", lc, { jaAvailable: true }),
     openGraph: {
       title:
         lc === "en"
@@ -58,7 +59,7 @@ export default async function ToursIndexPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const mx = tr(lc);
   const supabase = await createClient();
   const [tours, { data: categories }] = await Promise.all([

@@ -28,6 +28,13 @@
   --shadow-soft: 0 10px 30px -10px rgba(11, 25, 41, 0.1);
 }
 
+/* /ja: Playfair/Caveat no tienen glifos japoneses */
+html:lang(ja) {
+  --font-display: var(--font-jp), serif;
+  --font-body: var(--font-inter), var(--font-jp), sans-serif;
+  --font-hand: var(--font-jp), sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }

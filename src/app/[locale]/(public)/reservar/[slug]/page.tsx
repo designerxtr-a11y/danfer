@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { toLocale } from "@/lib/i18n/pick";
 import { getTourBySlug } from "@/lib/queries/tours";
 import { t, type Locale } from "@/types/database";
 import { CheckoutForm } from "./checkout-form";
@@ -19,18 +20,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string; locale: string }>;
 }): Promise<import("next").Metadata> {
   const { slug, locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   return {
     title: lc === "en" ? "Book your tour" : "Reservar tu tour",
     robots: { index: false },
-    alternates: buildAlternates(`/reservar/${slug}`, lc),
+    alternates: buildAlternates(`/reservar/${slug}`, lc, { jaAvailable: true }),
   };
 }
 
 export default async function ReservarPage({ params, searchParams }: PageProps) {
   const { slug, locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const { date, travelers } = await searchParams;
 
   const tour = await getTourBySlug(slug);

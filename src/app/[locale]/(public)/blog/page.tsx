@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { toLocale } from "@/lib/i18n/pick";
 import Image from "next/image";
 import { Clock, Calendar } from "lucide-react";
 import { getPublishedPosts } from "@/lib/queries/blog";
@@ -16,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<import("next").Metadata> {
   const { locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const title =
     lc === "en"
       ? "Cusco & Machu Picchu Travel Blog"
@@ -28,7 +29,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates("/blog", lc),
+    alternates: buildAlternates("/blog", lc, { jaAvailable: true }),
     openGraph: {
       title,
       description,
@@ -44,7 +45,7 @@ export default async function BlogIndex({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const posts = await getPublishedPosts(60);
 
   return (

@@ -7,7 +7,7 @@ function plain(html: string): string {
 }
 
 function tourUrl(slug: string, locale: Locale): string {
-  return `${SITE}${locale === "en" ? "/en" : ""}/tours/${slug}`;
+  return `${SITE}${locale === "es" ? "" : `/${locale}`}/tours/${slug}`;
 }
 import { siteUrl } from "./site-url";
 import { TRIPADVISOR } from "@/lib/social-proof";
@@ -154,7 +154,7 @@ export function websiteSchema() {
     url: SITE,
     name: ORG_NAME,
     publisher: { "@id": `${SITE}/#organization` },
-    inLanguage: ["es-PE", "en-US"],
+    inLanguage: ["es-PE", "en-US", "ja-JP"],
     potentialAction: {
       "@type": "SearchAction",
       target: `${SITE}/tours?q={search_term_string}`,
@@ -508,7 +508,7 @@ export function courseSchema(tour: TourWithCategory, locale: Locale = "es") {
     provider: { "@id": `${SITE}/#organization` },
     courseMode: "onsite",
     educationalLevel: "Beginner to Advanced",
-    inLanguage: ["es", "en"],
+    inLanguage: ["es", "en", "ja"],
     teaches: tList(tour.highlights, locale).slice(0, 8),
     timeRequired: `P${tour.duration_days}D`,
     hasCourseInstance: {

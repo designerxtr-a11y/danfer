@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import { Shield, Award, Heart, Mountain, Users, Sparkles, ArrowRight } from "lucide-react";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
@@ -11,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<import("next").Metadata> {
   const { locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const title =
     lc === "en"
       ? "About us · Danfer Tours Cusco"
@@ -112,7 +113,7 @@ export default async function SobreNosotrosPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   return (
     <div className="pt-24 md:pt-32 pb-16 md:pb-24">
       {/* Hero */}

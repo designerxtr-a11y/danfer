@@ -1,4 +1,5 @@
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
+import { toLocale } from "@/lib/i18n/pick";
 import { Navbar, type NavItem } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
@@ -20,7 +21,7 @@ export default async function PublicLayout({
 }) {
   const [{ locale }, settings] = await Promise.all([params, getSettings()]);
   setRequestLocale(locale);
-  const typedLocale: Locale = locale === "en" ? "en" : "es";
+  const typedLocale: Locale = toLocale(locale);
   const mx = tr(typedLocale);
 
   const categories = await getCategoriesWithTours();

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter, Caveat } from "next/font/google";
+import { Playfair_Display, Inter, Caveat, Noto_Sans_JP } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@/app/globals.css";
@@ -21,6 +21,15 @@ const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
   display: "swap",
+});
+
+// Solo se aplica en /ja (lang="ja"); preload:false para que ES/EN no la descarguen.
+const notoJp = Noto_Sans_JP({
+  variable: "--font-jp",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: false,
 });
 
 const SITE = siteUrl();
@@ -97,7 +106,7 @@ export function RootHtml({
     <html
       lang={lang}
       data-scroll-behavior="smooth"
-      className={`${playfair.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
+      className={`${playfair.variable} ${inter.variable} ${caveat.variable} ${lang === "ja" ? notoJp.variable : ""} h-full antialiased`}
     >
       <head>
         {/* Resource hints para el media externo del hero (LCP móvil) */}

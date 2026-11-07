@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { toLocale } from "@/lib/i18n/pick";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -44,7 +45,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<import("next").Metadata> {
   const { slug, locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const d = getDestinationBySlug(slug, lc);
   if (!d) return {};
   return {
@@ -80,7 +81,7 @@ function matchTours(
 export default async function DestinationPage({ params }: PageProps) {
   const { slug, locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const mx = tr(lc);
   const destination = getDestinationBySlug(slug, lc);
   if (!destination) notFound();

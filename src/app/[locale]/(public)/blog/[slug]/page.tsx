@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -25,7 +26,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
-import { t, type Locale } from "@/types/database";
+import { t, hasJa, type Locale } from "@/types/database";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, blogPostingSchema, faqSchema } from "@/lib/seo/schema";
@@ -118,7 +119,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug, locale } = await params;
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const post = await getPostBySlug(slug);
   if (!post) return {};
 
@@ -131,7 +132,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title,
     description,
-    alternates: buildAlternates(`/blog/${post.slug}`, lc, { enAvailable }),
+    alternates: buildAlternates(`/blog/${post.slug}`, lc, { enAvailable, jaAvailable: hasJa(post.title) }),
     openGraph: {
       title,
       description,
@@ -163,7 +164,7 @@ function sidebarTourSlug(postSlug: string, tags: string[], ctaSlugs: string[]): 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug, locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 

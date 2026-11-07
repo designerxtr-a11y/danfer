@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { toLocale } from "@/lib/i18n/pick";
 import { CheckCircle2, Calendar, Users, Mail, Download } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { t, type Locale } from "@/types/database";
@@ -17,7 +18,7 @@ export const metadata = {
 export default async function ConfirmacionPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const lc: Locale = locale === "en" ? "en" : "es";
+  const lc: Locale = toLocale(locale);
   const { code } = await searchParams;
 
   if (!code) {

@@ -17,23 +17,30 @@ import type { Metadata } from "next";
 export function buildAlternates(
   path: string,
   locale: string,
-  opts: { enAvailable?: boolean } = {}
+  opts: { enAvailable?: boolean; jaAvailable?: boolean } = {}
 ): Metadata["alternates"] {
-  const { enAvailable = true } = opts;
+  const { enAvailable = true, jaAvailable = false } = opts;
   const clean = path === "/" ? "" : path.replace(/\/+$/, "");
   const esUrl = clean || "/";
   const enUrl = `/en${clean}`; // clean "" -> "/en"
-  if (!enAvailable) {
-    return {
-      canonical: esUrl,
-      languages: { es: esUrl, "x-default": esUrl },
-    };
-  }
+  const jaUrl = `/ja${clean}`;
+  // /ja sin traducción propia muestra el texto EN (o ES) por fallback: es un
+  // duplicado, así que canonicaliza a esa versión y no se anuncia como ja.
+  const fallbackUrl = enAvailable ? enUrl : esUrl;
+  const canonical =
+    locale === "ja"
+      ? jaAvailable
+        ? jaUrl
+        : fallbackUrl
+      : locale === "en" && enAvailable
+        ? enUrl
+        : esUrl;
   return {
-    canonical: locale === "en" ? enUrl : esUrl,
+    canonical,
     languages: {
       es: esUrl,
-      en: enUrl,
+      ...(enAvailable && { en: enUrl }),
+      ...(jaAvailable && { ja: jaUrl }),
       "x-default": esUrl,
     },
   };
@@ -41,5 +48,5 @@ export function buildAlternates(
 
 /** og:locale correcto a partir del locale del segmento. */
 export function ogLocale(locale: string): string {
-  return locale === "en" ? "en_US" : "es_PE";
+  return locale === "en" ? "en_US" : locale === "ja" ? "ja_JP" : "es_PE";
 }
