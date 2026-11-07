@@ -167,7 +167,7 @@ export function Mp2027Booking({
       </Step>
 
       <Step n={2} title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
-        <div className="grid md:grid-cols-3 gap-3 items-start">
+        <div className="grid md:grid-cols-3 gap-3 items-stretch">
           {PACKAGES.map((p) => {
             const sel = p.id === pkgId;
             return (
@@ -193,24 +193,26 @@ export function Mp2027Booking({
                   <span className="text-xs text-night/50 font-sans"> / {L(locale, { es: "persona", en: "person", ja: "1名" })}</span>
                 </div>
                 <p className="mt-2 text-sm text-night/70">{L(locale, p.desc)}</p>
-                <div className="mt-3 text-[11px] uppercase tracking-wider text-night/45 font-semibold">
-                  {L(locale, { es: "Incluye", en: "Includes", ja: "含まれるもの" })}
-                </div>
-                <ul className="mt-1.5 space-y-1">
-                  {p.includes.map((inc) => (
-                    <li key={inc.es} className="flex gap-2 text-[13px] text-night/75 leading-snug">
-                      <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600" />
-                      {L(locale, inc)}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-xs text-night/50">
-                  <span className="font-semibold">{L(locale, { es: "No incluye:", en: "Not included:", ja: "含まれないもの：" })}</span>{" "}
-                  {L(locale, p.excludes)}
-                </p>
               </button>
             );
           })}
+        </div>
+        <div key={pkg.id} className="mt-3 rounded-2xl border border-gold/40 bg-gold/5 p-4 sm:p-5">
+          <div className="text-[11px] uppercase tracking-wider text-night/50 font-semibold">
+            {L(locale, { es: "Incluye", en: "Includes", ja: "含まれるもの" })} · {L(locale, pkg.name)}
+          </div>
+          <ul className="mt-2 grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+            {pkg.includes.map((inc) => (
+              <li key={inc.es} className="flex gap-2 text-sm text-night/80 leading-snug">
+                <Check className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
+                {L(locale, inc)}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 pt-3 border-t border-night/10 text-xs text-night/55">
+            <span className="font-semibold">{L(locale, { es: "No incluye:", en: "Not included:", ja: "含まれないもの：" })}</span>{" "}
+            {L(locale, pkg.excludes)}
+          </p>
         </div>
         <p className="mt-3 text-xs text-night/55">
           {L(locale, {

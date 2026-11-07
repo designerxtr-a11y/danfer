@@ -32,9 +32,15 @@ async function bookedDates(): Promise<Record<string, number>> {
 const PATH = "/disponibilidad-machu-picchu-2027";
 
 const TITLE = {
-  es: "Machu Picchu 2027: Disponibilidad y Entradas",
-  en: "Machu Picchu 2027: Availability & Tickets",
-  ja: "マチュピチュ2027：空き状況とチケット",
+  es: "Entradas Machu Picchu 2027: Reserva tu Ticket Ya",
+  en: "Machu Picchu 2027 Tickets: Book Your Entry Now",
+  ja: "マチュピチュ2027入場チケット：今すぐ予約",
+};
+
+const H1 = {
+  es: "Compra ya tus entradas a Machu Picchu 2027",
+  en: "Get your Machu Picchu 2027 tickets now",
+  ja: "マチュピチュ2027のチケットを今すぐ確保",
 };
 
 function faqs(lc: Locale) {
@@ -70,11 +76,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const lc = toLocale(locale);
   return {
-    title: { absolute: `${L(lc, TITLE)} · Danfer Tours` },
+    title: { absolute: L(lc, TITLE) },
     description: L(lc, {
-      es: "Calendario 2027 de Machu Picchu: elige fecha, ruta y hora, y pre-reserva tu entrada con tour (Full Day, 2D/1N o con Valle Sagrado) antes de que abra la venta oficial. Pago seguro por PayPal.",
-      en: "Machu Picchu 2027 calendar: pick your date, route and time and pre-book your ticket with a tour (Full Day, 2D/1N or with the Sacred Valley) before official sales open. Secure PayPal payment.",
-      ja: "マチュピチュ2027カレンダー：日付・ルート・時間を選び、公式販売開始前にツアー付きチケット（日帰り・1泊2日・聖なる谷付き）を事前予約。PayPalで安全にお支払い。",
+      es: "Calendario Machu Picchu 2027: elige fecha, ruta y hora, y pre-reserva tu entrada con tour antes de que abra la venta oficial.",
+      en: "Machu Picchu 2027 calendar: pick your date, route and time, and pre-book your ticket with a tour before official sales open.",
+      ja: "マチュピチュ2027カレンダー：日付・ルート・時間を選び、公式販売開始前にツアー付きチケットを事前予約。",
     }),
     alternates: buildAlternates(PATH, lc, { jaAvailable: true }),
     openGraph: { locale: ogLocale(lc) },
@@ -104,7 +110,7 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
             {L(lc, { es: "Pre-reserva abierta", en: "Pre-booking open", ja: "事前予約受付中" })}
           </span>
           <h1 className="mt-4 font-display text-3xl sm:text-5xl md:text-6xl text-night leading-tight">
-            {L(lc, TITLE)}
+            {L(lc, H1)}
           </h1>
           <p className="mt-4 text-night/65 text-lg max-w-2xl mx-auto">
             {L(lc, {
