@@ -82,6 +82,8 @@ export function Mp2027Booking({
   }, [date, route, hour, travelers, email, wa, accept, locale]);
 
   const ready = missing.length === 0;
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
 
   // Datos que viajan al servidor (el monto lo calcula el servidor).
   const payloadRef = useRef<() => Parameters<typeof createMp2027Order>[0]>(null as never);
@@ -313,8 +315,8 @@ export function Mp2027Booking({
             </label>
 
             <div className="mt-5">
-              {!ready ? (
-                <div className="rounded-xl bg-stone p-4">
+              {!ready && (
+                <div className="rounded-xl bg-stone p-4 mb-4">
                   <div className="text-sm font-semibold text-night mb-2">
                     {L(locale, { es: "Para pagar falta:", en: "Before paying:", ja: "お支払い前に必要な項目：" })}
                   </div>
@@ -324,15 +326,17 @@ export function Mp2027Booking({
                     ))}
                   </ul>
                 </div>
-              ) : paypalClientId ? (
+              )}
+              {paypalClientId && (
                 <PaypalButtons
                   clientId={paypalClientId}
                   locale={locale}
+                  canPay={() => readyRef.current}
                   getPayload={() => payloadRef.current()}
                   onPaid={setPaid}
                   onError={setPayError}
                 />
-              ) : null}
+              )}
               {payError && <p className="text-sm text-rose-600 mt-3">{payError}</p>}
               <a
                 href={waSummary}
@@ -354,24 +358,31 @@ export function Mp2027Booking({
 function PaypalButtons({
   clientId,
   locale,
+  canPay,
   getPayload,
   onPaid,
   onError,
 }: {
   clientId: string;
   locale: Locale;
+  canPay: () => boolean;
   getPayload: () => Parameters<typeof createMp2027Order>[0];
   onPaid: (code: string) => void;
   onError: (msg: string | null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
-  const cb = useRef({ getPayload, onPaid, onError });
-  cb.current = { getPayload, onPaid, onError };
+  const cb = useRef({ canPay, getPayload, onPaid, onError });
+  cb.current = { canPay, getPayload, onPaid, onError };
 
   useEffect(() => {
     const id = "paypal-sdk";
     let script = document.getElementById(id) as HTMLScriptElement | null;
+    const incomplete = L(locale, {
+      es: "Completa los datos que faltan (lista de arriba) antes de pagar.",
+      en: "Please complete the missing details (list above) before paying.",
+      ja: "お支払いの前に、上の不足項目を入力してください。",
+    });
     const fail = L(locale, {
       es: "No se pudo completar el pago. Inténtalo de nuevo o escríbenos por WhatsApp.",
       en: "Payment could not be completed. Please try again or message us on WhatsApp.",
@@ -386,6 +397,10 @@ function PaypalButtons({
           style: { layout: "vertical", color: "gold", shape: "pill", label: "pay" },
           createOrder: async () => {
             cb.current.onError(null);
+            if (!cb.current.canPay()) {
+              cb.current.onError(incomplete);
+              throw new Error("incomplete");
+            }
             const res = await createMp2027Order(cb.current.getPayload());
             if (!res.ok) {
               cb.current.onError(res.error.startsWith("missing_doc") ? fail : fail);
@@ -401,7 +416,10 @@ function PaypalButtons({
             }
             cb.current.onPaid(res.code);
           },
-          onError: () => cb.current.onError(fail),
+          onError: () => {
+            if (!cb.current.canPay()) return; // ya se mostró el aviso de datos faltantes
+            cb.current.onError(fail);
+          },
         })
         .render(ref.current);
       setLoading(false);
