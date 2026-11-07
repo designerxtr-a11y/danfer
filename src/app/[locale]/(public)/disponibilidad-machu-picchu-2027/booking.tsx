@@ -98,11 +98,12 @@ export function Mp2027Booking({
     lang: locale,
   });
 
-  const dateLabel = date
+  const rawDate = date
     ? new Date(date + "T00:00:00Z").toLocaleDateString(DATE_LOCALE[locale], {
         weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
       })
     : "—";
+  const dateLabel = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
   const waSummary = `https://wa.me/${whatsapp}?text=${encodeURIComponent(
     `Hi Danfer Tours! I'd like to pre-book Machu Picchu 2D/1N 2027: ${date ?? "-"}, Route ${route ?? "-"} at ${hour ?? "-"}, ${travelers.length} traveler(s).`
@@ -284,7 +285,7 @@ export function Mp2027Booking({
           <div className="rounded-2xl border border-night/10 bg-white p-5 sm:p-6 text-sm">
             <dl className="space-y-2">
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Tour", en: "Tour", ja: "ツアー" })}</dt><dd className="font-semibold text-right">Machu Picchu 2D/1N</dd></div>
-              <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Fecha", en: "Date", ja: "日付" })}</dt><dd className="text-right capitalize">{dateLabel}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Fecha", en: "Date", ja: "日付" })}</dt><dd className="text-right">{dateLabel}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Ruta", en: "Route", ja: "ルート" })}</dt><dd className="text-right">{r ? `${r.id} · ${L(locale, r.name)}` : "—"}{hour ? ` · ${hour}` : ""}</dd></div>
               <div className="flex justify-between gap-4 border-t border-night/8 pt-2"><dt className="text-night/55">US$ 380 × {travelers.length}</dt><dd>{usd(totals.subtotal)}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Pago con tarjeta (+5%)", en: "Card payment (+5%)", ja: "カード手数料（5%）" })}</dt><dd>{usd(totals.fee)}</dd></div>

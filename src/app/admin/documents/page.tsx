@@ -54,17 +54,27 @@ export default async function AdminDocuments() {
       ) : (
         <div className="space-y-6">
           {visible.map((g) => (
-            <section key={g.token} className="bg-white border border-night/8 rounded-2xl p-6">
+            <section key={g.token} id={g.token} className="bg-white border border-night/8 rounded-2xl p-6 scroll-mt-8">
               <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
                 <div>
                   <h2 className="text-lg font-semibold text-night">
-                    {g.quote ? `${g.quote.clientName} · ${g.quote.destination}` : g.token}
+                    {g.quote
+                      ? `${g.quote.clientName} · ${g.quote.destination}`
+                      : g.token.startsWith("mp2027-")
+                        ? `Machu Picchu 2027 · ${g.token.slice(7)}`
+                        : g.token}
                   </h2>
                   <p className="text-sm text-night/50">
                     {g.quote ? `${g.quote.dates} · ${g.quote.travelers} pasajeros · ` : ""}
-                    <a href={`/en/quote/${g.token}`} target="_blank" className="underline">
-                      /quote/{g.token}
-                    </a>
+                    {g.token.startsWith("mp2027-") ? (
+                      <a href="/admin/bookings" className="underline">
+                        Ver en Reservas
+                      </a>
+                    ) : (
+                      <a href={`/en/quote/${g.token}`} target="_blank" className="underline">
+                        /quote/{g.token}
+                      </a>
+                    )}
                   </p>
                 </div>
                 <span className="text-sm text-night/60">

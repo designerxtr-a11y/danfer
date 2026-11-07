@@ -17,6 +17,26 @@ interface Booking {
   payment_status: string;
   created_at: string;
   tourTitle: string;
+  special_requests?: string | null;
+}
+
+interface Mp2027Details {
+  kind: "mp2027";
+  route: string;
+  hour: string;
+  hotel?: string;
+  draftId: string;
+  travelers: { fullName: string; docType: string; docNumber: string; nationality: string; birthDate: string }[];
+}
+
+function mp2027(b: Booking): Mp2027Details | null {
+  if (!b.special_requests?.startsWith("{")) return null;
+  try {
+    const d = JSON.parse(b.special_requests);
+    return d?.kind === "mp2027" ? (d as Mp2027Details) : null;
+  } catch {
+    return null;
+  }
 }
 
 const statusOptions = ["pending", "confirmed", "cancelled", "completed", "refunded"];
@@ -102,7 +122,31 @@ function BookingRow({ booking }: { booking: Booking }) {
         <div className="text-night font-medium">{booking.customer_name}</div>
         <div className="text-xs text-night/50">{booking.customer_email}</div>
       </td>
-      <td className="px-6 py-3 text-night/80">{booking.tourTitle}</td>
+      <td className="px-6 py-3 text-night/80">
+        {booking.tourTitle}
+        {(() => {
+          const d = mp2027(booking);
+          if (!d) return null;
+          return (
+            <div className="mt-1 text-xs text-night/60 space-y-0.5">
+              <div className="font-semibold text-gold">
+                MP 2027 · Ruta {d.route} · {d.hour}
+              </div>
+              {booking.customer_phone && <div>WhatsApp: {booking.customer_phone}</div>}
+              {d.hotel && <div>Hotel: {d.hotel}</div>}
+              {d.travelers.map((p, i) => (
+                <div key={i}>
+                  {i + 1}. {p.fullName} · {p.docType === "dni" ? "DNI" : "Pasaporte"} {p.docNumber} ·{" "}
+                  {p.nationality} · {p.birthDate}
+                </div>
+              ))}
+              <a href={`/admin/documents#mp2027-${d.draftId}`} className="underline hover:text-gold">
+                Ver documentos
+              </a>
+            </div>
+          );
+        })()}
+      </td>
       <td className="px-6 py-3 text-night/70">
         {new Date(booking.travel_date).toLocaleDateString("es-PE", {
           day: "numeric", month: "short", year: "numeric",

@@ -28,11 +28,12 @@ export function Mp2027Calendar({
   const first = new Date(Date.UTC(2027, month, 1));
   const daysInMonth = new Date(Date.UTC(2027, month + 1, 0)).getUTCDate();
   const offset = (first.getUTCDay() + 6) % 7; // lunes primero
-  const label = first.toLocaleDateString(DATE_LOCALE[locale], { month: "long", year: "numeric", timeZone: "UTC" });
+  const rawLabel = first.toLocaleDateString(DATE_LOCALE[locale], { month: "long", year: "numeric", timeZone: "UTC" });
+  const label = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
   const high = isHighSeason(`2027-${pad(month + 1)}-01`);
 
   return (
-    <div className="rounded-3xl border border-night/8 bg-white p-5 sm:p-6 shadow-soft">
+    <div className="max-w-xl mx-auto rounded-3xl border border-night/8 bg-white p-5 sm:p-6 shadow-soft">
       <div className="flex items-center justify-between mb-4">
         <button
           type="button"
@@ -44,7 +45,7 @@ export function Mp2027Calendar({
           <ChevronLeft className="w-4 h-4" />
         </button>
         <div className="text-center">
-          <div className="font-display text-xl sm:text-2xl text-night capitalize">{label}</div>
+          <div className="font-display text-xl sm:text-2xl text-night">{label}</div>
           <div className={`text-xs font-semibold mt-0.5 ${high ? "text-terracotta" : "text-emerald-700"}`}>
             {high
               ? L(locale, { es: "Temporada alta · reserva cuanto antes", en: "High season · book early", ja: "ハイシーズン・お早めに" })
@@ -80,7 +81,7 @@ export function Mp2027Calendar({
               type="button"
               onClick={() => onChange(iso)}
               aria-pressed={selected}
-              className={`aspect-square rounded-xl text-sm font-medium transition ${
+              className={`h-10 sm:h-11 rounded-xl text-sm font-medium transition ${
                 selected
                   ? "bg-gold text-night shadow-glow"
                   : high
