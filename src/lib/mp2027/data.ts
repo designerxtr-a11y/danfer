@@ -83,25 +83,54 @@ export interface Mp2027Package {
   tourSlug: string;
   name: T3;
   desc: T3;
+  duration: T3;
+  includes: T3[];
+  excludes: T3;
   /** Hora mínima de ingreso (Full Day: el tren llega cerca del mediodía). */
   minHour?: string;
 }
 
+const t3 = (es: string, en: string, ja: string): T3 => ({ es, en, ja });
+
+const MP_CORE: T3[] = [
+  t3("Recojo en tu hotel de Cusco y traslado a Ollantaytambo (ida y vuelta)", "Hotel pickup in Cusco and transfer to Ollantaytambo (round trip)", "クスコのホテル送迎とオリャンタイタンボまでの往復移動"),
+  t3("Tren turístico ida y vuelta", "Round-trip tourist train", "観光列車（往復）"),
+  t3("Bus de subida y bajada a Machu Picchu", "Bus up and down to Machu Picchu", "マチュピチュ往復バス"),
+  t3("Entrada a Machu Picchu (tu ruta y hora)", "Machu Picchu entrance ticket (your route and time)", "マチュピチュ入場券（ご希望のルート・時間）"),
+  t3("Guía profesional", "Professional guide", "プロのガイド"),
+];
+const HOTEL = t3("1 noche de hotel en Aguas Calientes con desayuno", "1 hotel night in Aguas Calientes with breakfast", "アグアスカリエンテスのホテル1泊（朝食付き）");
+
 export const PACKAGES: Mp2027Package[] = [
   {
     id: "fullday", price: 320, tourSlug: "machu-picchu-full-day", minHour: "10:00",
+    duration: t3("1 día", "1 day", "日帰り"),
+    includes: MP_CORE,
+    excludes: t3("Comidas, propinas, Huayna Picchu (extra)", "Meals, tips, Huayna Picchu (extra)", "食事、チップ、ワイナピチュ（追加料金）"),
     name: { es: "Full Day", en: "Full Day", ja: "日帰り" },
-    desc: { es: "Ida y vuelta el mismo día.", en: "Same-day round trip.", ja: "日帰り往復。" },
+    desc: t3("Ida y vuelta a Machu Picchu el mismo día, en tren turístico desde Ollantaytambo.", "Same-day round trip to Machu Picchu by tourist train from Ollantaytambo.", "オリャンタイタンボから観光列車で行く日帰りマチュピチュ。"),
   },
   {
     id: "2d1n", price: 380, tourSlug: "machu-picchu-2d-1n",
+    duration: t3("2 días / 1 noche", "2 days / 1 night", "1泊2日"),
+    includes: [...MP_CORE, HOTEL],
+    excludes: t3("Almuerzo y cena, propinas, Huayna Picchu (extra)", "Lunch and dinner, tips, Huayna Picchu (extra)", "昼食・夕食、チップ、ワイナピチュ（追加料金）"),
     name: { es: "2 días / 1 noche", en: "2 days / 1 night", ja: "1泊2日" },
-    desc: { es: "Noche en Aguas Calientes, entras temprano.", en: "Night in Aguas Calientes, early entry.", ja: "アグアスカリエンテス1泊、朝早く入場。" },
+    desc: t3("Llegas a Aguas Calientes el día anterior, duermes ahí y entras temprano, sin apuro.", "Arrive in Aguas Calientes the day before, stay overnight and enter early, unhurried.", "前日にアグアスカリエンテスへ。1泊して翌朝ゆっくり入場。"),
   },
   {
     id: "2d1n-valle", price: 420, tourSlug: "machu-picchu-2d-1n",
+    duration: t3("2 días / 1 noche", "2 days / 1 night", "1泊2日"),
+    includes: [
+      t3("Día 1: Valle Sagrado con guía (Chinchero, Moray, Maras, Ollantaytambo)", "Day 1: guided Sacred Valley (Chinchero, Moray, Maras, Ollantaytambo)", "1日目：ガイド付き聖なる谷（チンチェロ、モライ、マラス、オリャンタイタンボ）"),
+      t3("Almuerzo buffet en el Valle Sagrado", "Buffet lunch in the Sacred Valley", "聖なる谷でのビュッフェランチ"),
+      ...MP_CORE.slice(1),
+      HOTEL,
+      t3("Traslado de regreso Ollantaytambo–Cusco", "Return transfer Ollantaytambo–Cusco", "オリャンタイタンボ→クスコの帰路送迎"),
+    ],
+    excludes: t3("Boleto Turístico del Cusco y entrada a Maras, cena, propinas", "Cusco Tourist Ticket and Maras entrance, dinner, tips", "クスコ周遊券・マラス入場料、夕食、チップ"),
     name: { es: "2D/1N + Valle Sagrado", en: "2D/1N + Sacred Valley", ja: "1泊2日＋聖なる谷" },
-    desc: { es: "Valle Sagrado + noche en Aguas Calientes.", en: "Sacred Valley + night in Aguas Calientes.", ja: "聖なる谷＋アグアスカリエンテス1泊。" },
+    desc: t3("Día 1 recorres el Valle Sagrado y tomas el tren desde Ollantaytambo; día 2 Machu Picchu.", "Day 1 tour the Sacred Valley and take the train from Ollantaytambo; day 2 Machu Picchu.", "1日目は聖なる谷を観光しオリャンタイタンボから列車へ。2日目はマチュピチュ。"),
   },
 ];
 

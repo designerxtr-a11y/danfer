@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { CheckCircle2, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
+import { Check, CheckCircle2, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
 import { L } from "@/lib/i18n/pick";
 import { ROUTES, PACKAGES, MAX_TRAVELERS, mp2027Total, routeById, packageById, hoursFor, type RouteId, type PackageId } from "@/lib/mp2027/data";
 import type { Locale } from "@/types/database";
@@ -156,7 +156,7 @@ export function Mp2027Booking({
       </Step>
 
       <Step n={2} title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
-        <div className="grid sm:grid-cols-3 gap-3">
+        <div className="grid md:grid-cols-3 gap-3 items-start">
           {PACKAGES.map((p) => {
             const sel = p.id === pkgId;
             return (
@@ -169,12 +169,34 @@ export function Mp2027Booking({
                   sel ? "border-gold bg-gold/10 ring-2 ring-gold" : "border-night/10 bg-white hover:border-gold/60"
                 }`}
               >
-                <div className="font-semibold text-night">{L(locale, p.name)}</div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-night">{L(locale, p.name)}</span>
+                  {L(locale, p.duration) !== L(locale, p.name) && (
+                    <span className="text-[11px] font-semibold rounded-full bg-night/5 text-night/70 px-2 py-0.5 shrink-0">
+                      {L(locale, p.duration)}
+                    </span>
+                  )}
+                </div>
                 <div className="mt-1 font-display text-2xl text-gold">
                   US$ {p.price}
                   <span className="text-xs text-night/50 font-sans"> / {L(locale, { es: "persona", en: "person", ja: "1名" })}</span>
                 </div>
-                <p className="mt-2 text-sm text-night/60">{L(locale, p.desc)}</p>
+                <p className="mt-2 text-sm text-night/70">{L(locale, p.desc)}</p>
+                <div className="mt-3 text-[11px] uppercase tracking-wider text-night/45 font-semibold">
+                  {L(locale, { es: "Incluye", en: "Includes", ja: "含まれるもの" })}
+                </div>
+                <ul className="mt-1.5 space-y-1">
+                  {p.includes.map((inc) => (
+                    <li key={inc.es} className="flex gap-2 text-[13px] text-night/75 leading-snug">
+                      <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600" />
+                      {L(locale, inc)}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-xs text-night/50">
+                  <span className="font-semibold">{L(locale, { es: "No incluye:", en: "Not included:", ja: "含まれないもの：" })}</span>{" "}
+                  {L(locale, p.excludes)}
+                </p>
               </button>
             );
           })}
@@ -340,7 +362,7 @@ export function Mp2027Booking({
               <div className="flex justify-between gap-4 border-t-2 border-night pt-2 text-base"><dt className="font-semibold">{L(locale, { es: "Total", en: "Total", ja: "合計" })}</dt><dd className="font-display text-2xl text-gold">{usd(totals.total)}</dd></div>
             </dl>
             <p className="mt-4 text-xs text-night/55">
-              {L(locale, pkg.desc)}
+              {pkg.includes.map((inc) => L(locale, inc)).join(" · ")}
             </p>
           </div>
 
