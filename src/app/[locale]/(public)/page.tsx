@@ -26,6 +26,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return {
+    // ES/EN usan el título por defecto del layout; /ja necesita el suyo.
+    ...(locale === "ja" && {
+      title: { absolute: "Danfer Tours Cusco · マチュピチュ・聖なる谷ツアー" },
+      description:
+        "クスコの公認旅行会社。マチュピチュ、聖なる谷、インカ道、レインボーマウンテンへのガイド付きツアー。認定ガイド、12年以上の実績。",
+    }),
     alternates: buildAlternates("/", locale, { jaAvailable: true }),
     openGraph: { locale: ogLocale(locale) },
   };

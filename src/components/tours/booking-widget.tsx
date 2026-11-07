@@ -103,7 +103,7 @@ export function BookingWidget({
             <span className="font-semibold text-night">{TRIPADVISOR.rating.toFixed(1)}</span>
           </div>
           <p className="mt-0.5 text-xs text-night/60">
-            {L(locale, { es: `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`, en: `${TRIPADVISOR.reviews.toLocaleString("en-US")} reviews · #${TRIPADVISOR.rank} of ${TRIPADVISOR.rankOf.toLocaleString("en-US")} outdoor activities in Cusco` })}
+            {L(locale, { es: `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`, en: `${TRIPADVISOR.reviews.toLocaleString("en-US")} reviews · #${TRIPADVISOR.rank} of ${TRIPADVISOR.rankOf.toLocaleString("en-US")} outdoor activities in Cusco`, ja: `${TRIPADVISOR.reviews.toLocaleString("en-US")}件の口コミ · クスコのアウトドアアクティビティ${TRIPADVISOR.rankOf.toLocaleString("en-US")}件中${TRIPADVISOR.rank}位` })}
           </p>
         </div>
       </div>
@@ -188,7 +188,7 @@ export function BookingWidget({
             <Minus className="w-3.5 h-3.5" />
           </button>
           <span className="font-display text-xl text-night">
-            {travelers} <span className="text-sm text-night/50">{personWord}</span>
+            {travelers} <span className="text-sm text-night/50">{locale === "ja" ? "名" : personWord}</span>
           </span>
           <button
             onClick={() => setTravelers((t) => Math.min(availableSpots, t + 1))}

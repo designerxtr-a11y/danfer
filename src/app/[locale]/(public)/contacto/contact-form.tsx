@@ -4,8 +4,11 @@ import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Send, CheckCircle2 } from "lucide-react";
 import { submitInquiry } from "./actions";
+import { useI18n } from "@/lib/i18n/provider";
+import { L } from "@/lib/i18n/pick";
 
 export function ContactForm() {
+  const { locale } = useI18n();
   const [pending, startTransition] = useTransition();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +27,14 @@ export function ContactForm() {
       if (r.ok) {
         setSent(true);
       } else {
-        setError(r.error ?? "Algo falló. Intenta de nuevo o escríbenos a hola@danfertourscusco.com");
+        setError(
+          r.error ??
+            L(locale, {
+              es: "Algo falló. Intenta de nuevo o escríbenos a hola@danfertourscusco.com",
+              en: "Something went wrong. Please try again or email us at hola@danfertourscusco.com",
+              ja: "送信できませんでした。もう一度お試しいただくか、hola@danfertourscusco.com までメールでご連絡ください。",
+            })
+        );
       }
     });
   }
@@ -39,10 +49,16 @@ export function ContactForm() {
         <div className="w-20 h-20 rounded-full bg-emerald-100 grid place-items-center mx-auto mb-4">
           <CheckCircle2 className="w-10 h-10 text-emerald-600" />
         </div>
-        <h2 className="font-display text-3xl text-night">¡Mensaje recibido!</h2>
+        <h2 className="font-display text-3xl text-night">
+          {L(locale, { es: "¡Mensaje recibido!", en: "Message received!", ja: "メッセージを受け付けました！" })}
+        </h2>
         <p className="mt-3 text-night/65">
-          Te respondemos en menos de 24 horas a{" "}
-          <span className="text-night font-medium">{form.email}</span>.
+          {L(locale, {
+            es: "Te respondemos en menos de 24 horas a ",
+            en: "We'll reply within 24 hours to ",
+            ja: "24時間以内に次のアドレスへお返事します：",
+          })}
+          <span className="text-night font-medium">{form.email}</span>
         </p>
       </motion.div>
     );
@@ -54,7 +70,7 @@ export function ContactForm() {
       className="bg-white border border-night/8 rounded-3xl p-6 md:p-8 shadow-soft space-y-5"
     >
       <div className="grid md:grid-cols-2 gap-5">
-        <Field label="Nombre" required>
+        <Field label={L(locale, { es: "Nombre", en: "Name", ja: "お名前" })} required>
           <input
             type="text"
             required
@@ -63,7 +79,7 @@ export function ContactForm() {
             className="w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-night focus:outline-none focus:border-gold focus:bg-white transition"
           />
         </Field>
-        <Field label="Email" required>
+        <Field label={L(locale, { es: "Email", en: "Email", ja: "メールアドレス" })} required>
           <input
             type="email"
             required
@@ -74,7 +90,7 @@ export function ContactForm() {
         </Field>
       </div>
 
-      <Field label="Teléfono / WhatsApp">
+      <Field label={L(locale, { es: "Teléfono / WhatsApp", en: "Phone / WhatsApp", ja: "電話 / WhatsApp" })}>
         <input
           type="tel"
           value={form.phone}
@@ -84,13 +100,24 @@ export function ContactForm() {
         />
       </Field>
 
-      <Field label="¿Qué tour te interesa? ¿Cuándo viajas?" required>
+      <Field
+        label={L(locale, {
+          es: "¿Qué tour te interesa? ¿Cuándo viajas?",
+          en: "Which tour are you interested in? When are you traveling?",
+          ja: "ご希望のツアーと旅行時期を教えてください",
+        })}
+        required
+      >
         <textarea
           required
           rows={6}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          placeholder="Soy de... me gustaría viajar a... mi presupuesto es..."
+          placeholder={L(locale, {
+            es: "Soy de... me gustaría viajar a... mi presupuesto es...",
+            en: "I'm from... I'd like to travel to... my budget is...",
+            ja: "出身国、行きたい場所、ご予算などをご記入ください",
+          })}
           className="w-full bg-stone border border-night/10 rounded-xl px-4 py-3 text-night focus:outline-none focus:border-gold focus:bg-white transition resize-y"
         />
       </Field>
@@ -111,15 +138,19 @@ export function ContactForm() {
         ) : (
           <Send className="w-4 h-4" />
         )}
-        Enviar mensaje
+        {L(locale, { es: "Enviar mensaje", en: "Send message", ja: "送信する" })}
       </button>
 
       <p className="text-xs text-night/40">
-        Al enviar aceptas nuestra{" "}
-        <a href="/privacidad" className="underline hover:text-gold">
-          política de privacidad
+        {L(locale, { es: "Al enviar aceptas nuestra ", en: "By sending, you accept our ", ja: "送信すると、" })}
+        <a href={L(locale, { es: "/privacidad", en: "/en/privacidad", ja: "/ja/privacidad" })} className="underline hover:text-gold">
+          {L(locale, { es: "política de privacidad", en: "privacy policy", ja: "プライバシーポリシー" })}
         </a>
-        . No compartimos tu información.
+        {L(locale, {
+          es: ". No compartimos tu información.",
+          en: ". We don't share your information.",
+          ja: "に同意したものとみなされます。お客様の情報を第三者と共有することはありません。",
+        })}
       </p>
     </form>
   );

@@ -259,7 +259,7 @@ export function Hero({
             <button
               type="button"
               onClick={() => setActive((a) => (a - 1 + count) % count)}
-              aria-label="Anterior"
+              aria-label={L(locale, { es: "Anterior", en: "Previous", ja: "前へ" })}
               className="w-9 h-9 rounded-full border border-white/25 hover:border-gold hover:text-gold grid place-items-center transition"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -276,7 +276,7 @@ export function Hero({
             <button
               type="button"
               onClick={() => setActive((a) => (a + 1) % count)}
-              aria-label="Siguiente"
+              aria-label={L(locale, { es: "Siguiente", en: "Next", ja: "次へ" })}
               className="w-9 h-9 rounded-full border border-white/25 hover:border-gold hover:text-gold grid place-items-center transition"
             >
               <ChevronRight className="w-4 h-4" />
@@ -338,6 +338,7 @@ function QueueCard({
   destination: HeroCard;
   onSelect: () => void;
 }) {
+  const { locale } = useI18n();
   return (
     <motion.button
       type="button"
@@ -347,7 +348,7 @@ function QueueCard({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, scale: 1.15 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      aria-label={`Ver ${destination.title} — ${destination.region}, Perú`}
+      aria-label={`${L(locale, { es: "Ver", en: "See", ja: "表示：" })} ${destination.title} — ${destination.region}`}
       className="group relative shrink-0 w-36 xl:w-44 h-52 xl:h-60 rounded-2xl overflow-hidden ring-1 ring-white/20 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] cursor-pointer text-left"
     >
       <Image
@@ -373,7 +374,7 @@ function QueueCard({
           {destination.title}
         </div>
         <div className="mt-1 text-[11px] text-gold font-semibold">
-          Desde US$ {destination.price}
+          {L(locale, { es: "Desde", en: "From", ja: "料金" })} US$ {destination.price}
         </div>
       </div>
       <div className="absolute inset-0 rounded-2xl ring-2 ring-gold/0 group-hover:ring-gold/60 transition-all duration-300 pointer-events-none" />
