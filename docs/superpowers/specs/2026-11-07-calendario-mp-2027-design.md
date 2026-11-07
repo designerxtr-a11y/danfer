@@ -9,12 +9,17 @@ Captar a quienes buscan "disponibilidad / entradas Machu Picchu 2027" antes de q
 ## Producto y precio
 
 - Tour **Machu Picchu 2D/1N**, **US$380 por persona** (entrada incluida). Precio igual al del tour en la BD.
-- **Pago completo** por PayPal / tarjeta. **+5% por pago con tarjeta**, igual que en las cotizaciones. *(Supuesto: confirmar con el usuario.)*
-- **Política** (visible antes de pagar): si al abrir la venta no hay cupo en la fecha, ruta u hora elegida, se ofrece otra opción o se **reembolsa el 100%**. *(Supuesto: confirmar con el usuario.)*
+- **Pago completo** por PayPal / tarjeta. **+5% por pago con tarjeta**, igual que en las cotizaciones.
+- **Política** (visible antes de pagar): si al abrir la venta no hay cupo en la fecha, ruta u hora elegida, se ofrece otra opción o se **reembolsa el 100%**.
 
 ## Página
 
-`/machu-picchu-2027`, `/en/machu-picchu-2027`, `/ja/machu-picchu-2027`. Estática (●). El formulario y el pago corren en el cliente y en server actions, así que la página no se vuelve dinámica.
+`/disponibilidad-machu-picchu-2027`, `/en/disponibilidad-machu-picchu-2027`, `/ja/disponibilidad-machu-picchu-2027`. Estática (●).
+
+**Nombre:**
+- Título: "Machu Picchu 2027: Disponibilidad y Entradas" (EN: "Machu Picchu 2027: Availability & Tickets"; JA: "マチュピチュ2027：空き状況とチケット").
+- Subtítulo: "Asegura tu fecha antes de que abra la venta oficial".
+- Meta title igual al título. El formulario y el pago corren en el cliente y en server actions, así que la página no se vuelve dinámica.
 
 ### 1. Cabecera
 - Título y aviso: "La venta oficial 2027 abre en diciembre. Pre-reserva hoy y compramos tu entrada apenas abra."
