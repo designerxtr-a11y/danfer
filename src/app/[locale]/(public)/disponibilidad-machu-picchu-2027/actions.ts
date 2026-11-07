@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPaypalOrder, capturePaypalOrder } from "@/lib/paypal";
 import { isValid2027Date, mp2027Total, routeById, MAX_TRAVELERS } from "@/lib/mp2027/data";
@@ -162,6 +163,8 @@ export async function captureMp2027Order(orderId: string): Promise<{ ok: true; c
       .from("bookings")
       .update({ status: "confirmed", payment_status: "paid", updated_at: new Date().toISOString() })
       .eq("id", booking.id);
+    // Marca la fecha en el calendario público
+    revalidatePath("/[locale]/disponibilidad-machu-picchu-2027", "page");
     return { ok: true, code: booking.booking_code };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "PayPal error" };

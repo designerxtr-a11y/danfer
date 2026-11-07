@@ -9,7 +9,25 @@ import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import { TripadvisorRating } from "@/components/tours/tripadvisor-badge";
 import type { Locale } from "@/types/database";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { Mp2027Booking } from "./booking";
+
+// Las fechas con pre-reservas pagadas se marcan en el calendario. ISR: se
+// regenera al pagar (revalidatePath en la captura) y como red cada 10 min.
+export const revalidate = 600;
+
+/** Viajeros con pago confirmado por fecha de 2027 (solo conteos, sin datos personales). */
+async function bookedDates(): Promise<Record<string, number>> {
+  const { data } = await createAdminClient()
+    .from("bookings")
+    .select("travel_date, travelers")
+    .eq("payment_status", "paid")
+    .gte("travel_date", "2027-01-01")
+    .lte("travel_date", "2027-12-31");
+  const out: Record<string, number> = {};
+  for (const b of data ?? []) out[b.travel_date] = (out[b.travel_date] ?? 0) + (b.travelers ?? 1);
+  return out;
+}
 
 const PATH = "/disponibilidad-machu-picchu-2027";
 
@@ -67,7 +85,7 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
   const { locale } = await params;
   setRequestLocale(locale);
   const lc = toLocale(locale);
-  const settings = await getSettings();
+  const [settings, booked] = await Promise.all([getSettings(), bookedDates()]);
   const crumbs = [
     { name: L(lc, { es: "Inicio", en: "Home", ja: "ホーム" }), url: "/" },
     { name: L(lc, { es: "Disponibilidad 2027", en: "Availability 2027", ja: "2027年の空き状況" }), url: PATH },
@@ -112,6 +130,7 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
           locale={lc}
           paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
           whatsapp={normalizeWhatsApp(settings.whatsapp)}
+          booked={booked}
         />
 
         <section className="mt-16">

@@ -19,10 +19,12 @@ export function Mp2027Calendar({
   locale,
   value,
   onChange,
+  booked = {},
 }: {
   locale: Locale;
   value: string | null;
   onChange: (iso: string) => void;
+  booked?: Record<string, number>;
 }) {
   const [month, setMonth] = useState(value ? Number(value.slice(5, 7)) - 1 : 0); // 0..11 de 2027
   const first = new Date(Date.UTC(2027, month, 1));
@@ -75,21 +77,36 @@ export function Mp2027Calendar({
         {Array.from({ length: daysInMonth }, (_, i) => {
           const iso = `2027-${pad(month + 1)}-${pad(i + 1)}`;
           const selected = iso === value;
+          const taken = booked[iso] ?? 0;
           return (
             <button
               key={iso}
               type="button"
               onClick={() => onChange(iso)}
               aria-pressed={selected}
-              className={`h-10 sm:h-11 rounded-xl text-sm font-medium transition ${
+              title={
+                taken
+                  ? L(locale, {
+                      es: "Ya hay viajeros para esta fecha",
+                      en: "Travelers already booked for this date",
+                      ja: "この日はすでに予約があります",
+                    })
+                  : undefined
+              }
+              className={`relative h-10 sm:h-11 rounded-xl text-sm font-medium transition ${
                 selected
                   ? "bg-gold text-night shadow-glow"
-                  : high
-                    ? "bg-terracotta/8 text-night hover:bg-gold/30"
-                    : "bg-stone text-night hover:bg-gold/30"
+                  : taken
+                    ? "bg-terracotta text-white hover:bg-terracotta/85"
+                    : high
+                      ? "bg-terracotta/8 text-night hover:bg-gold/30"
+                      : "bg-stone text-night hover:bg-gold/30"
               }`}
             >
               {i + 1}
+              {taken > 0 && !selected && (
+                <span className="absolute top-1 right-1.5 w-1.5 h-1.5 rounded-full bg-white" aria-hidden />
+              )}
             </button>
           );
         })}
@@ -103,6 +120,10 @@ export function Mp2027Calendar({
         <span className="inline-flex items-center gap-1.5">
           <span className="w-3 h-3 rounded bg-terracotta/20" />
           {L(locale, { es: "Alta demanda", en: "High demand", ja: "混雑期" })}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded bg-terracotta" />
+          {L(locale, { es: "Ya hay viajeros para esta fecha", en: "Travelers already booked", ja: "予約あり" })}
         </span>
       </div>
     </div>

@@ -39,10 +39,12 @@ export function Mp2027Booking({
   locale,
   paypalClientId,
   whatsapp,
+  booked = {},
 }: {
   locale: Locale;
   paypalClientId?: string;
   whatsapp: string;
+  booked?: Record<string, number>;
 }) {
   const [draftId] = useState(() =>
     Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("")
@@ -139,7 +141,7 @@ export function Mp2027Booking({
   return (
     <div className="space-y-12">
       <Step n={1} title={L(locale, { es: "Elige tu fecha en 2027", en: "Pick your 2027 date", ja: "2027年の日付を選ぶ" })}>
-        <Mp2027Calendar locale={locale} value={date} onChange={setDate} />
+        <Mp2027Calendar locale={locale} value={date} onChange={setDate} booked={booked} />
       </Step>
 
       <Step n={2} title={L(locale, { es: "Ruta y hora de ingreso", en: "Route and entry time", ja: "ルートと入場時間" })}>
