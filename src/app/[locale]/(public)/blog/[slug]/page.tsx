@@ -22,7 +22,7 @@ import {
   Ticket,
   Users,
   Backpack,
-  Sparkles,
+  Compass,
   type LucideIcon,
 } from "lucide-react";
 import { getPostBySlug, getRelatedPosts } from "@/lib/queries/blog";
@@ -80,7 +80,7 @@ const H2_ICON_RULES: [RegExp, LucideIcon][] = [
 ];
 function iconForHeading(text: string): LucideIcon {
   for (const [re, Icon] of H2_ICON_RULES) if (re.test(text)) return Icon;
-  return Sparkles;
+  return Compass;
 }
 
 // h2 con id estable → anclas del índice de contenidos, más un ícono

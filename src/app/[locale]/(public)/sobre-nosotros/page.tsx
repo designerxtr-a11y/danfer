@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { L, toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
-import { Shield, Award, Heart, Mountain, Users, Sparkles, ArrowRight } from "lucide-react";
+import { Shield, Award, Heart, Mountain, Users, Route, ArrowRight } from "lucide-react";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
 import type { Locale } from "@/types/database";
 import { setRequestLocale } from "next-intl/server";
@@ -251,7 +251,7 @@ export default async function SobreNosotrosPage({
             label={L(lc, { es: "Viajeros felices", en: "Happy travelers" })}
           />
           <Stat
-            icon={Sparkles}
+            icon={Route}
             value="35"
             label={L(lc, { es: "Rutas exclusivas", en: "Exclusive routes" })}
           />
