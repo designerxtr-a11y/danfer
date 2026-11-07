@@ -1,5 +1,6 @@
 import { Clock, Compass, Mountain, Users } from "lucide-react";
 import type { Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 /** Tarjeta de datos rápidos: duración, tipo de tour, dificultad y grupo. */
 export function TourQuickFacts({
@@ -15,15 +16,14 @@ export function TourQuickFacts({
   groupSize: number;
   locale?: Locale;
 }) {
-  const en = locale === "en";
   const facts = [
-    { icon: Clock, label: en ? "Duration" : "Duración", value: duration },
-    ...(type ? [{ icon: Compass, label: en ? "Tour type" : "Tipo de tour", value: type }] : []),
-    { icon: Mountain, label: en ? "Difficulty" : "Dificultad", value: difficulty },
+    { icon: Clock, label: L(locale, { es: "Duración", en: "Duration", ja: "所要時間" }), value: duration },
+    ...(type ? [{ icon: Compass, label: L(locale, { es: "Tipo de tour", en: "Tour type", ja: "ツアータイプ" }), value: type }] : []),
+    { icon: Mountain, label: L(locale, { es: "Dificultad", en: "Difficulty", ja: "難易度" }), value: difficulty },
     {
       icon: Users,
-      label: en ? "Group size" : "Tamaño del grupo",
-      value: en ? `Up to ${groupSize} people` : `Hasta ${groupSize} personas`,
+      label: L(locale, { es: "Tamaño del grupo", en: "Group size", ja: "グループ人数" }),
+      value: L(locale, { es: `Hasta ${groupSize} personas`, en: `Up to ${groupSize} people`, ja: `最大${groupSize}名` }),
     },
   ];
 

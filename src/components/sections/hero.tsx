@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n/provider";
 import { ArrowRight, Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { HERO_CARD_DEFAULTS, type HeroCard } from "@/lib/hero-cards";
 import type { HeroCardText } from "@/lib/queries/settings";
+import { L } from "@/lib/i18n/pick";
 
 // Chips de destinos enlazados (anchor descriptivo + transfiere PageRank a /destinos)
 const destinationChips = [
@@ -80,9 +81,7 @@ export function Hero({
 
   // Keyword visible sobre el H1 (refuerza "tours en Cusco / Machu Picchu" on-page)
   const keyword =
-    locale === "en"
-      ? "Cusco & Machu Picchu Tours"
-      : "Tours en Cusco y Machu Picchu";
+    L(locale, { es: "Tours en Cusco y Machu Picchu", en: "Cusco & Machu Picchu Tours", ja: "クスコ＆マチュピチュツアー" });
 
   // Tarjetas "en cola": todas menos la activa, empezando por la siguiente
   // (la que sale de la cola al activarse reaparece al final tras el loop).
@@ -302,7 +301,7 @@ export function Hero({
           <span className="w-px h-7 bg-white/15 hidden md:block" />
           <BottomStat
             value="100%"
-            label={locale === "en" ? "Certified guides" : "Guías certificados"}
+            label={L(locale, { es: "Guías certificados", en: "Certified guides", ja: "認定ガイド" })}
           />
 
           <div className="hidden lg:flex items-center gap-2 text-white/50 text-[10px] uppercase tracking-widest">

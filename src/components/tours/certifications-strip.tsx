@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { CERTIFICATIONS } from "@/lib/certifications";
 import type { Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 export function CertificationsStrip({ locale = "es" }: { locale?: Locale }) {
   if (CERTIFICATIONS.length === 0) return null;
-  const en = locale === "en";
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-night/8">
       <p className="text-[11px] uppercase tracking-wider font-semibold text-gold mb-6">
-        {en ? "Licenses and associations" : "Licencias y asociaciones"}
+        {L(locale, { es: "Licencias y asociaciones", en: "Licenses and associations", ja: "許認可・加盟団体" })}
       </p>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-4">
         {CERTIFICATIONS.map((c) => (

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getLocale } from "next-intl/server";
+import { L, toLocale } from "@/lib/i18n/pick";
 
 /**
  * Franja de acreditaciones. SOLO deben listarse organismos en los que la
@@ -40,9 +41,9 @@ const CERTIFICATIONS: Certification[] = [
 export async function Certifications() {
   if (CERTIFICATIONS.length === 0) return null;
 
-  const locale = await getLocale();
+  const locale = toLocale(await getLocale());
   const eyebrow =
-    locale === "en" ? "Registered and affiliated with" : "Registrados y afiliados a";
+    L(locale, { es: "Registrados y afiliados a", en: "Registered and affiliated with", ja: "登録・加盟団体" });
 
   return (
     <section className="py-14 border-y border-night/5 bg-white overflow-hidden">

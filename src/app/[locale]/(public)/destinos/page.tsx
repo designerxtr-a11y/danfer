@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { ArrowRight, Mountain, MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { listDestinations } from "@/lib/destinations-content";
@@ -20,23 +20,15 @@ export async function generateMetadata({
   const lc: Locale = toLocale(locale);
   return {
     title:
-      lc === "en"
-        ? "Destinations in Cusco · Tours by region · Danfer Tours"
-        : "Destinos en Cusco · Tours por región · Danfer Tours",
+      L(lc, { es: "Destinos en Cusco · Tours por región · Danfer Tours", en: "Destinations in Cusco · Tours by region · Danfer Tours", ja: "クスコの目的地・地域別ツアー · Danfer Tours" }),
     description:
-      lc === "en"
-        ? "Explore all of Cusco's tourist destinations with Danfer Tours: Machu Picchu, Inca Trail, Sacred Valley, Rainbow Mountain, Humantay Lake. Certified local guides."
-        : "Explora todos los destinos turísticos del Cusco con Danfer Tours: Machu Picchu, Camino Inca, Valle Sagrado, Rainbow Mountain, Laguna Humantay. Guías locales certificados.",
+      L(lc, { es: "Explora todos los destinos turísticos del Cusco con Danfer Tours: Machu Picchu, Camino Inca, Valle Sagrado, Rainbow Mountain, Laguna Humantay. Guías locales certificados.", en: "Explore all of Cusco's tourist destinations with Danfer Tours: Machu Picchu, Inca Trail, Sacred Valley, Rainbow Mountain, Humantay Lake. Certified local guides.", ja: "Danfer Toursでクスコの観光地をめぐろう：マチュピチュ、インカ道、聖なる谷、レインボーマウンテン、フマンタイ湖。認定の地元ガイドがご案内します。" }),
     alternates: buildAlternates("/destinos", lc, { jaAvailable: true }),
     openGraph: {
       title:
-        lc === "en"
-          ? "Destinations in Cusco · Danfer Tours"
-          : "Destinos en Cusco · Danfer Tours",
+        L(lc, { es: "Destinos en Cusco · Danfer Tours", en: "Destinations in Cusco · Danfer Tours", ja: "クスコの目的地 · Danfer Tours" }),
       description:
-        lc === "en"
-          ? "Machu Picchu, Inca Trail, Sacred Valley, Rainbow Mountain, Humantay and more. Premium tours with an official operator."
-          : "Machu Picchu, Camino Inca, Valle Sagrado, Rainbow Mountain, Humantay y más. Tours premium con operador oficial.",
+        L(lc, { es: "Machu Picchu, Camino Inca, Valle Sagrado, Rainbow Mountain, Humantay y más. Tours premium con operador oficial.", en: "Machu Picchu, Inca Trail, Sacred Valley, Rainbow Mountain, Humantay and more. Premium tours with an official operator.", ja: "マチュピチュ、インカ道、聖なる谷、レインボーマウンテン、フマンタイ湖など。公認旅行会社によるプレミアムツアー。" }),
       locale: ogLocale(lc),
     },
   };
@@ -89,18 +81,14 @@ export default async function DestinationsIndexPage({
       <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-10 md:mb-12">
         <Breadcrumbs items={crumbs} className="mb-4" />
         <span className="font-hand text-gold text-2xl">
-          {lc === "en"
-            ? `${destinations.length} must-see destinations`
-            : `${destinations.length} destinos imperdibles`}
+          {L(lc, { es: `${destinations.length} destinos imperdibles`, en: `${destinations.length} must-see destinations`, ja: `必見の目的地${destinations.length}か所` })}
         </span>
         <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl text-night max-w-4xl leading-[1.02]">
-          {lc === "en" ? "Destinations in " : "Destinos en "}
+          {L(lc, { es: "Destinos en ", en: "Destinations in ", ja: "目的地：" })}
           <span className="text-gradient-gold italic">Cusco</span>
         </h1>
         <p className="mt-6 text-night/65 max-w-2xl leading-relaxed">
-          {lc === "en"
-            ? "From the sacred citadel of Machu Picchu to the snow peaks of Salkantay and the multicolored mountains of Vinicunca — every destination in Cusco is a different story of the Inca Empire and the Peruvian Andes. We run daily tours to all the listed places, with certified local guides and small groups."
-            : "Desde la ciudadela sagrada de Machu Picchu hasta los nevados de Salkantay y las montañas multicolores de Vinicunca — cada destino del Cusco es una historia diferente del Imperio Inca y los Andes peruanos. Operamos tours diarios a todos los lugares listados, con guías locales certificados y grupos pequeños."}
+          {L(lc, { es: "Desde la ciudadela sagrada de Machu Picchu hasta los nevados de Salkantay y las montañas multicolores de Vinicunca — cada destino del Cusco es una historia diferente del Imperio Inca y los Andes peruanos. Operamos tours diarios a todos los lugares listados, con guías locales certificados y grupos pequeños.", en: "From the sacred citadel of Machu Picchu to the snow peaks of Salkantay and the multicolored mountains of Vinicunca — every destination in Cusco is a different story of the Inca Empire and the Peruvian Andes. We run daily tours to all the listed places, with certified local guides and small groups." })}
         </p>
       </section>
 
@@ -132,7 +120,7 @@ export default async function DestinationsIndexPage({
 
               {i === 0 && (
                 <div className="absolute top-5 left-5 flex items-center gap-1.5 bg-gradient-to-r from-gold to-gold-bright text-night text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full shadow-lg">
-                  {lc === "en" ? "Destination #1" : "Destino #1"}
+                  {L(lc, { es: "Destino #1", en: "Destination #1", ja: "人気No.1の目的地" })}
                 </div>
               )}
 
@@ -155,7 +143,7 @@ export default async function DestinationsIndexPage({
                   {d.tagline}
                 </p>
                 <div className="mt-4 inline-flex items-center gap-2 text-gold text-xs uppercase tracking-widest font-semibold">
-                  {lc === "en" ? "Explore destination" : "Explorar destino"}
+                  {L(lc, { es: "Explorar destino", en: "Explore destination", ja: "目的地を見る" })}
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
                 </div>
               </div>

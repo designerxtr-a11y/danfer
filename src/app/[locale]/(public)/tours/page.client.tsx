@@ -13,6 +13,7 @@ import type {
   Locale,
 } from "@/types/database";
 import { t } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 interface Props {
   tours: TourWithCategory[];
@@ -24,21 +25,21 @@ export function ToursPageClient({ tours, categories }: Props) {
   const m = tr(locale);
 
   const difficulties: { value: Difficulty; label: string }[] = [
-    { value: "easy", label: locale === "en" ? "Easy" : "Fácil" },
-    { value: "moderate", label: locale === "en" ? "Moderate" : "Moderado" },
+    { value: "easy", label: L(locale, { es: "Fácil", en: "Easy", ja: "やさしい" }) },
+    { value: "moderate", label: L(locale, { es: "Moderado", en: "Moderate", ja: "普通" }) },
     {
       value: "challenging",
-      label: locale === "en" ? "Challenging" : "Exigente",
+      label: L(locale, { es: "Exigente", en: "Challenging", ja: "きつい" }),
     },
-    { value: "expert", label: locale === "en" ? "Expert" : "Experto" },
+    { value: "expert", label: L(locale, { es: "Experto", en: "Expert", ja: "上級者向け" }) },
   ];
 
   const sortOptions = [
-    { value: "popular", label: locale === "en" ? "Most popular" : "Más populares" },
-    { value: "price-asc", label: locale === "en" ? "Price ↑" : "Precio ↑" },
-    { value: "price-desc", label: locale === "en" ? "Price ↓" : "Precio ↓" },
-    { value: "rating", label: locale === "en" ? "Top rated" : "Mejor calificados" },
-    { value: "duration", label: locale === "en" ? "Duration" : "Duración" },
+    { value: "popular", label: L(locale, { es: "Más populares", en: "Most popular", ja: "人気順" }) },
+    { value: "price-asc", label: L(locale, { es: "Precio ↑", en: "Price ↑", ja: "料金が安い順" }) },
+    { value: "price-desc", label: L(locale, { es: "Precio ↓", en: "Price ↓", ja: "料金が高い順" }) },
+    { value: "rating", label: L(locale, { es: "Mejor calificados", en: "Top rated", ja: "評価が高い順" }) },
+    { value: "duration", label: L(locale, { es: "Duración", en: "Duration", ja: "所要時間" }) },
   ];
 
   const [category, setCategory] = useState<string | null>(null);
@@ -92,7 +93,7 @@ export function ToursPageClient({ tours, categories }: Props) {
           className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-stone hover:bg-cream border border-night/8 text-night text-sm transition"
         >
           <SlidersHorizontal className="w-4 h-4" />
-          {locale === "en" ? "Filters" : "Filtros"}
+          {L(locale, { es: "Filtros", en: "Filters", ja: "絞り込み" })}
           {activeCount > 0 && (
             <span className="ml-1 px-1.5 py-0.5 rounded-full bg-gold text-white text-[10px] font-bold">
               {activeCount}
@@ -130,11 +131,11 @@ export function ToursPageClient({ tours, categories }: Props) {
             <div className="bg-stone border border-night/8 rounded-2xl p-4 sm:p-6 grid md:grid-cols-3 gap-6 md:gap-8">
               <div>
                 <div className="text-xs uppercase tracking-widest text-night/50 mb-3">
-                  {locale === "en" ? "Category" : "Categoría"}
+                  {L(locale, { es: "Categoría", en: "Category", ja: "カテゴリー" })}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Pill active={!category} onClick={() => setCategory(null)}>
-                    {locale === "en" ? "All" : "Todas"}
+                    {L(locale, { es: "Todas", en: "All", ja: "すべて" })}
                   </Pill>
                   {categories.map((c) => (
                     <Pill
@@ -150,14 +151,14 @@ export function ToursPageClient({ tours, categories }: Props) {
 
               <div>
                 <div className="text-xs uppercase tracking-widest text-night/50 mb-3">
-                  {locale === "en" ? "Difficulty" : "Dificultad"}
+                  {L(locale, { es: "Dificultad", en: "Difficulty", ja: "難易度" })}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Pill
                     active={!difficulty}
                     onClick={() => setDifficulty(null)}
                   >
-                    {locale === "en" ? "All" : "Todas"}
+                    {L(locale, { es: "Todas", en: "All", ja: "すべて" })}
                   </Pill>
                   {difficulties.map((d) => (
                     <Pill
@@ -174,7 +175,7 @@ export function ToursPageClient({ tours, categories }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs uppercase tracking-widest text-night/50">
-                    {locale === "en" ? "Max price" : "Precio máximo"}
+                    {L(locale, { es: "Precio máximo", en: "Max price", ja: "上限料金" })}
                   </span>
                   <span className="text-gold font-semibold">US${priceMax}</span>
                 </div>
@@ -195,7 +196,7 @@ export function ToursPageClient({ tours, categories }: Props) {
                   className="flex items-center gap-2 text-night/60 hover:text-gold text-sm transition"
                 >
                   <X className="w-4 h-4" />
-                  {locale === "en" ? "Clear filters" : "Limpiar filtros"}
+                  {L(locale, { es: "Limpiar filtros", en: "Clear filters", ja: "条件をクリア" })}
                 </button>
               </div>
             </div>
@@ -207,12 +208,10 @@ export function ToursPageClient({ tours, categories }: Props) {
       {filtered.length === 0 ? (
         <div className="text-center py-32 text-night/40">
           <p>
-            {locale === "en"
-              ? "No tours match those filters."
-              : "No hay tours con esos filtros."}
+            {L(locale, { es: "No hay tours con esos filtros.", en: "No tours match those filters.", ja: "条件に合うツアーがありません。" })}
           </p>
           <button onClick={reset} className="mt-4 text-gold hover:underline">
-            {locale === "en" ? "Clear filters" : "Limpiar filtros"}
+            {L(locale, { es: "Limpiar filtros", en: "Clear filters", ja: "条件をクリア" })}
           </button>
         </div>
       ) : (

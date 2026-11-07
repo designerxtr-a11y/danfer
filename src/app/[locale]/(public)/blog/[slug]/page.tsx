@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -137,7 +137,7 @@ export async function generateMetadata({ params }: PageProps) {
       title,
       description,
       type: "article",
-      url: lc === "en" ? `/en/blog/${post.slug}` : `/blog/${post.slug}`,
+      url: L(lc, { es: `/blog/${post.slug}`, en: `/en/blog/${post.slug}`, ja: `/ja/blog/${post.slug}` }),
       locale: ogLocale(lc),
       // og:image la genera opengraph-image.tsx (file convention pisa este campo)
       publishedTime: post.published_at ?? post.created_at,
@@ -212,7 +212,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   });
 
   const crumbs = [
-    { name: lc === "en" ? "Home" : "Inicio", url: "/" },
+    { name: L(lc, { es: "Inicio", en: "Home", ja: "ホーム" }), url: "/" },
     { name: "Blog", url: "/blog" },
     { name: t(post.title, lc), url: `/blog/${post.slug}` },
   ];
@@ -281,7 +281,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
               {new Date(post.published_at).toLocaleDateString(
-                lc === "en" ? "en-US" : "es-PE",
+                L(lc, { es: "es-PE", en: "en-US", ja: "ja-JP" }),
                 {
                   day: "numeric",
                   month: "long",
@@ -292,7 +292,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
           <span className="flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5" />
-            {post.read_minutes} {lc === "en" ? "min read" : "min de lectura"}
+            {post.read_minutes} {L(lc, { es: "min de lectura", en: "min read", ja: "分で読めます" })}
           </span>
         </div>
 
@@ -348,7 +348,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             href={`/tours/${sidebarTour.slug}`}
             className="mt-3 flex items-center justify-center gap-1.5 text-sm font-semibold text-night/70 hover:text-gold transition"
           >
-            {lc === "en" ? "See the full tour" : "Ver el tour completo"}
+            {L(lc, { es: "Ver el tour completo", en: "See the full tour", ja: "ツアーの詳細を見る" })}
             <ChevronLeft className="w-4 h-4 rotate-180" />
           </Link>
         </aside>
@@ -358,7 +358,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       {related.length > 0 && (
         <section className="max-w-5xl mx-auto px-4 sm:px-6 mt-16 md:mt-24 pt-12 md:pt-16 border-t border-night/8">
           <h2 className="font-display text-2xl sm:text-3xl text-night mb-8">
-            {lc === "en" ? "Keep reading" : "Sigue leyendo"}
+            {L(lc, { es: "Sigue leyendo", en: "Keep reading", ja: "続けて読む" })}
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
             {related.map((p) => (

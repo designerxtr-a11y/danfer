@@ -1,6 +1,7 @@
 import { LegalShell } from "@/components/legal/legal-shell";
 import { buildAlternates } from "@/lib/seo/alternates";
 import { setRequestLocale } from "next-intl/server";
+import { L, toLocale } from "@/lib/i18n/pick";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -8,14 +9,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
-  const en = locale === "en";
   return {
-    title: en
-      ? "Cancellation policy · Danfer Tours Cusco"
-      : "Política de cancelación · Danfer Tours Cusco",
-    description: en
-      ? "Clear, fair cancellation, refund and date-change policy for Danfer Tours Cusco tours."
-      : "Política clara y justa de cancelaciones, reembolsos y cambios para tours de Danfer Tours Cusco.",
+    title: L(toLocale(locale), { es: "Política de cancelación · Danfer Tours Cusco", en: "Cancellation policy · Danfer Tours Cusco" }),
+    description: L(toLocale(locale), { es: "Política clara y justa de cancelaciones, reembolsos y cambios para tours de Danfer Tours Cusco.", en: "Clear, fair cancellation, refund and date-change policy for Danfer Tours Cusco tours." }),
     alternates: buildAlternates("/cancelacion", locale),
   };
 }
@@ -23,7 +19,8 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function CancelacionPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return locale === "en" ? <CancellationEn /> : <CancelacionEs />;
+  // /ja muestra la versión en inglés (sin traducción japonesa todavía)
+  return locale === "es" ? <CancelacionEs /> : <CancellationEn />;
 }
 
 function CancelacionEs() {

@@ -1,15 +1,15 @@
 import { MessageCircle } from "lucide-react";
+import { L } from "@/lib/i18n/pick";
+import type { Locale } from "@/types/database";
 
 /** Mensaje prellenado: el asesor ve de qué artículo viene cada chat. */
 export function postWhatsAppHref(
   whatsapp: string,
   postTitle: string,
-  locale: "es" | "en"
+  locale: Locale
 ) {
   const msg =
-    locale === "en"
-      ? `Hi Danfer Tours, I read your article "${postTitle}" and I'd like information for my trip to Cusco.`
-      : `Hola Danfer Tours, leí su artículo "${postTitle}" y quiero información para mi viaje a Cusco.`;
+    L(locale, { es: `Hola Danfer Tours, leí su artículo "${postTitle}" y quiero información para mi viaje a Cusco.`, en: `Hi Danfer Tours, I read your article "${postTitle}" and I'd like information for my trip to Cusco.` });
   return `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -31,9 +31,8 @@ export function WhatsAppCta({
   title?: string;
   children?: React.ReactNode;
   href: string;
-  locale: "es" | "en";
+  locale: Locale;
 }) {
-  const en = locale === "en";
   return (
     <aside className="not-prose my-10 rounded-2xl border border-gold/30 bg-gold/5 p-6 sm:p-7">
       {title && (
@@ -53,7 +52,7 @@ export function WhatsAppCta({
         className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-white font-semibold text-sm sm:text-base hover:brightness-95 transition"
       >
         <MessageCircle className="w-4 h-4" />
-        {en ? "Ask us on WhatsApp" : "Consúltanos por WhatsApp"}
+        {L(locale, { es: "Consúltanos por WhatsApp", en: "Ask us on WhatsApp", ja: "WhatsAppで質問する" })}
       </a>
     </aside>
   );

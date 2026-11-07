@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 interface Props {
   value: string | null;
@@ -16,10 +17,10 @@ interface Props {
 const WEEKDAYS = {
   es: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"],
   en: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+  ja: ["月", "火", "水", "木", "金", "土", "日"],
 };
 
 export function DatePicker({ value, onChange, min, locale }: Props) {
-  const en = locale === "en";
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(() => monthStart(value ?? min));
   const ref = useRef<HTMLDivElement>(null);
@@ -45,7 +46,7 @@ export function DatePicker({ value, onChange, min, locale }: Props) {
   const offset = (view.getUTCDay() + 6) % 7;
   const canGoBack = toIso(view) > min.slice(0, 7) + "-01";
 
-  const rawMonthLabel = view.toLocaleDateString(en ? "en-US" : "es-PE", {
+  const rawMonthLabel = view.toLocaleDateString(L(locale, { es: "es-PE", en: "en-US", ja: "ja-JP" }), {
     month: "long",
     year: "numeric",
     timeZone: "UTC",
@@ -65,7 +66,7 @@ export function DatePicker({ value, onChange, min, locale }: Props) {
       >
         <span className={`flex items-center gap-2 ${value ? "text-night" : "text-night/50"}`}>
           <Calendar className="w-4 h-4 text-gold" />
-          {value ? formatLong(value, locale) : en ? "Pick a date" : "Elige tu fecha"}
+          {value ? formatLong(value, locale) : L(locale, { es: "Elige tu fecha", en: "Pick a date", ja: "日付を選択" })}
         </span>
         <ChevronRight
           className={`w-4 h-4 text-night/40 transition-transform ${open ? "rotate-90" : ""}`}
@@ -86,7 +87,7 @@ export function DatePicker({ value, onChange, min, locale }: Props) {
                 type="button"
                 onClick={() => shiftMonth(-1)}
                 disabled={!canGoBack}
-                aria-label={en ? "Previous month" : "Mes anterior"}
+                aria-label={L(locale, { es: "Mes anterior", en: "Previous month", ja: "前の月" })}
                 className="w-8 h-8 grid place-items-center rounded-full text-night hover:bg-stone transition disabled:opacity-25 disabled:hover:bg-transparent"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -95,7 +96,7 @@ export function DatePicker({ value, onChange, min, locale }: Props) {
               <button
                 type="button"
                 onClick={() => shiftMonth(1)}
-                aria-label={en ? "Next month" : "Mes siguiente"}
+                aria-label={L(locale, { es: "Mes siguiente", en: "Next month", ja: "次の月" })}
                 className="w-8 h-8 grid place-items-center rounded-full text-night hover:bg-stone transition"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -153,7 +154,7 @@ function toIso(d: Date) {
 }
 
 function formatLong(iso: string, locale: Locale) {
-  const label = new Date(iso + "T00:00:00Z").toLocaleDateString(locale === "en" ? "en-US" : "es-PE", {
+  const label = new Date(iso + "T00:00:00Z").toLocaleDateString(L(locale, { es: "es-PE", en: "en-US", ja: "ja-JP" }), {
     weekday: "long",
     day: "numeric",
     month: "long",

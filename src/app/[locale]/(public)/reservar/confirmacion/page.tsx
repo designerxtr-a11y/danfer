@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { CheckCircle2, Calendar, Users, Mail, Download } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { t, type Locale } from "@/types/database";
@@ -25,7 +25,7 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
     return (
       <div className="pt-32 min-h-screen grid place-items-center">
         <p className="text-night/60">
-          {lc === "en" ? "Invalid booking code." : "Código de reserva inválido."}
+          {L(lc, { es: "Código de reserva inválido.", en: "Invalid booking code.", ja: "予約コードが無効です。" })}
         </p>
       </div>
     );
@@ -42,9 +42,7 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
     return (
       <div className="pt-32 min-h-screen grid place-items-center">
         <p className="text-night/60">
-          {lc === "en"
-            ? "We couldn't find that booking."
-            : "No encontramos esa reserva."}
+          {L(lc, { es: "No encontramos esa reserva.", en: "We couldn't find that booking.", ja: "予約が見つかりませんでした。" })}
         </p>
       </div>
     );
@@ -58,10 +56,18 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
           <h1 className="font-display text-5xl text-night">
-            {lc === "en" ? "Booking created!" : "¡Reserva creada!"}
+            {L(lc, { es: "¡Reserva creada!", en: "Booking created!", ja: "予約を受け付けました！" })}
           </h1>
           <p className="mt-3 text-night/60">
-            {lc === "en" ? (
+            {lc === "ja" ? (
+              <>
+                詳細を{" "}
+                <span className="text-night font-medium">
+                  {booking.customer_email}
+                </span>
+                {" "}にお送りしました。数時間以内にお支払い方法のメールが届きます。
+              </>
+            ) : lc === "en" ? (
               <>
                 We sent the details to{" "}
                 <span className="text-night font-medium">
@@ -87,7 +93,7 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
           <div className="bg-night text-white px-6 py-4 flex items-center justify-between">
             <div>
               <div className="text-xs uppercase tracking-widest opacity-60">
-                {lc === "en" ? "Booking code" : "Código de reserva"}
+                {L(lc, { es: "Código de reserva", en: "Booking code", ja: "予約コード" })}
               </div>
               <div className="font-mono text-2xl font-bold">{booking.booking_code}</div>
             </div>
@@ -104,9 +110,9 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
             />
             <Row
               icon={<Calendar className="w-4 h-4 text-gold" />}
-              label={lc === "en" ? "Departure date" : "Fecha de salida"}
+              label={L(lc, { es: "Fecha de salida", en: "Departure date", ja: "出発日" })}
               value={new Date(booking.travel_date + "T00:00:00").toLocaleDateString(
-                lc === "en" ? "en-US" : "es-PE",
+                L(lc, { es: "es-PE", en: "en-US", ja: "ja-JP" }),
                 {
                   weekday: "long", day: "numeric", month: "long", year: "numeric",
                 }
@@ -114,9 +120,11 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
             />
             <Row
               icon={<Users className="w-4 h-4 text-gold" />}
-              label={lc === "en" ? "Travelers" : "Viajeros"}
+              label={L(lc, { es: "Viajeros", en: "Travelers", ja: "人数" })}
               value={`${booking.travelers} ${
-                lc === "en"
+                lc === "ja"
+                  ? "名"
+                  : lc === "en"
                   ? booking.travelers === 1
                     ? "person"
                     : "people"
@@ -127,13 +135,13 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
             />
             <Row
               icon={<Mail className="w-4 h-4 text-gold" />}
-              label={lc === "en" ? "Contact" : "Contacto"}
+              label={L(lc, { es: "Contacto", en: "Contact", ja: "お問い合わせ" })}
               value={booking.customer_email}
             />
 
             <div className="pt-4 border-t border-night/8 flex items-baseline justify-between">
               <span className="text-night/70">
-                {lc === "en" ? "Total to pay" : "Total a pagar"}
+                {L(lc, { es: "Total a pagar", en: "Total to pay", ja: "お支払い合計" })}
               </span>
               <span className="font-display text-3xl text-night font-bold">
                 {booking.currency} {Number(booking.total_amount).toLocaleString()}
@@ -145,13 +153,13 @@ export default async function ConfirmacionPage({ params, searchParams }: PagePro
         <div className="mt-8 flex flex-wrap gap-3 justify-center">
           <button className="flex items-center gap-2 bg-white border border-night/10 hover:border-gold text-night px-5 py-2.5 rounded-full text-sm transition shadow-soft">
             <Download className="w-4 h-4" />
-            {lc === "en" ? "Download PDF" : "Descargar PDF"}
+            {L(lc, { es: "Descargar PDF", en: "Download PDF", ja: "PDFをダウンロード" })}
           </button>
           <Link
             href="/"
             className="flex items-center gap-2 bg-gold hover:bg-gold-bright text-white px-5 py-2.5 rounded-full text-sm font-medium transition"
           >
-            {lc === "en" ? "Back to site" : "Volver al sitio"}
+            {L(lc, { es: "Volver al sitio", en: "Back to site", ja: "サイトに戻る" })}
           </Link>
         </div>
       </div>

@@ -41,7 +41,13 @@ export function Stats({
             transition={{ duration: 0.8 }}
             className="text-night/70 leading-relaxed max-w-md"
           >
-            {locale === "en" ? (
+            {locale === "ja" ? (
+              <>
+                好奇心あふれる旅人のために旅程をつくっています。夜明けのマチュピチュから、
+                聖なる谷をめぐる伝統的なハイキングまで。毎月先着50名様のご予約は{" "}
+                <span className="text-gold font-semibold">15%オフ</span>になります。
+              </>
+            ) : locale === "en" ? (
               <>
                 We design itineraries for curious travelers: from the citadel of
                 Machu Picchu at dawn to shamanic hikes through sacred valleys.

@@ -1,20 +1,22 @@
 import { Check, X, Backpack } from "lucide-react";
+import { L } from "@/lib/i18n/pick";
+import type { Locale } from "@/types/database";
 
 interface Props {
   includes: string[];
   excludes: string[];
   whatToBring: string[];
-  en?: boolean;
+  locale?: Locale;
 }
 
-export function TourIncludes({ includes, excludes, whatToBring, en = false }: Props) {
+export function TourIncludes({ includes, excludes, whatToBring, locale = "es" }: Props) {
   return (
     <div className="grid md:grid-cols-2 gap-8">
       {includes.length > 0 && (
         <div>
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <Check className="w-5 h-5 text-emerald-600" />
-            {en ? "Included" : "Incluye"}
+            {L(locale, { es: "Incluye", en: "Included", ja: "含まれるもの" })}
           </h3>
           <ul className="space-y-2.5">
             {includes.map((item, i) => (
@@ -31,7 +33,7 @@ export function TourIncludes({ includes, excludes, whatToBring, en = false }: Pr
         <div>
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <X className="w-5 h-5 text-rose-600" />
-            {en ? "Not included" : "No incluye"}
+            {L(locale, { es: "No incluye", en: "Not included", ja: "含まれないもの" })}
           </h3>
           <ul className="space-y-2.5">
             {excludes.map((item, i) => (
@@ -48,7 +50,7 @@ export function TourIncludes({ includes, excludes, whatToBring, en = false }: Pr
         <div className="md:col-span-2">
           <h3 className="font-display text-2xl text-night mb-4 flex items-center gap-2">
             <Backpack className="w-5 h-5 text-gold" />
-            {en ? "What to bring" : "Qué llevar"}
+            {L(locale, { es: "Qué llevar", en: "What to bring", ja: "持ち物" })}
           </h3>
           <ul className="grid sm:grid-cols-2 gap-2.5">
             {whatToBring.map((item, i) => (

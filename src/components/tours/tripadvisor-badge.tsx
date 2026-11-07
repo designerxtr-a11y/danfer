@@ -1,5 +1,6 @@
 import { TRIPADVISOR } from "@/lib/social-proof";
 import type { Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 /** Búho de Tripadvisor (Simple Icons). */
 export function TripadvisorLogo({ className }: { className?: string }) {
@@ -22,7 +23,6 @@ function Bubbles({ size = "w-3.5 h-3.5" }: { size?: string }) {
 
 /** Línea compacta para el bloque de título: logo · burbujas · 5.0 · N opiniones. */
 export function TripadvisorRating({ locale = "es" }: { locale?: Locale }) {
-  const en = locale === "en";
   return (
     <span className="inline-flex items-center gap-2 text-sm text-night">
       <span className="w-6 h-6 rounded-full bg-[#34E0A1] grid place-items-center">
@@ -31,7 +31,7 @@ export function TripadvisorRating({ locale = "es" }: { locale?: Locale }) {
       <Bubbles size="w-3 h-3" />
       <span className="font-semibold">{TRIPADVISOR.rating.toFixed(1)}</span>
       <span className="text-night/60">
-        · {TRIPADVISOR.reviews.toLocaleString("en-US")} {en ? "reviews on Tripadvisor" : "opiniones en Tripadvisor"}
+        · {TRIPADVISOR.reviews.toLocaleString("en-US")} {L(locale, { es: "opiniones en Tripadvisor", en: "reviews on Tripadvisor", ja: "件のトリップアドバイザー口コミ" })}
       </span>
     </span>
   );

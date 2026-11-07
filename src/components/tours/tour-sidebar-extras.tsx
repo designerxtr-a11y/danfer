@@ -1,6 +1,7 @@
 import { MessageCircle, Star, ThumbsUp } from "lucide-react";
 import { FACEBOOK_REVIEWS } from "@/lib/facebook-reviews";
 import type { Locale, Review } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 /**
  * Reseña destacada: la más reciente del tour (con su rating real). Si el tour
@@ -8,7 +9,6 @@ import type { Locale, Review } from "@/types/database";
  * Facebook no las da.
  */
 export function FeaturedReview({ review, locale = "es" }: { review: Review | null; locale?: Locale }) {
-  const en = locale === "en";
   const fb = review ? null : FACEBOOK_REVIEWS[0];
   const name = review?.author_name ?? fb?.author_name;
   const body = review?.body ?? review?.title ?? fb?.body;
@@ -31,7 +31,7 @@ export function FeaturedReview({ review, locale = "es" }: { review: Review | nul
           ) : (
             <span className="inline-flex items-center gap-1 text-xs text-[#1877F2]">
               <ThumbsUp className="w-3 h-3" />
-              {en ? "Recommends us on Facebook" : "Nos recomienda en Facebook"}
+              {L(locale, { es: "Nos recomienda en Facebook", en: "Recommends us on Facebook", ja: "Facebookでおすすめしています" })}
             </span>
           )}
         </div>
@@ -51,22 +51,17 @@ export function ExpertCard({
   tourTitle: string;
   locale?: Locale;
 }) {
-  const en = locale === "en";
-  const msg = en
-    ? `Hi Danfer Tours! 👋 I have some questions about the "${tourTitle}" tour.`
-    : `¡Hola Danfer Tours! 👋 Tengo unas consultas sobre el tour "${tourTitle}".`;
+  const msg = L(locale, { es: `¡Hola Danfer Tours! 👋 Tengo unas consultas sobre el tour "${tourTitle}".`, en: `Hi Danfer Tours! 👋 I have some questions about the "${tourTitle}" tour.` });
   return (
     <div className="bg-white border border-night/8 rounded-3xl p-5 sm:p-6 shadow-soft">
       <p className="text-[10px] uppercase tracking-wider font-semibold text-gold">
-        {en ? "Need local advice?" : "¿Necesitas ayuda local?"}
+        {L(locale, { es: "¿Necesitas ayuda local?", en: "Need local advice?", ja: "現地のアドバイスが必要ですか？" })}
       </p>
       <p className="mt-1 font-display text-xl text-night">
-        {en ? "Talk to a Cusco expert" : "Habla con un experto en Cusco"}
+        {L(locale, { es: "Habla con un experto en Cusco", en: "Talk to a Cusco expert", ja: "クスコの専門スタッフに相談" })}
       </p>
       <p className="mt-2 text-sm text-night/65">
-        {en
-          ? "We help you with acclimatization, private departures and group discounts."
-          : "Te ayudamos con la aclimatación, salidas privadas y descuentos para grupos."}
+        {L(locale, { es: "Te ayudamos con la aclimatación, salidas privadas y descuentos para grupos.", en: "We help you with acclimatization, private departures and group discounts.", ja: "高地順応、プライベートツアー、団体割引などをサポートします。" })}
       </p>
       <a
         href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`}
@@ -75,7 +70,7 @@ export function ExpertCard({
         className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#128C4B] hover:underline"
       >
         <MessageCircle className="w-4 h-4" />
-        {en ? "Message us on WhatsApp" : "Escríbenos por WhatsApp"}
+        {L(locale, { es: "Escríbenos por WhatsApp", en: "Message us on WhatsApp", ja: "WhatsAppでメッセージを送る" })}
       </a>
     </div>
   );

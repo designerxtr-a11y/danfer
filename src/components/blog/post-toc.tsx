@@ -1,8 +1,10 @@
 import { List } from "lucide-react";
+import { L } from "@/lib/i18n/pick";
+import type { Locale } from "@/types/database";
 
 interface Props {
   items: { text: string; id: string }[];
-  locale: "es" | "en";
+  locale: Locale;
 }
 
 /**
@@ -13,7 +15,7 @@ export function PostToc({ items, locale }: Props) {
   if (items.length < 3) return null; // en posts cortos solo estorba
   return (
     <nav
-      aria-label={locale === "en" ? "Table of contents" : "Índice del artículo"}
+      aria-label={L(locale, { es: "Índice del artículo", en: "Table of contents", ja: "目次" })}
       className="mt-10 rounded-2xl border border-gold/25 bg-gradient-to-br from-gold/8 to-transparent p-6 sm:p-7"
     >
       <div className="flex items-center gap-2.5 mb-4">
@@ -21,7 +23,7 @@ export function PostToc({ items, locale }: Props) {
           <List className="w-3.5 h-3.5 text-gold" />
         </span>
         <span className="text-[11px] uppercase tracking-[0.25em] text-night/50 font-medium">
-          {locale === "en" ? "In this article" : "En este artículo"}
+          {L(locale, { es: "En este artículo", en: "In this article", ja: "この記事の内容" })}
         </span>
       </div>
       <ol className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Coffee, UtensilsCrossed, Moon, Tent } from "lucide-react";
 import type { ItineraryDay } from "@/lib/queries/tours";
 import { t, type Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 const mealIcon: Record<string, typeof Coffee> = {
   breakfast: Coffee,
@@ -14,13 +15,14 @@ const mealIcon: Record<string, typeof Coffee> = {
 const mealLabel: Record<Locale, Record<string, string>> = {
   es: { breakfast: "Desayuno", lunch: "Almuerzo", dinner: "Cena" },
   en: { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner" },
+  ja: { breakfast: "朝食", lunch: "昼食", dinner: "夕食" },
 };
 
 export function TourItinerary({ days, locale = "es" }: { days: ItineraryDay[]; locale?: Locale }) {
   return (
     <div>
       <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-8">
-        {locale === "en" ? "Day-by-day itinerary" : "Itinerario día a día"}
+        {L(locale, { es: "Itinerario día a día", en: "Day-by-day itinerary", ja: "日ごとの行程" })}
       </h2>
       <div className="relative">
         <div className="absolute left-5 sm:left-6 top-3 bottom-3 w-px bg-gradient-to-b from-gold via-gold/30 to-transparent" />

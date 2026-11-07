@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { getTourBySlug } from "@/lib/queries/tours";
 import { t, type Locale } from "@/types/database";
 import { CheckoutForm } from "./checkout-form";
@@ -22,7 +22,7 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const lc: Locale = toLocale(locale);
   return {
-    title: lc === "en" ? "Book your tour" : "Reservar tu tour",
+    title: L(lc, { es: "Reservar tu tour", en: "Book your tour", ja: "ツアーを予約する" }),
     robots: { index: false },
     alternates: buildAlternates(`/reservar/${slug}`, lc, { jaAvailable: true }),
   };
@@ -48,16 +48,14 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
           className="inline-flex items-center gap-1.5 text-night/60 hover:text-gold text-sm mb-6 transition"
         >
           <ChevronLeft className="w-4 h-4" />
-          {lc === "en" ? "Back to tour" : "Volver al tour"}
+          {L(lc, { es: "Volver al tour", en: "Back to tour", ja: "ツアーに戻る" })}
         </Link>
 
         <h1 className="font-display text-4xl md:text-5xl text-night mb-2">
-          {lc === "en" ? "Request your tour" : "Solicita tu reserva"}
+          {L(lc, { es: "Solicita tu reserva", en: "Request your tour", ja: "ツアーをリクエスト" })}
         </h1>
         <p className="text-night/60 mb-10">
-          {lc === "en"
-            ? "Send your request and an advisor will get back to you with the price and availability."
-            : "Envía tu solicitud y un asesor te contactará con el precio y la disponibilidad."}
+          {L(lc, { es: "Envía tu solicitud y un asesor te contactará con el precio y la disponibilidad.", en: "Send your request and an advisor will get back to you with the price and availability.", ja: "リクエストを送信すると、担当者が料金と空き状況をご連絡します。" })}
         </p>
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-8">
@@ -88,23 +86,21 @@ export default async function ReservarPage({ params, searchParams }: PageProps) 
                 </h3>
                 <p className="text-sm text-night/60 mt-1">
                   {t(tour.duration_label, lc)} · {tour.max_group_size}{" "}
-                  {lc === "en" ? "max" : "máx"}
+                  {L(lc, { es: "máx", en: "max", ja: "最大" })}
                 </p>
 
                 <div className="mt-6 pt-6 border-t border-night/8 space-y-2 text-sm text-night/70">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-gold" />
-                    {lc === "en" ? "No upfront payment" : "Sin pago por adelantado"}
+                    {L(lc, { es: "Sin pago por adelantado", en: "No upfront payment", ja: "前払い不要" })}
                   </div>
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-gold" />
-                    {lc === "en" ? "Fast reply via WhatsApp/email" : "Respuesta rápida por WhatsApp/email"}
+                    {L(lc, { es: "Respuesta rápida por WhatsApp/email", en: "Fast reply via WhatsApp/email", ja: "WhatsApp・メールで迅速に返信" })}
                   </div>
                   <div className="flex items-center gap-2">
                     <RotateCcw className="w-4 h-4 text-gold" />
-                    {lc === "en"
-                      ? "Free cancellation up to 7 days before"
-                      : "Cancela gratis hasta 7 días antes"}
+                    {L(lc, { es: "Cancela gratis hasta 7 días antes", en: "Free cancellation up to 7 days before", ja: "7日前まで無料キャンセル" })}
                   </div>
                 </div>
               </div>

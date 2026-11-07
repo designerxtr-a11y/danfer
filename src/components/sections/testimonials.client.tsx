@@ -4,6 +4,7 @@ import { Quote, Star, ThumbsUp } from "lucide-react";
 import type { GlobalReview } from "@/lib/queries/reviews";
 import { FACEBOOK_REVIEWS_URL, type FacebookReview } from "@/lib/facebook-reviews";
 import { t, type Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 export function TestimonialsMarquee({
   reviews,
@@ -52,7 +53,7 @@ function FacebookCard({
   locale: Locale;
 }) {
   const date = new Date(`${review.date}T12:00:00Z`).toLocaleDateString(
-    locale === "en" ? "en-US" : "es-PE",
+    L(locale, { es: "es-PE", en: "en-US", ja: "ja-JP" }),
     { month: "long", year: "numeric" }
   );
   return (
@@ -66,7 +67,7 @@ function FacebookCard({
         className="inline-flex items-center gap-1.5 self-start mt-4 mb-3 text-xs font-medium text-[#1877F2] hover:underline"
       >
         <ThumbsUp className="w-3.5 h-3.5" />
-        {locale === "en" ? "Recommends us on Facebook" : "Nos recomienda en Facebook"}
+        {L(locale, { es: "Nos recomienda en Facebook", en: "Recommends us on Facebook", ja: "Facebookでおすすめしています" })}
       </a>
 
       <p className="text-night/70 text-sm leading-relaxed line-clamp-4">

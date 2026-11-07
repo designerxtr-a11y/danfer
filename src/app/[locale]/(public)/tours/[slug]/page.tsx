@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import {
@@ -71,9 +71,7 @@ export async function generateMetadata({ params }: PageProps) {
     t(tour.meta_description, lc) ||
     t(tour.short_desc, lc) ||
     t(tour.subtitle, lc) ||
-    (lc === "en"
-      ? `Guided ${title} tour in Cusco. Book with Danfer Tours, official operator.`
-      : `Tour guiado a ${title} en Cusco. Reserva con Danfer Tours, operador oficial.`);
+    (L(lc, { es: `Tour guiado a ${title} en Cusco. Reserva con Danfer Tours, operador oficial.`, en: `Guided ${title} tour in Cusco. Book with Danfer Tours, official operator.`, ja: `クスコ発${title}ガイド付きツアー。公認旅行会社Danfer Toursで予約。` }));
 
   return {
     title,
@@ -82,7 +80,7 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title: `${title} · Danfer Tours Cusco`,
       description,
-      url: lc === "en" ? `/en/tours/${tour.slug}` : `/tours/${tour.slug}`,
+      url: L(lc, { es: `/tours/${tour.slug}`, en: `/en/tours/${tour.slug}`, ja: `/ja/tours/${tour.slug}` }),
       type: "website",
       locale: ogLocale(lc),
       // og:image la genera opengraph-image.tsx (declararla aquí pisa la file
@@ -147,7 +145,6 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...tour.gallery,
   ].filter((img, i, arr) => img.url && arr.findIndex((x) => x.url === img.url) === i);
   const mosaic = images.length >= 3;
-  const en = lc === "en";
   const title = t(tour.title, lc);
   const intro = t(tour.short_desc, lc) || t(tour.subtitle, lc);
   const importantInfo = tour.important_info ? tList(tour.important_info, lc) : [];
@@ -159,7 +156,7 @@ export default async function TourDetailPage({ params }: PageProps) {
   const tabs: TourTab[] = [
     {
       id: "resumen",
-      label: en ? "Overview" : "Resumen",
+      label: L(lc, { es: "Resumen", en: "Overview", ja: "概要" }),
       icon: <Zap />,
       content: (
         <div className="space-y-10">
@@ -191,7 +188,7 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(itinerary.length > 0
       ? [{
           id: "itinerario",
-          label: en ? "Itinerary" : "Itinerario",
+          label: L(lc, { es: "Itinerario", en: "Itinerary", ja: "行程" }),
           icon: <ScrollText />,
           content: <TourItinerary days={itinerary} locale={lc} />,
         }]
@@ -199,14 +196,14 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(includes.length > 0 || excludes.length > 0
       ? [{
           id: "incluye",
-          label: en ? "Included" : "Incluye",
+          label: L(lc, { es: "Incluye", en: "Included", ja: "含まれるもの" }),
           icon: <ClipboardCheck />,
           content: (
             <>
               <h2 className="font-display text-2xl sm:text-3xl text-night mb-6">
-                {en ? `What's included and not included in the ${title} tour` : `Qué incluye y qué no incluye el tour ${title}`}
+                {L(lc, { es: `Qué incluye y qué no incluye el tour ${title}`, en: `What's included and not included in the ${title} tour`, ja: `${title}ツアーに含まれるもの・含まれないもの` })}
               </h2>
-              <TourIncludes includes={includes} excludes={excludes} whatToBring={[]} en={en} />
+              <TourIncludes includes={includes} excludes={excludes} whatToBring={[]} locale={lc} />
             </>
           ),
         }]
@@ -214,7 +211,7 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(tour.faqs && tour.faqs.length > 0
       ? [{
           id: "preguntas",
-          label: en ? "FAQ" : "Preguntas frecuentes",
+          label: L(lc, { es: "Preguntas frecuentes", en: "FAQ", ja: "よくある質問" }),
           icon: <CircleHelp />,
           content: <TourFaqs faqs={tour.faqs} locale={lc} />,
         }]
@@ -222,11 +219,11 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(importantInfo.length > 0
       ? [{
           id: "info",
-          label: en ? "Useful info" : "Información útil",
+          label: L(lc, { es: "Información útil", en: "Useful info", ja: "お役立ち情報" }),
           icon: <Flag />,
           content: (
             <TabList
-              heading={en ? `Important information for the ${title} tour` : `Información importante del tour ${title}`}
+              heading={L(lc, { es: `Información importante del tour ${title}`, en: `Important information for the ${title} tour`, ja: `${title}ツアーの重要なお知らせ` })}
               items={importantInfo}
               icon={<Info className="w-4 h-4 text-gold shrink-0 mt-1" />}
             />
@@ -236,11 +233,11 @@ export default async function TourDetailPage({ params }: PageProps) {
     ...(whatToBring.length > 0
       ? [{
           id: "que-llevar",
-          label: en ? "What to bring" : "Qué llevar",
+          label: L(lc, { es: "Qué llevar", en: "What to bring", ja: "持ち物" }),
           icon: <Backpack />,
           content: (
             <TabList
-              heading={en ? `What to bring on the ${title} tour` : `Qué llevar al tour ${title}`}
+              heading={L(lc, { es: `Qué llevar al tour ${title}`, en: `What to bring on the ${title} tour`, ja: `${title}ツアーの持ち物` })}
               items={whatToBring}
               icon={<Check className="w-4 h-4 text-gold shrink-0 mt-1" />}
             />
@@ -272,12 +269,12 @@ export default async function TourDetailPage({ params }: PageProps) {
         <span className="hidden sm:block w-px h-4 bg-night/15" />
         <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
           <BadgeCheck className="w-4 h-4 text-gold" />
-          {en ? "Certified local guides" : "Guías locales certificados"}
+          {L(lc, { es: "Guías locales certificados", en: "Certified local guides", ja: "認定の地元ガイド" })}
         </span>
         <span className="hidden sm:block w-px h-4 bg-night/15" />
         <span className="inline-flex items-center gap-1.5 text-sm font-medium text-night/75">
           <MapPin className="w-4 h-4 text-gold" />
-          {en ? "Local operator in Cusco" : "Operador local en Cusco"}
+          {L(lc, { es: "Operador local en Cusco", en: "Local operator in Cusco", ja: "クスコの地元旅行会社" })}
         </span>
       </div>
       {intro && <p className="mt-5 text-night/70 text-base sm:text-lg leading-relaxed">{intro}</p>}
@@ -398,7 +395,7 @@ export default async function TourDetailPage({ params }: PageProps) {
               reviews={reviews}
               avgRating={reviewStats.avg}
               total={reviewStats.count}
-              en={en}
+              locale={lc}
             />
           )}
         </div>
@@ -425,7 +422,7 @@ export default async function TourDetailPage({ params }: PageProps) {
       {tour.route_map_url && <TourRouteMap url={tour.route_map_url} title={title} locale={lc} />}
 
       {/* Related */}
-      {related.length > 0 && <RelatedTours tours={related} en={en} />}
+      {related.length > 0 && <RelatedTours tours={related} locale={lc} />}
 
       <CertificationsStrip locale={lc} />
 

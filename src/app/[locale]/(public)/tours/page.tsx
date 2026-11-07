@@ -1,5 +1,5 @@
 import { getAllTours } from "@/lib/queries/tours";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { createClient } from "@/lib/supabase/public";
 import { ToursPageClient } from "./page.client";
 import type { Category, Locale } from "@/types/database";
@@ -27,26 +27,18 @@ export async function generateMetadata({
   const { locale } = await params;
   const lc: Locale = toLocale(locale);
   const title =
-    lc === "en"
-      ? "All Cusco Tours · Machu Picchu, Inca Trail & more"
-      : "Todos los tours en Cusco";
+    L(lc, { es: "Todos los tours en Cusco", en: "All Cusco Tours · Machu Picchu, Inca Trail & more", ja: "クスコのツアー一覧・マチュピチュ、インカ道など" });
   const description =
-    lc === "en"
-      ? "Complete catalog of Cusco tours: Machu Picchu, Sacred Valley, Inca Trail, Rainbow Mountain. Filter by price, duration and difficulty. Live availability."
-      : "Catálogo completo de tours en Cusco: Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain. Filtra por precio, duración y dificultad. Disponibilidad en vivo.";
+    L(lc, { es: "Catálogo completo de tours en Cusco: Machu Picchu, Valle Sagrado, Camino Inca, Rainbow Mountain. Filtra por precio, duración y dificultad. Disponibilidad en vivo.", en: "Complete catalog of Cusco tours: Machu Picchu, Sacred Valley, Inca Trail, Rainbow Mountain. Filter by price, duration and difficulty. Live availability.", ja: "クスコのツアー一覧：マチュピチュ、聖なる谷、インカ道、レインボーマウンテン。料金・日数・難易度で絞り込めます。空き状況はリアルタイムで確認できます。" });
   return {
     title,
     description,
     alternates: buildAlternates("/tours", lc, { jaAvailable: true }),
     openGraph: {
       title:
-        lc === "en"
-          ? "All Cusco Tours · Danfer Tours"
-          : "Todos los tours en Cusco · Danfer Tours",
+        L(lc, { es: "Todos los tours en Cusco · Danfer Tours", en: "All Cusco Tours · Danfer Tours", ja: "クスコのツアー一覧 · Danfer Tours" }),
       description:
-        lc === "en"
-          ? "Complete catalog with live availability and verified reviews."
-          : "Catálogo completo con disponibilidad en vivo y reseñas verificadas.",
+        L(lc, { es: "Catálogo completo con disponibilidad en vivo y reseñas verificadas.", en: "Complete catalog with live availability and verified reviews.", ja: "空き状況と認証済み口コミ付きのツアー一覧。" }),
       locale: ogLocale(lc),
     },
   };
@@ -101,10 +93,10 @@ export default async function ToursIndexPage({
           className="mb-4"
         />
         <span className="font-hand text-gold text-2xl">
-          {tours.length} {lc === "en" ? "experiences" : "experiencias"}
+          {tours.length} {L(lc, { es: "experiencias", en: "experiences", ja: "件の体験" })}
         </span>
         <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl text-night max-w-3xl leading-[1.05]">
-          {lc === "en" ? "All our tours in " : "Todos nuestros tours en "}
+          {L(lc, { es: "Todos nuestros tours en ", en: "All our tours in ", ja: "ツアー一覧：" })}
           <span className="text-gradient-gold italic">Cusco</span>
         </h1>
       </section>

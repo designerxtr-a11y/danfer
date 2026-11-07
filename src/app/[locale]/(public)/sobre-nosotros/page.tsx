@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { Link } from "@/i18n/navigation";
 import { Shield, Award, Heart, Mountain, Users, Sparkles, ArrowRight } from "lucide-react";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
@@ -14,13 +14,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const lc: Locale = toLocale(locale);
   const title =
-    lc === "en"
-      ? "About us · Danfer Tours Cusco"
-      : "Sobre nosotros · Danfer Tours Cusco";
+    L(lc, { es: "Sobre nosotros · Danfer Tours Cusco", en: "About us · Danfer Tours Cusco" });
   const description =
-    lc === "en"
-      ? "Meet Danfer Tours Cusco: a tour operator authorized by MINCETUR with 12+ years creating unique experiences in Machu Picchu, the Sacred Valley and the Inca Trail."
-      : "Conoce a Danfer Tours Cusco: operador turístico autorizado por MINCETUR con +12 años creando experiencias únicas en Machu Picchu, Valle Sagrado y Camino Inca.";
+    L(lc, { es: "Conoce a Danfer Tours Cusco: operador turístico autorizado por MINCETUR con +12 años creando experiencias únicas en Machu Picchu, Valle Sagrado y Camino Inca.", en: "Meet Danfer Tours Cusco: a tour operator authorized by MINCETUR with 12+ years creating unique experiences in Machu Picchu, the Sacred Valley and the Inca Trail." });
   return {
     title,
     description,
@@ -120,10 +116,10 @@ export default async function SobreNosotrosPage({
       <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16 md:mb-24 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
         <div>
           <span className="font-hand text-gold text-2xl">
-            {lc === "en" ? "Our story" : "Nuestra historia"}
+            {L(lc, { es: "Nuestra historia", en: "Our story" })}
           </span>
           <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl text-night leading-[1.05]">
-            {lc === "en" ? (
+            {lc !== "es" ? (
               <>
                 Made in{" "}
                 <span className="text-gradient-gold italic">Cusco</span>, for the
@@ -138,7 +134,7 @@ export default async function SobreNosotrosPage({
             )}
           </h1>
           <p className="mt-6 text-night/70 text-lg leading-relaxed">
-            {lc === "en" ? (
+            {lc !== "es" ? (
               <>
                 At <strong>Danfer Tours Cusco</strong> we believe that traveling
                 to Peru is much more than seeing Machu Picchu — it's waking up at
@@ -161,14 +157,14 @@ export default async function SobreNosotrosPage({
               href="/tours"
               className="inline-flex items-center gap-2 bg-night hover:bg-gold text-white px-6 py-3 rounded-full font-semibold transition"
             >
-              {lc === "en" ? "Explore tours" : "Explorar tours"}
+              {L(lc, { es: "Explorar tours", en: "Explore tours" })}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/contacto"
               className="text-night/70 hover:text-gold text-sm transition"
             >
-              {lc === "en" ? "Talk to us →" : "Hablar con nosotros →"}
+              {L(lc, { es: "Hablar con nosotros →", en: "Talk to us →" })}
             </Link>
           </div>
         </div>
@@ -176,9 +172,7 @@ export default async function SobreNosotrosPage({
           <Image
             src="https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1200&auto=format&fit=crop"
             alt={
-              lc === "en"
-                ? "Danfer Tours team in the Sacred Valley"
-                : "Equipo Danfer Tours en el Valle Sagrado"
+              L(lc, { es: "Equipo Danfer Tours en el Valle Sagrado", en: "Danfer Tours team in the Sacred Valley" })
             }
             fill
             sizes="(min-width:1024px) 50vw, 100vw"
@@ -192,12 +186,10 @@ export default async function SobreNosotrosPage({
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10 md:mb-14">
             <span className="font-hand text-gold text-2xl">
-              {lc === "en" ? "Why us" : "Por qué nosotros"}
+              {L(lc, { es: "Por qué nosotros", en: "Why us" })}
             </span>
             <h2 className="mt-2 font-display text-2xl sm:text-3xl md:text-5xl text-night">
-              {lc === "en"
-                ? "Four reasons to trust us"
-                : "Cuatro razones para confiar"}
+              {L(lc, { es: "Cuatro razones para confiar", en: "Four reasons to trust us" })}
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -211,8 +203,8 @@ export default async function SobreNosotrosPage({
                   <div className="w-12 h-12 rounded-xl bg-gold/10 grid place-items-center mb-4">
                     <Icon className="w-5 h-5 text-gold" />
                   </div>
-                  <h3 className="font-display text-xl text-night">{v.title[lc]}</h3>
-                  <p className="mt-2 text-night/65 text-sm leading-relaxed">{v.body[lc]}</p>
+                  <h3 className="font-display text-xl text-night">{L(lc, v.title)}</h3>
+                  <p className="mt-2 text-night/65 text-sm leading-relaxed">{L(lc, v.body)}</p>
                 </div>
               );
             })}
@@ -224,12 +216,10 @@ export default async function SobreNosotrosPage({
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <div className="text-center mb-10 md:mb-14">
           <span className="font-hand text-gold text-2xl">
-            {lc === "en" ? "Our journey" : "Nuestro camino"}
+            {L(lc, { es: "Nuestro camino", en: "Our journey" })}
           </span>
           <h2 className="mt-2 font-display text-2xl sm:text-3xl md:text-5xl text-night">
-            {lc === "en"
-              ? "13 years discovering Peru"
-              : "13 años descubriendo el Perú"}
+            {L(lc, { es: "13 años descubriendo el Perú", en: "13 years discovering Peru" })}
           </h2>
         </div>
         <div className="relative">
@@ -244,7 +234,7 @@ export default async function SobreNosotrosPage({
                   <div className="font-display text-xs text-gold uppercase tracking-widest mb-1">
                     {m.year}
                   </div>
-                  <p className="text-night">{m.text[lc]}</p>
+                  <p className="text-night">{L(lc, m.text)}</p>
                 </div>
               </div>
             ))}
@@ -258,17 +248,17 @@ export default async function SobreNosotrosPage({
           <Stat
             icon={Users}
             value="8,500+"
-            label={lc === "en" ? "Happy travelers" : "Viajeros felices"}
+            label={L(lc, { es: "Viajeros felices", en: "Happy travelers" })}
           />
           <Stat
             icon={Sparkles}
             value="35"
-            label={lc === "en" ? "Exclusive routes" : "Rutas exclusivas"}
+            label={L(lc, { es: "Rutas exclusivas", en: "Exclusive routes" })}
           />
           <Stat
             icon={Mountain}
             value="4.9"
-            label={lc === "en" ? "TripAdvisor rating" : "Rating TripAdvisor"}
+            label={L(lc, { es: "Rating TripAdvisor", en: "TripAdvisor rating" })}
           />
         </div>
       </section>
@@ -276,28 +266,24 @@ export default async function SobreNosotrosPage({
       {/* CTA final */}
       <section className="max-w-3xl mx-auto px-4 sm:px-6 py-16 md:py-24 text-center">
         <h2 className="font-display text-2xl sm:text-3xl md:text-5xl text-night">
-          {lc === "en"
-            ? "Ready for your next trip?"
-            : "¿Listo para tu próximo viaje?"}
+          {L(lc, { es: "¿Listo para tu próximo viaje?", en: "Ready for your next trip?" })}
         </h2>
         <p className="mt-4 text-night/65 text-lg">
-          {lc === "en"
-            ? "We design every itinerary with you. Tell us what you want to experience."
-            : "Diseñamos cada itinerario contigo. Cuéntanos qué quieres vivir."}
+          {L(lc, { es: "Diseñamos cada itinerario contigo. Cuéntanos qué quieres vivir.", en: "We design every itinerary with you. Tell us what you want to experience." })}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/tours"
             className="inline-flex items-center gap-2 bg-gold hover:bg-gold-bright text-white px-7 py-3.5 rounded-full font-semibold transition"
           >
-            {lc === "en" ? "View tours" : "Ver tours"}
+            {L(lc, { es: "Ver tours", en: "View tours" })}
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/contacto"
             className="inline-flex items-center gap-2 bg-white border border-night/10 hover:border-gold text-night px-7 py-3.5 rounded-full font-semibold transition"
           >
-            {lc === "en" ? "Plan my trip" : "Diseñar mi viaje"}
+            {L(lc, { es: "Diseñar mi viaje", en: "Plan my trip" })}
           </Link>
         </div>
       </section>

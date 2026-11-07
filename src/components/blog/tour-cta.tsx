@@ -2,6 +2,8 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, Clock, MessageCircle } from "lucide-react";
 import { t, type Tour } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
+import type { Locale } from "@/types/database";
 
 /**
  * Recuadro de tour para insertar a mitad de un post desde el markdown:
@@ -18,15 +20,12 @@ export function TourCta({
   postTitle,
 }: {
   tour: Tour;
-  locale: "es" | "en";
+  locale: Locale;
   whatsapp: string;
   postTitle: string;
 }) {
-  const en = locale === "en";
   const title = t(tour.title, locale);
-  const msg = en
-    ? `Hi Danfer Tours, I read your article "${postTitle}" and I'm interested in the "${title}" tour.`
-    : `Hola Danfer Tours, leí su artículo "${postTitle}" y me interesa el tour "${title}".`;
+  const msg = L(locale, { es: `Hola Danfer Tours, leí su artículo "${postTitle}" y me interesa el tour "${title}".`, en: `Hi Danfer Tours, I read your article "${postTitle}" and I'm interested in the "${title}" tour.` });
   const waHref = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
 
   return (
@@ -44,7 +43,7 @@ export function TourCta({
       )}
       <div className="p-5 sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-gold">
-          {en ? "Recommended tour" : "Tour recomendado"}
+          {L(locale, { es: "Tour recomendado", en: "Recommended tour", ja: "おすすめツアー" })}
         </p>
         <p className="mt-1 font-display text-xl sm:text-2xl text-night leading-snug">
           {title}
@@ -55,9 +54,9 @@ export function TourCta({
             {t(tour.duration_label, locale)}
           </span>
           <span>
-            {en ? "From " : "Desde "}
+            {L(locale, { es: "Desde ", en: "From ", ja: "" })}
             <strong className="text-night">US${tour.price_usd}</strong>
-            {en ? " per person" : " por persona"}
+            {L(locale, { es: " por persona", en: " per person", ja: "〜（1名あたり）" })}
           </span>
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
@@ -68,13 +67,13 @@ export function TourCta({
             className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-white font-semibold text-sm hover:brightness-95 transition"
           >
             <MessageCircle className="w-4 h-4" />
-            {en ? "Book on WhatsApp" : "Reservar por WhatsApp"}
+            {L(locale, { es: "Reservar por WhatsApp", en: "Book on WhatsApp", ja: "WhatsAppで予約" })}
           </a>
           <Link
             href={`/tours/${tour.slug}`}
             className="inline-flex items-center gap-1.5 rounded-full border border-night/15 px-5 py-2.5 text-night font-semibold text-sm hover:border-gold hover:text-gold transition"
           >
-            {en ? "See the tour" : "Ver el tour"}
+            {L(locale, { es: "Ver el tour", en: "See the tour", ja: "ツアーを見る" })}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

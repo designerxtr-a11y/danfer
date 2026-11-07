@@ -1,6 +1,7 @@
 import { LegalShell } from "@/components/legal/legal-shell";
 import { buildAlternates } from "@/lib/seo/alternates";
 import { setRequestLocale } from "next-intl/server";
+import { L, toLocale } from "@/lib/i18n/pick";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -8,14 +9,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
-  const en = locale === "en";
   return {
-    title: en
-      ? "Privacy policy · Danfer Tours Cusco"
-      : "Política de privacidad · Danfer Tours Cusco",
-    description: en
-      ? "How Danfer Tours Cusco collects, uses and protects your personal data."
-      : "Cómo recolectamos, usamos y protegemos tus datos personales en Danfer Tours Cusco.",
+    title: L(toLocale(locale), { es: "Política de privacidad · Danfer Tours Cusco", en: "Privacy policy · Danfer Tours Cusco" }),
+    description: L(toLocale(locale), { es: "Cómo recolectamos, usamos y protegemos tus datos personales en Danfer Tours Cusco.", en: "How Danfer Tours Cusco collects, uses and protects your personal data." }),
     alternates: buildAlternates("/privacidad", locale),
   };
 }
@@ -23,7 +19,8 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function PrivacidadPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return locale === "en" ? <PrivacyEn /> : <PrivacidadEs />;
+  // /ja muestra la versión en inglés (sin traducción japonesa todavía)
+  return locale === "es" ? <PrivacidadEs /> : <PrivacyEn />;
 }
 
 function PrivacidadEs() {

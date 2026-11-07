@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import type { TourWithCategory, Locale } from "@/types/database";
 import { t } from "@/types/database";
 import { tr } from "@/lib/i18n/messages";
+import { L } from "@/lib/i18n/pick";
 
 const difficultyColor: Record<string, string> = {
   easy: "text-emerald-300",
@@ -115,7 +116,7 @@ export function TourCard({
               {isBestseller && (
                 <span className="flex items-center gap-1 text-white/70">
                   <Flame className="w-3 h-3" />
-                  {locale === "en" ? "Best seller" : "Más vendido"}
+                  {L(locale, { es: "Más vendido", en: "Best seller", ja: "人気No.1" })}
                 </span>
               )}
             </div>

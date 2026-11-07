@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin, MessageCircle, Clock } from "lucide-react";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { ContactForm } from "./contact-form";
 import { getSettings, normalizeWhatsApp, publicPhone } from "@/lib/queries/settings";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -17,13 +17,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const lc: Locale = toLocale(locale);
   const title =
-    lc === "en"
-      ? "Contact · Danfer Tours Cusco"
-      : "Contacto · Danfer Tours Cusco";
+    L(lc, { es: "Contacto · Danfer Tours Cusco", en: "Contact · Danfer Tours Cusco", ja: "お問い合わせ · Danfer Tours Cusco" });
   const description =
-    lc === "en"
-      ? "Contact us to plan your trip to Machu Picchu, the Sacred Valley or the Inca Trail. Reach us via WhatsApp, email or at our office in Cusco."
-      : "Contáctanos para diseñar tu viaje a Machu Picchu, Valle Sagrado o Camino Inca. Atención por WhatsApp, email o en nuestra oficina en Cusco.";
+    L(lc, { es: "Contáctanos para diseñar tu viaje a Machu Picchu, Valle Sagrado o Camino Inca. Atención por WhatsApp, email o en nuestra oficina en Cusco.", en: "Contact us to plan your trip to Machu Picchu, the Sacred Valley or the Inca Trail. Reach us via WhatsApp, email or at our office in Cusco.", ja: "マチュピチュ、聖なる谷、インカ道への旅のご相談はお気軽に。WhatsApp、メール、クスコのオフィスで承ります。" });
   return {
     title,
     description,
@@ -50,8 +46,8 @@ export default async function ContactoPage({
   const waNumber = normalizeWhatsApp(settings.whatsapp);
   const phone = publicPhone(settings);
   const crumbs = [
-    { name: lc === "en" ? "Home" : "Inicio", url: "/" },
-    { name: lc === "en" ? "Contact" : "Contacto", url: "/contacto" },
+    { name: L(lc, { es: "Inicio", en: "Home", ja: "ホーム" }), url: "/" },
+    { name: L(lc, { es: "Contacto", en: "Contact", ja: "お問い合わせ" }), url: "/contacto" },
   ];
 
   return (
@@ -62,10 +58,14 @@ export default async function ContactoPage({
         <Breadcrumbs items={crumbs} className="mb-4" />
         <div className="text-center mb-10 md:mb-14">
           <span className="font-hand text-gold text-2xl">
-            {lc === "en" ? "Let's talk" : "Hablemos"}
+            {L(lc, { es: "Hablemos", en: "Let's talk", ja: "ご相談ください" })}
           </span>
           <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-6xl text-night">
-            {lc === "en" ? (
+            {lc === "ja" ? (
+              <>
+                <span className="text-gradient-gold">一緒に</span>旅の計画を立てましょう
+              </>
+            ) : lc === "en" ? (
               <>
                 Let&apos;s plan your trip{" "}
                 <span className="text-gradient-gold italic">together</span>
@@ -78,9 +78,7 @@ export default async function ContactoPage({
             )}
           </h1>
           <p className="mt-4 text-night/60 max-w-xl mx-auto">
-            {lc === "en"
-              ? "Tell us what you want to experience and we'll reply within 24 hours — or message us on WhatsApp for an instant response."
-              : "Cuéntanos qué quieres vivir y te respondemos en menos de 24 horas — o escríbenos por WhatsApp para respuesta inmediata."}
+            {L(lc, { es: "Cuéntanos qué quieres vivir y te respondemos en menos de 24 horas — o escríbenos por WhatsApp para respuesta inmediata.", en: "Tell us what you want to experience and we'll reply within 24 hours — or message us on WhatsApp for an instant response.", ja: "体験したいことをお知らせください。24時間以内にお返事します。すぐに返事が欲しい場合はWhatsAppでご連絡ください。" })}
           </p>
         </div>
 
@@ -93,14 +91,10 @@ export default async function ContactoPage({
               title="WhatsApp"
               value={settings.whatsapp}
               href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
-                lc === "en"
-                  ? "Hi Danfer Tours! 👋 I'd like information about a tour."
-                  : "Hola Danfer Tours! 👋 Quiero información sobre un tour."
+                L(lc, { es: "Hola Danfer Tours! 👋 Quiero información sobre un tour.", en: "Hi Danfer Tours! 👋 I'd like information about a tour." })
               )}`}
               hint={
-                lc === "en"
-                  ? "Instant response · recommended"
-                  : "Respuesta inmediata · recomendado"
+                L(lc, { es: "Respuesta inmediata · recomendado", en: "Instant response · recommended", ja: "すぐに返信・おすすめ" })
               }
               highlight
             />
@@ -109,43 +103,39 @@ export default async function ContactoPage({
               title="Email"
               value={settings.contact_email}
               href={`mailto:${settings.contact_email}`}
-              hint={lc === "en" ? "We reply in <24h" : "Respondemos en <24h"}
+              hint={L(lc, { es: "Respondemos en <24h", en: "We reply in <24h", ja: "24時間以内に返信" })}
             />
             <InfoCard
               icon={Phone}
-              title={lc === "en" ? "Phone" : "Teléfono"}
+              title={L(lc, { es: "Teléfono", en: "Phone", ja: "電話" })}
               value={phone}
               href={`tel:${normalizeWhatsApp(phone)}`}
             />
             <InfoCard
               icon={MapPin}
-              title={lc === "en" ? "Office in Cusco" : "Oficina en Cusco"}
+              title={L(lc, { es: "Oficina en Cusco", en: "Office in Cusco", ja: "クスコのオフィス" })}
               value={
-                (lc === "en" ? settings.address?.en : settings.address?.es) ??
+                (lc === "es" ? settings.address?.es : settings.address?.en) ??
                 settings.address?.es ??
                 "Av. El Sol 314, Cusco"
               }
               hint={
-                lc === "en"
-                  ? "In-person service by appointment"
-                  : "Atención presencial con cita"
+                L(lc, { es: "Atención presencial con cita", en: "In-person service by appointment", ja: "ご来店は予約制です" })
               }
             />
             <div className="bg-stone border border-night/8 rounded-2xl p-5 flex items-start gap-3">
               <Clock className="w-5 h-5 text-gold shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs uppercase tracking-wider text-night/50">
-                  {lc === "en" ? "Opening hours" : "Horario de atención"}
+                  {L(lc, { es: "Horario de atención", en: "Opening hours", ja: "営業時間" })}
                 </div>
                 <div className="text-night/80 text-sm mt-1.5 space-y-0.5">
-                  <div>{lc === "en" ? "Mon – Fri" : "Lun – Vie"} · 8:00 – 20:00</div>
-                  <div>{lc === "en" ? "Saturday" : "Sábado"} · 9:00 – 18:00</div>
-                  <div>{lc === "en" ? "Sunday" : "Domingo"} · 9:00 – 14:00</div>
+                  <div>{L(lc, { es: "Lun – Vie", en: "Mon – Fri", ja: "月〜金" })} · 8:00 – 20:00</div>
+                  <div>{L(lc, { es: "Sábado", en: "Saturday", ja: "土曜日" })} · 9:00 – 18:00</div>
+                  <div>{L(lc, { es: "Domingo", en: "Sunday", ja: "日曜日" })} · 9:00 – 14:00</div>
                 </div>
                 <div className="text-night/55 text-xs mt-2">
-                  {lc === "en"
-                    ? "Lima time (GMT-5) · 24/7 support during your tour"
-                    : "Hora de Lima (GMT-5) · Soporte 24/7 durante tu tour"}
+                  {L(lc, { es: "Hora de Lima (GMT-5) · Soporte 24/7 durante tu tour", en: "Lima time (GMT-5) · 24/7 support during your tour", ja: "リマ時間（GMT-5）・ツアー中は24時間サポート" })}
                 </div>
               </div>
             </div>
@@ -157,7 +147,7 @@ export default async function ContactoPage({
           <div className="flex items-end justify-between mb-4">
             <div>
               <span className="font-hand text-gold text-xl">
-                {lc === "en" ? "Find us" : "Encuéntranos"}
+                {L(lc, { es: "Encuéntranos", en: "Find us", ja: "アクセス" })}
               </span>
               <h2 className="font-display text-2xl md:text-3xl text-night mt-1">
                 Av. El Sol 314, Cusco
@@ -169,7 +159,7 @@ export default async function ContactoPage({
               rel="noopener noreferrer"
               className="hidden md:inline-flex items-center gap-2 text-night/70 hover:text-gold text-sm transition"
             >
-              {lc === "en" ? "Open in Google Maps →" : "Abrir en Google Maps →"}
+              {L(lc, { es: "Abrir en Google Maps →", en: "Open in Google Maps →", ja: "Googleマップで開く →" })}
             </a>
           </div>
           <div className="rounded-3xl overflow-hidden ring-1 ring-night/10 shadow-soft">
@@ -182,9 +172,7 @@ export default async function ContactoPage({
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
               title={
-                lc === "en"
-                  ? "Danfer Tours Cusco office map"
-                  : "Mapa de la oficina Danfer Tours Cusco"
+                L(lc, { es: "Mapa de la oficina Danfer Tours Cusco", en: "Danfer Tours Cusco office map", ja: "Danfer Tours Cuscoオフィスの地図" })
               }
             />
           </div>

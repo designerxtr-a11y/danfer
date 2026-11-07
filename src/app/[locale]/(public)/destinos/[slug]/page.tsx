@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -138,7 +138,7 @@ export default async function DestinationPage({ params }: PageProps) {
             className="inline-flex items-center gap-1.5 text-white/70 hover:text-gold text-sm mb-4 transition w-fit"
           >
             <ChevronLeft className="w-4 h-4" />
-            {lc === "en" ? "All destinations" : "Todos los destinos"}
+            {L(lc, { es: "Todos los destinos", en: "All destinations", ja: "すべての目的地" })}
           </Link>
           <span className="font-hand text-gold text-xl sm:text-2xl">
             {destination.region}, Perú
@@ -185,19 +185,17 @@ export default async function DestinationPage({ params }: PageProps) {
             <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div>
                 <span className="font-hand text-gold text-2xl">
-                  {lc === "en" ? "Book now" : "Reserva ahora"}
+                  {L(lc, { es: "Reserva ahora", en: "Book now", ja: "予約する" })}
                 </span>
                 <h2 className="mt-1 font-display text-2xl sm:text-3xl md:text-5xl text-night leading-[1.05]">
-                  {lc === "en" ? "Tours to " : "Tours a "}
+                  {L(lc, { es: "Tours a ", en: "Tours to ", ja: "ツアー：" })}
                   <span className="text-gradient-gold italic">
                     {destination.shortName}
                   </span>
                 </h2>
               </div>
               <p className="text-night/60 max-w-md">
-                {lc === "en"
-                  ? "Operated by Danfer Tours · Certified guides · Small groups · Book with confidence."
-                  : "Operados por Danfer Tours · Guías certificados · Grupos pequeños · Reserva con confianza."}
+                {L(lc, { es: "Operados por Danfer Tours · Guías certificados · Grupos pequeños · Reserva con confianza.", en: "Operated by Danfer Tours · Certified guides · Small groups · Book with confidence.", ja: "Danfer Tours催行・認定ガイド・少人数制・安心のご予約。" })}
               </p>
             </div>
 
@@ -212,7 +210,7 @@ export default async function DestinationPage({ params }: PageProps) {
                 href="/tours"
                 className="inline-flex items-center gap-2 text-night font-semibold hover:text-gold transition"
               >
-                {lc === "en" ? "View all tours" : "Ver todos los tours"}
+                {L(lc, { es: "Ver todos los tours", en: "View all tours", ja: "すべてのツアーを見る" })}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -259,10 +257,10 @@ export default async function DestinationPage({ params }: PageProps) {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <span className="font-hand text-gold text-2xl">
-              {lc === "en" ? "Frequently asked questions" : "Preguntas frecuentes"}
+              {L(lc, { es: "Preguntas frecuentes", en: "Frequently asked questions", ja: "よくある質問" })}
             </span>
             <h2 className="mt-1 font-display text-2xl sm:text-3xl md:text-5xl text-night">
-              {lc === "en" ? "About " : "Sobre "}
+              {L(lc, { es: "Sobre ", en: "About ", ja: "概要：" })}
               {destination.shortName}
             </h2>
           </div>
@@ -295,10 +293,10 @@ export default async function DestinationPage({ params }: PageProps) {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-10">
               <span className="font-hand text-gold text-2xl">
-                {lc === "en" ? "Keep exploring" : "Sigue explorando"}
+                {L(lc, { es: "Sigue explorando", en: "Keep exploring", ja: "ほかも見てみる" })}
               </span>
               <h2 className="mt-1 font-display text-2xl sm:text-3xl md:text-5xl text-night">
-                {lc === "en" ? "Other destinations in Cusco" : "Otros destinos del Cusco"}
+                {L(lc, { es: "Otros destinos del Cusco", en: "Other destinations in Cusco", ja: "クスコのほかの目的地" })}
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
@@ -370,7 +368,7 @@ function TourMiniCard({ tour, lc }: { tour: TourWithCategory; lc: Locale }) {
         <div className="mt-3 flex items-center justify-between">
           <div>
             <div className="text-[10px] uppercase tracking-widest text-white/55">
-              {lc === "en" ? "From" : "Desde"}
+              {L(lc, { es: "Desde", en: "From", ja: "料金" })}
             </div>
             <div className="font-display text-xl font-bold text-gold leading-none">
               US${finalPrice.toFixed(0)}

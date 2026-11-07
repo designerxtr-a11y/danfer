@@ -5,6 +5,7 @@ import { getFeaturedTours } from "@/lib/queries/tours";
 import { tr } from "@/lib/i18n/messages";
 import type { Locale } from "@/types/database";
 import { TourCard } from "./featured-tours.client";
+import { L } from "@/lib/i18n/pick";
 
 /** Cuántas tarjetas muestra el home como máximo (1 fila de 4 en desktop). */
 const MAX_FEATURED = 4;
@@ -50,7 +51,7 @@ export async function FeaturedTours() {
         <div className="mb-10 max-w-2xl">
           <span className="flex items-center gap-2 font-hand text-gold text-2xl sm:text-3xl">
             <MountainSnow className="w-6 h-6" />
-            {locale === "en" ? "Unforgettable, guaranteed" : "Inolvidables, garantizado"}
+            {L(locale, { es: "Inolvidables, garantizado", en: "Unforgettable, guaranteed", ja: "忘れられない旅をお約束します" })}
           </span>
           <h2 className="mt-2 font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-night leading-[1.02]">
             {m.sections.featured.title_a}{" "}
@@ -79,7 +80,7 @@ export async function FeaturedTours() {
             href="/tours"
             className="group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-night font-semibold text-sm hover:bg-gold-bright hover:shadow-glow transition"
           >
-            {locale === "en" ? "View all tours" : "Ver todos los tours"}
+            {L(locale, { es: "Ver todos los tours", en: "View all tours", ja: "すべてのツアーを見る" })}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
           </Link>
         </div>

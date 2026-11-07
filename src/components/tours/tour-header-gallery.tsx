@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Images } from "lucide-react";
 import type { GalleryImage, Locale } from "@/types/database";
 import { TourLightbox } from "./tour-lightbox";
+import { L } from "@/lib/i18n/pick";
 
 /**
  * Cabecera en mosaico para tours con 3+ fotos, sin huecos:
@@ -18,7 +19,6 @@ export function TourHeaderGallery({
   images: GalleryImage[];
   locale?: Locale;
 }) {
-  const en = locale === "en";
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
   const [main, ...rest] = images;
@@ -65,7 +65,7 @@ export function TourHeaderGallery({
             {i === thumbs.length - 1 && images.length > thumbs.length + 1 && (
               <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-night">
                 <Images className="w-3.5 h-3.5" />
-                {en ? `See all ${images.length}` : `Ver las ${images.length}`}
+                {L(locale, { es: `Ver las ${images.length}`, en: `See all ${images.length}`, ja: `すべて見る（${images.length}枚）` })}
               </span>
             )}
           </button>

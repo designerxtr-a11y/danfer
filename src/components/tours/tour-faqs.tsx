@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import type { FAQ, Locale } from "@/types/database";
 import { t } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 export function TourFaqs({ faqs, locale = "es" }: { faqs: FAQ[]; locale?: Locale }) {
   const [open, setOpen] = useState<number | null>(0);
@@ -14,7 +15,7 @@ export function TourFaqs({ faqs, locale = "es" }: { faqs: FAQ[]; locale?: Locale
   return (
     <div>
       <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-night mb-6">
-        {locale === "en" ? "Frequently asked questions" : "Preguntas frecuentes"}
+        {L(locale, { es: "Preguntas frecuentes", en: "Frequently asked questions", ja: "よくある質問" })}
       </h2>
       <div className="space-y-3">
         {faqs.map((faq, i) => {

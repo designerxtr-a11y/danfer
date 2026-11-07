@@ -2,6 +2,7 @@ import { LegalShell } from "@/components/legal/legal-shell";
 import { Link } from "@/i18n/navigation";
 import { buildAlternates } from "@/lib/seo/alternates";
 import { setRequestLocale } from "next-intl/server";
+import { L, toLocale } from "@/lib/i18n/pick";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -9,14 +10,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
-  const en = locale === "en";
   return {
-    title: en
-      ? "Terms and conditions · Danfer Tours Cusco"
-      : "Términos y condiciones · Danfer Tours Cusco",
-    description: en
-      ? "Terms and conditions for using the website and the travel services of Danfer Tours Cusco."
-      : "Términos y condiciones de uso del sitio y de los servicios turísticos de Danfer Tours Cusco.",
+    title: L(toLocale(locale), { es: "Términos y condiciones · Danfer Tours Cusco", en: "Terms and conditions · Danfer Tours Cusco" }),
+    description: L(toLocale(locale), { es: "Términos y condiciones de uso del sitio y de los servicios turísticos de Danfer Tours Cusco.", en: "Terms and conditions for using the website and the travel services of Danfer Tours Cusco." }),
     alternates: buildAlternates("/terminos", locale),
   };
 }
@@ -24,7 +20,8 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function TerminosPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return locale === "en" ? <TermsEn /> : <TerminosEs />;
+  // /ja muestra la versión en inglés (sin traducción japonesa todavía)
+  return locale === "es" ? <TerminosEs /> : <TermsEn />;
 }
 
 function TerminosEs() {

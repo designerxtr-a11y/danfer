@@ -484,7 +484,8 @@ export function getDestinationBySlug(
   slug: string,
   locale: string = "es"
 ): DestinationContent | null {
-  if (locale === "en") return DESTINATIONS_EN[slug] ?? DESTINATIONS[slug] ?? null;
+  // /ja usa el contenido EN hasta que exista destinations-ja (Fase 2)
+  if (locale === "en" || locale === "ja") return DESTINATIONS_EN[slug] ?? DESTINATIONS[slug] ?? null;
   return DESTINATIONS[slug] ?? null;
 }
 

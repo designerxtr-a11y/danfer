@@ -8,6 +8,7 @@ import { TRIPADVISOR } from "@/lib/social-proof";
 import { TripadvisorLogo, TripadvisorBubbles } from "./tripadvisor-badge";
 import type { AvailableDate } from "@/lib/queries/tours";
 import type { Locale } from "@/types/database";
+import { L } from "@/lib/i18n/pick";
 
 interface Props {
   tourId: string;
@@ -32,7 +33,6 @@ export function BookingWidget({
   whatsapp,
   locale = "es",
 }: Props) {
-  const en = locale === "en";
   const [selectedDate, setSelectedDate] = useState<string | null>(
     availability[0]?.date ?? null
   );
@@ -48,7 +48,9 @@ export function BookingWidget({
     ? selectedAvailability.total_spots - selectedAvailability.booked_spots
     : maxGroupSize;
 
-  const personWord = en
+  // El mensaje de WhatsApp lo lee el equipo: en /ja va en inglés.
+  const enMsg = locale !== "es";
+  const personWord = enMsg
     ? travelers === 1
       ? "person"
       : "people"
@@ -56,9 +58,9 @@ export function BookingWidget({
     ? "persona"
     : "personas";
 
-  const waMessage = en
+  const waMessage = enMsg
     ? `Hi Danfer Tours! 👋 I'd like to ask about the price and availability for the "${tourTitle}" tour${
-        selectedDate ? ` on ${formatDate(selectedDate, locale)}` : ""
+        selectedDate ? ` on ${formatDate(selectedDate, "en")}` : ""
       } for ${travelers} ${personWord}. Can you help me?`
     : `¡Hola Danfer Tours! 👋 Quiero consultar el precio y la disponibilidad del tour "${tourTitle}"${
         selectedDate ? ` para el ${formatDate(selectedDate, locale)}` : ""
@@ -86,7 +88,7 @@ export function BookingWidget({
           <span className="font-display text-3xl sm:text-4xl text-gold font-bold">
             US${priceUsd.toFixed(0)}
           </span>
-          <span className="text-night/60 text-sm">{en ? "/ person" : "/ persona"}</span>
+          <span className="text-night/60 text-sm">{L(locale, { es: "/ persona", en: "/ person", ja: "/ 1名" })}</span>
         </div>
       </div>
 
@@ -101,16 +103,14 @@ export function BookingWidget({
             <span className="font-semibold text-night">{TRIPADVISOR.rating.toFixed(1)}</span>
           </div>
           <p className="mt-0.5 text-xs text-night/60">
-            {en
-              ? `${TRIPADVISOR.reviews.toLocaleString("en-US")} reviews · #${TRIPADVISOR.rank} of ${TRIPADVISOR.rankOf.toLocaleString("en-US")} outdoor activities in Cusco`
-              : `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`}
+            {L(locale, { es: `${TRIPADVISOR.reviews.toLocaleString("en-US")} opiniones · N.º ${TRIPADVISOR.rank} de ${TRIPADVISOR.rankOf.toLocaleString("en-US")} actividades al aire libre en Cusco`, en: `${TRIPADVISOR.reviews.toLocaleString("en-US")} reviews · #${TRIPADVISOR.rank} of ${TRIPADVISOR.rankOf.toLocaleString("en-US")} outdoor activities in Cusco` })}
           </p>
         </div>
       </div>
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">
-          {en ? "Departure date" : "Fecha de salida"}
+          {L(locale, { es: "Fecha de salida", en: "Departure date", ja: "出発日" })}
         </label>
         {availability.length === 0 ? (
           <DatePicker
@@ -129,12 +129,10 @@ export function BookingWidget({
               <Calendar className="w-4 h-4 text-gold" />
               {selectedDate
                 ? formatDate(selectedDate, locale)
-                : en
-                ? "Pick a date"
-                : "Selecciona una fecha"}
+                : L(locale, { es: "Selecciona una fecha", en: "Pick a date", ja: "日付を選択" })}
             </span>
             <span className="text-night/40 text-xs">
-              {availability.length} {en ? "dates" : "fechas"}
+              {availability.length} {L(locale, { es: "fechas", en: "dates", ja: "日程" })}
             </span>
           </button>
 
@@ -166,10 +164,8 @@ export function BookingWidget({
                     <span>{formatDate(a.date, locale)}</span>
                     <span className="text-xs">
                       {spots > 0
-                        ? `${spots} ${en ? "spots" : "cupos"}`
-                        : en
-                        ? "Full"
-                        : "Lleno"}
+                        ? `${spots} ${L(locale, { es: "cupos", en: "spots", ja: "席" })}`
+                        : L(locale, { es: "Lleno", en: "Full", ja: "満席" })}
                     </span>
                   </button>
                 );
@@ -182,7 +178,7 @@ export function BookingWidget({
 
       <div className="mt-5">
         <label className="text-xs uppercase tracking-wider text-night/50">
-          {en ? "Travelers" : "Viajeros"}
+          {L(locale, { es: "Viajeros", en: "Travelers", ja: "人数" })}
         </label>
         <div className="mt-2 flex items-center justify-between bg-stone rounded-xl px-4 py-3">
           <button
@@ -211,17 +207,17 @@ export function BookingWidget({
         className="mt-6 w-full flex items-center justify-center gap-2 rounded-full bg-[#25D366] hover:bg-[#1ebe5b] text-white font-semibold py-4 transition hover:shadow-glow"
       >
         <MessageCircle className="w-5 h-5" />
-        {en ? "Ask price on WhatsApp" : "Consultar precio por WhatsApp"}
+        {L(locale, { es: "Consultar precio por WhatsApp", en: "Ask price on WhatsApp", ja: "WhatsAppで料金を問い合わせる" })}
       </a>
 
       <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-night/60">
         <div className="flex items-center gap-2">
           <Clock className="w-3.5 h-3.5 text-gold" />
-          <span>{en ? "Fast reply" : "Respuesta rápida"}</span>
+          <span>{L(locale, { es: "Respuesta rápida", en: "Fast reply", ja: "迅速な返信" })}</span>
         </div>
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-3.5 h-3.5 text-gold" />
-          <span>{en ? "No commitment" : "Sin compromiso"}</span>
+          <span>{L(locale, { es: "Sin compromiso", en: "No commitment", ja: "予約の義務なし" })}</span>
         </div>
       </div>
     </motion.div>
@@ -238,7 +234,7 @@ function tomorrowIso() {
 
 function formatDate(iso: string, locale: Locale) {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString(locale === "en" ? "en-US" : "es-PE", {
+  return d.toLocaleDateString(L(locale, { es: "es-PE", en: "en-US", ja: "ja-JP" }), {
     weekday: "short",
     day: "numeric",
     month: "short",
