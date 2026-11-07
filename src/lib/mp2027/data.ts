@@ -14,6 +14,8 @@ export interface Mp2027Route {
   recommended?: boolean;
   /** Horas de ingreso preferidas (se confirman al comprar el boleto). */
   hours: string[];
+  /** Foto real tomada con ese boleto (URL pública). Opcional. */
+  photo?: string;
 }
 
 const DAY_HOURS = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00"];
