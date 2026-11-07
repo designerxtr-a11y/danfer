@@ -22,6 +22,7 @@ interface Booking {
 
 interface Mp2027Details {
   kind: "mp2027";
+  pkg?: string;
   route: string;
   hour: string;
   hotel?: string;
@@ -130,7 +131,7 @@ function BookingRow({ booking }: { booking: Booking }) {
           return (
             <div className="mt-1 text-xs text-night/60 space-y-0.5">
               <div className="font-semibold text-gold">
-                MP 2027 · Ruta {d.route} · {d.hour}
+                MP 2027 · {d.pkg === "fullday" ? "Full Day" : d.pkg === "2d1n-valle" ? "2D/1N + Valle Sagrado" : "2D/1N"} · Ruta {d.route} · {d.hour}
               </div>
               {booking.customer_phone && <div>WhatsApp: {booking.customer_phone}</div>}
               {d.hotel && <div>Hotel: {d.hotel}</div>}

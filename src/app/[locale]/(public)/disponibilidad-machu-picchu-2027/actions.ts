@@ -4,13 +4,12 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPaypalOrder, capturePaypalOrder } from "@/lib/paypal";
-import { isValid2027Date, mp2027Total, routeById, MAX_TRAVELERS } from "@/lib/mp2027/data";
+import { isValid2027Date, mp2027Total, routeById, packageById, hoursFor, MAX_TRAVELERS, type PackageId } from "@/lib/mp2027/data";
 
 const BUCKET = "client-documents";
 const MAX_SIZE = 8 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
 const DRAFT_RE = /^[a-z0-9]{10,24}$/;
-const TOUR_SLUG = "machu-picchu-2d-1n";
 
 const folder = (draftId: string) => `mp2027-${draftId}`;
 
@@ -55,6 +54,7 @@ const travelerSchema = z.object({
 const inputSchema = z
   .object({
     draftId: z.string().regex(DRAFT_RE),
+    pkg: z.enum(["fullday", "2d1n", "2d1n-valle"]),
     date: z.string().refine(isValid2027Date),
     route: z.string(),
     hour: z.string(),
@@ -65,7 +65,13 @@ const inputSchema = z
     acceptPolicy: z.literal(true),
     lang: z.enum(["es", "en", "ja"]),
   })
-  .refine((v) => routeById(v.route)?.hours.includes(v.hour) ?? false, { message: "invalid route/hour" });
+  .refine(
+    (v) => {
+      const r = routeById(v.route);
+      return r ? hoursFor(r, packageById(v.pkg)).includes(v.hour) : false;
+    },
+    { message: "invalid route/hour" }
+  );
 
 export type Mp2027Input = z.input<typeof inputSchema>;
 
@@ -90,8 +96,9 @@ export async function createMp2027Order(
     }
   }
 
-  const { data: tour } = await supabase.from("tours").select("id").eq("slug", TOUR_SLUG).maybeSingle();
-  const { subtotal, total } = mp2027Total(n);
+  const pkg = packageById(input.pkg)!;
+  const { data: tour } = await supabase.from("tours").select("id").eq("slug", pkg.tourSlug).maybeSingle();
+  const { subtotal, total } = mp2027Total(n, input.pkg as PackageId);
 
   const { data: booking, error } = await supabase
     .from("bookings")
@@ -108,6 +115,7 @@ export async function createMp2027Order(
       customer_country: input.travelers[0].nationality,
       special_requests: JSON.stringify({
         kind: "mp2027",
+        pkg: input.pkg,
         route: input.route,
         hour: input.hour,
         hotel: input.hotel,
@@ -126,7 +134,7 @@ export async function createMp2027Order(
     const orderId = await createPaypalOrder(
       total,
       "USD",
-      `Machu Picchu 2D/1N 2027 · ${input.date} · Ruta ${input.route} · ${booking.booking_code}`
+      `Machu Picchu ${pkg.name.en} 2027 · ${input.date} · Ruta ${input.route} · ${booking.booking_code}`
     );
     await supabase.from("bookings").update({ internal_notes: `paypal_order:${orderId}` }).eq("id", booking.id);
     return { ok: true, orderId, code: booking.booking_code };

@@ -75,17 +75,69 @@ export const ROUTES: Mp2027Route[] = [
   },
 ];
 
-export const PRICE_PER_PERSON = 380;
+export type PackageId = "fullday" | "2d1n" | "2d1n-valle";
+
+export interface Mp2027Package {
+  id: PackageId;
+  price: number;
+  tourSlug: string;
+  name: T3;
+  desc: T3;
+  /** Hora mínima de ingreso (Full Day: el tren llega cerca del mediodía). */
+  minHour?: string;
+}
+
+export const PACKAGES: Mp2027Package[] = [
+  {
+    id: "fullday", price: 320, tourSlug: "machu-picchu-full-day", minHour: "10:00",
+    name: { es: "Full Day", en: "Full Day", ja: "日帰り" },
+    desc: {
+      es: "Ida y vuelta el mismo día en tren turístico, bus, entrada y guía.",
+      en: "Same-day round trip by tourist train, bus, entrance ticket and guide.",
+      ja: "観光列車で日帰り往復、バス、入場券、ガイド付き。",
+    },
+  },
+  {
+    id: "2d1n", price: 380, tourSlug: "machu-picchu-2d-1n",
+    name: { es: "2 días / 1 noche", en: "2 days / 1 night", ja: "1泊2日" },
+    desc: {
+      es: "Llegas a Aguas Calientes el día anterior, duermes en hotel con desayuno y entras temprano sin apuro.",
+      en: "Arrive in Aguas Calientes the day before, sleep in a hotel with breakfast and enter early, unhurried.",
+      ja: "前日にアグアスカリエンテスに到着し、朝食付きホテルに宿泊。翌朝ゆっくり入場できます。",
+    },
+  },
+  {
+    id: "2d1n-valle", price: 420, tourSlug: "machu-picchu-2d-1n",
+    name: { es: "2D/1N + Valle Sagrado", en: "2D/1N + Sacred Valley", ja: "1泊2日＋聖なる谷" },
+    desc: {
+      es: "El día anterior haces el Valle Sagrado (Chinchero, Moray, Maras, Ollantaytambo) y desde Ollantaytambo tomas el tren.",
+      en: "The day before you tour the Sacred Valley (Chinchero, Moray, Maras, Ollantaytambo) and catch the train from Ollantaytambo.",
+      ja: "前日に聖なる谷（チンチェロ、モライ、マラス、オリャンタイタンボ）を観光し、オリャンタイタンボから列車に乗ります。",
+    },
+  },
+];
+
+export function packageById(id: string): Mp2027Package | undefined {
+  return PACKAGES.find((p) => p.id === id);
+}
+
+/** Horas de ingreso válidas para una ruta según el paquete. */
+export function hoursFor(route: Mp2027Route, pkg: Mp2027Package | undefined): string[] {
+  return pkg?.minHour ? route.hours.filter((h) => h >= pkg.minHour!) : route.hours;
+}
+
 export const CARD_FEE_RATE = 0.05;
 export const MAX_TRAVELERS = 10;
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
-export function mp2027Total(travelers: number) {
+export function mp2027Total(travelers: number, pkgId: PackageId = "2d1n") {
   if (!Number.isInteger(travelers) || travelers < 1 || travelers > MAX_TRAVELERS) {
     throw new Error(`invalid travelers: ${travelers}`);
   }
-  const subtotal = PRICE_PER_PERSON * travelers;
+  const pkg = packageById(pkgId);
+  if (!pkg) throw new Error(`invalid package: ${pkgId}`);
+  const subtotal = pkg.price * travelers;
   const fee = round2(subtotal * CARD_FEE_RATE);
   return { subtotal, fee, total: round2(subtotal + fee) };
 }

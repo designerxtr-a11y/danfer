@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { CheckCircle2, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
 import { L } from "@/lib/i18n/pick";
-import { ROUTES, MAX_TRAVELERS, mp2027Total, routeById, type RouteId } from "@/lib/mp2027/data";
+import { ROUTES, PACKAGES, MAX_TRAVELERS, mp2027Total, routeById, packageById, hoursFor, type RouteId, type PackageId } from "@/lib/mp2027/data";
 import type { Locale } from "@/types/database";
 import { Mp2027Calendar } from "./calendar";
 import { TravelerCard, emptyTraveler, type TravelerDraft } from "./traveler-card";
@@ -50,6 +50,7 @@ export function Mp2027Booking({
     Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("")
   );
   const [date, setDate] = useState<string | null>(null);
+  const [pkgId, setPkgId] = useState<PackageId>("2d1n");
   const [route, setRoute] = useState<RouteId | null>(null);
   const [hour, setHour] = useState<string | null>(null);
   const [travelers, setTravelers] = useState<TravelerDraft[]>([emptyTraveler()]);
@@ -61,7 +62,15 @@ export function Mp2027Booking({
   const [payError, setPayError] = useState<string | null>(null);
 
   const r = route ? routeById(route) : undefined;
-  const totals = mp2027Total(travelers.length);
+  const pkg = packageById(pkgId)!;
+  const hours = r ? hoursFor(r, pkg) : [];
+  const totals = mp2027Total(travelers.length, pkgId);
+
+  function choosePackage(id: PackageId) {
+    setPkgId(id);
+    const p = packageById(id);
+    if (r && hour && !hoursFor(r, p).includes(hour)) setHour(null);
+  }
 
   const missing = useMemo(() => {
     const m: string[] = [];
@@ -91,6 +100,7 @@ export function Mp2027Booking({
   const payloadRef = useRef<() => Parameters<typeof createMp2027Order>[0]>(null as never);
   payloadRef.current = () => ({
     draftId,
+    pkg: pkgId,
     date: date!,
     route: route!,
     hour: hour!,
@@ -110,7 +120,7 @@ export function Mp2027Booking({
   const dateLabel = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
   const waSummary = `https://wa.me/${whatsapp}?text=${encodeURIComponent(
-    `Hi Danfer Tours! I'd like to pre-book Machu Picchu 2D/1N 2027: ${date ?? "-"}, Route ${route ?? "-"} at ${hour ?? "-"}, ${travelers.length} traveler(s).`
+    `Hi Danfer Tours! I'd like to pre-book Machu Picchu ${pkg.name.en} 2027: ${date ?? "-"}, Route ${route ?? "-"} at ${hour ?? "-"}, ${travelers.length} traveler(s).`
   )}`;
 
   if (paid) {
@@ -131,6 +141,7 @@ export function Mp2027Booking({
         </p>
         <div className="mt-6 inline-block rounded-2xl bg-stone px-6 py-4 text-left text-sm">
           <div><span className="text-night/50">{L(locale, { es: "Código", en: "Code", ja: "予約コード" })}:</span> <b className="font-mono">{paid}</b></div>
+          <div><span className="text-night/50">{L(locale, { es: "Paquete", en: "Package", ja: "プラン" })}:</span> {L(locale, pkg.name)}</div>
           <div><span className="text-night/50">{L(locale, { es: "Fecha", en: "Date", ja: "日付" })}:</span> {dateLabel}</div>
           <div><span className="text-night/50">{L(locale, { es: "Ruta", en: "Route", ja: "ルート" })}:</span> {route} · {r && L(locale, r.name)} · {hour}</div>
         </div>
@@ -144,14 +155,47 @@ export function Mp2027Booking({
         <Mp2027Calendar locale={locale} value={date} onChange={setDate} booked={booked} />
       </Step>
 
-      <Step n={2} title={L(locale, { es: "Ruta y hora de ingreso", en: "Route and entry time", ja: "ルートと入場時間" })}>
+      <Step n={2} title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {PACKAGES.map((p) => {
+            const sel = p.id === pkgId;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => choosePackage(p.id)}
+                aria-pressed={sel}
+                className={`text-left rounded-2xl border p-4 transition ${
+                  sel ? "border-gold bg-gold/10 ring-2 ring-gold" : "border-night/10 bg-white hover:border-gold/60"
+                }`}
+              >
+                <div className="font-semibold text-night">{L(locale, p.name)}</div>
+                <div className="mt-1 font-display text-2xl text-gold">
+                  US$ {p.price}
+                  <span className="text-xs text-night/50 font-sans"> / {L(locale, { es: "persona", en: "person", ja: "1名" })}</span>
+                </div>
+                <p className="mt-2 text-sm text-night/60">{L(locale, p.desc)}</p>
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-3 text-xs text-night/55">
+          {L(locale, {
+            es: "La fecha del calendario es el día que entras a Machu Picchu.",
+            en: "The calendar date is the day you enter Machu Picchu.",
+            ja: "カレンダーの日付はマチュピチュに入場する日です。",
+          })}
+        </p>
+      </Step>
+
+      <Step n={3} title={L(locale, { es: "Ruta y hora de ingreso", en: "Route and entry time", ja: "ルートと入場時間" })}>
         <div className="space-y-6">
           {([1, 2, 3] as const).map((c) => (
             <div key={c}>
               <div className="text-xs uppercase tracking-[0.2em] text-gold font-semibold mb-2">
                 {L(locale, { es: `Circuito ${c}`, en: `Circuit ${c}`, ja: `サーキット${c}` })}
               </div>
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-2 gap-3 items-start">
                 {ROUTES.filter((x) => x.circuit === c).map((x) => {
                   const sel = x.id === route;
                   return (
@@ -160,7 +204,7 @@ export function Mp2027Booking({
                       type="button"
                       onClick={() => {
                         setRoute(x.id);
-                        if (hour && !x.hours.includes(hour)) setHour(null);
+                        if (hour && !hoursFor(x, pkg).includes(hour)) setHour(null);
                       }}
                       aria-pressed={sel}
                       className={`text-left rounded-2xl border p-4 transition ${
@@ -209,7 +253,7 @@ export function Mp2027Booking({
                 {L(locale, { es: "Hora de ingreso preferida", en: "Preferred entry time", ja: "希望入場時間" })}
               </div>
               <div className="flex flex-wrap gap-2">
-                {r.hours.map((h) => (
+                {hours.map((h) => (
                   <button
                     key={h}
                     type="button"
@@ -235,7 +279,7 @@ export function Mp2027Booking({
         </div>
       </Step>
 
-      <Step n={3} title={L(locale, { es: "Pasajeros", en: "Travelers", ja: "旅行者" })}>
+      <Step n={4} title={L(locale, { es: "Pasajeros", en: "Travelers", ja: "旅行者" })}>
         <div className="space-y-4">
           {travelers.map((t, i) => (
             <TravelerCard
@@ -261,7 +305,7 @@ export function Mp2027Booking({
         </div>
       </Step>
 
-      <Step n={4} title={L(locale, { es: "Datos de contacto", en: "Contact details", ja: "連絡先" })}>
+      <Step n={5} title={L(locale, { es: "Datos de contacto", en: "Contact details", ja: "連絡先" })}>
         <div className="grid sm:grid-cols-2 gap-4 rounded-2xl border border-night/10 bg-white p-5 sm:p-6">
           <label className="block">
             <span className="text-xs uppercase tracking-wider text-night/50">Email</span>
@@ -284,23 +328,19 @@ export function Mp2027Booking({
         </div>
       </Step>
 
-      <Step n={5} title={L(locale, { es: "Resumen y pago", en: "Summary and payment", ja: "確認とお支払い" })}>
+      <Step n={6} title={L(locale, { es: "Resumen y pago", en: "Summary and payment", ja: "確認とお支払い" })}>
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-night/10 bg-white p-5 sm:p-6 text-sm">
             <dl className="space-y-2">
-              <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Tour", en: "Tour", ja: "ツアー" })}</dt><dd className="font-semibold text-right">Machu Picchu 2D/1N</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Tour", en: "Tour", ja: "ツアー" })}</dt><dd className="font-semibold text-right">Machu Picchu · {L(locale, pkg.name)}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Fecha", en: "Date", ja: "日付" })}</dt><dd className="text-right">{dateLabel}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Ruta", en: "Route", ja: "ルート" })}</dt><dd className="text-right">{r ? `${r.id} · ${L(locale, r.name)}` : "—"}{hour ? ` · ${hour}` : ""}</dd></div>
-              <div className="flex justify-between gap-4 border-t border-night/8 pt-2"><dt className="text-night/55">US$ 380 × {travelers.length}</dt><dd>{usd(totals.subtotal)}</dd></div>
+              <div className="flex justify-between gap-4 border-t border-night/8 pt-2"><dt className="text-night/55">US$ {pkg.price} × {travelers.length}</dt><dd>{usd(totals.subtotal)}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-night/55">{L(locale, { es: "Pago con tarjeta (+5%)", en: "Card payment (+5%)", ja: "カード手数料（5%）" })}</dt><dd>{usd(totals.fee)}</dd></div>
               <div className="flex justify-between gap-4 border-t-2 border-night pt-2 text-base"><dt className="font-semibold">{L(locale, { es: "Total", en: "Total", ja: "合計" })}</dt><dd className="font-display text-2xl text-gold">{usd(totals.total)}</dd></div>
             </dl>
             <p className="mt-4 text-xs text-night/55">
-              {L(locale, {
-                es: "Incluye recojo en Cusco, tren turístico ida y vuelta, 1 noche de hotel con desayuno en Aguas Calientes, bus, entrada y guía.",
-                en: "Includes pickup in Cusco, round-trip tourist train, 1 hotel night with breakfast in Aguas Calientes, bus, entrance ticket and guide.",
-                ja: "クスコでの送迎、往復観光列車、アグアスカリエンテスのホテル1泊（朝食付き）、バス、入場券、ガイドが含まれます。",
-              })}
+              {L(locale, pkg.desc)}
             </p>
           </div>
 

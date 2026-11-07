@@ -37,3 +37,17 @@ test("demandOf classifies 2027 dates", () => {
   assert.equal(demandOf("2027-11-10"), "regular");
   assert.equal(eventOn("2027-07-28")?.es, "Fiestas Patrias");
 });
+
+import { hoursFor, routeById, packageById } from "./data.ts";
+
+test("package prices", () => {
+  assert.deepEqual(mp2027Total(1, "fullday"), { subtotal: 320, fee: 16, total: 336 });
+  assert.deepEqual(mp2027Total(2, "2d1n-valle"), { subtotal: 840, fee: 42, total: 882 });
+  assert.throws(() => mp2027Total(1, "x" as never));
+});
+
+test("full day hours start at 10:00", () => {
+  assert.deepEqual(hoursFor(routeById("2A")!, packageById("fullday")).at(0), "10:00");
+  assert.deepEqual(hoursFor(routeById("3A")!, packageById("fullday")), ["10:00"]);
+  assert.equal(hoursFor(routeById("2A")!, packageById("2d1n")).length, 9);
+});

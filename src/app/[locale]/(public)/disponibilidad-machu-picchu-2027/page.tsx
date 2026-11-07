@@ -72,9 +72,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: { absolute: `${L(lc, TITLE)} · Danfer Tours` },
     description: L(lc, {
-      es: "Calendario 2027 de Machu Picchu: elige fecha, ruta y hora, y pre-reserva tu entrada con tour 2D/1N antes de que abra la venta oficial. Pago seguro por PayPal.",
-      en: "Machu Picchu 2027 calendar: pick your date, route and time and pre-book your ticket with the 2D/1N tour before official sales open. Secure PayPal payment.",
-      ja: "マチュピチュ2027カレンダー：日付・ルート・時間を選び、公式販売開始前に1泊2日ツアー付きチケットを事前予約。PayPalで安全にお支払い。",
+      es: "Calendario 2027 de Machu Picchu: elige fecha, ruta y hora, y pre-reserva tu entrada con tour (Full Day, 2D/1N o con Valle Sagrado) antes de que abra la venta oficial. Pago seguro por PayPal.",
+      en: "Machu Picchu 2027 calendar: pick your date, route and time and pre-book your ticket with a tour (Full Day, 2D/1N or with the Sacred Valley) before official sales open. Secure PayPal payment.",
+      ja: "マチュピチュ2027カレンダー：日付・ルート・時間を選び、公式販売開始前にツアー付きチケット（日帰り・1泊2日・聖なる谷付き）を事前予約。PayPalで安全にお支払い。",
     }),
     alternates: buildAlternates(PATH, lc, { jaAvailable: true }),
     openGraph: { locale: ogLocale(lc) },
