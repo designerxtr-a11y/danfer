@@ -32,6 +32,7 @@ export const ROUTES: Mp2027Route[] = [
   },
   {
     id: "1B", circuit: 1, mountain: false, hours: DAY_HOURS,
+    photo: "/images/rutas-mp/1b.jpg",
     name: { es: "Terraza superior", en: "Upper terrace", ja: "上部テラス" },
     desc: { es: "La foto panorámica clásica desde arriba. No baja a la ciudad.", en: "The classic panoramic photo from above. Does not go down into the city.", ja: "上から見る定番のパノラマ写真。市街地には下りません。" },
   },
