@@ -402,6 +402,21 @@ export default async function TourDetailPage({ params }: PageProps) {
 
         {/* Sticky booking sidebar */}
         <aside id="reservar" className="lg:sticky lg:top-28 lg:self-start scroll-mt-24 space-y-5">
+          {tour.slug === "machu-picchu-2d-1n" && (
+            <Link
+              href="/disponibilidad-machu-picchu-2027"
+              className="block rounded-2xl border border-gold/40 bg-gold/10 px-5 py-4 text-sm text-night hover:bg-gold/20 transition"
+            >
+              <span className="font-semibold">
+                {L(lc, { es: "¿Viajas en 2027?", en: "Traveling in 2027?", ja: "2027年にご旅行ですか？" })}
+              </span>{" "}
+              {L(lc, {
+                es: "Mira la disponibilidad y pre-reserva tu fecha →",
+                en: "See availability and pre-book your date →",
+                ja: "空き状況を確認して事前予約 →",
+              })}
+            </Link>
+          )}
           <BookingWidget
             tourId={tour.id}
             tourSlug={tour.slug}

@@ -1,5 +1,5 @@
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
-import { toLocale } from "@/lib/i18n/pick";
+import { L, toLocale } from "@/lib/i18n/pick";
 import { Navbar, type NavItem } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
@@ -39,7 +39,13 @@ export default async function PublicLayout({
     {
       type: "mega",
       label: mx.nav.machuPicchuTours,
-      items: toTourLinks(["machu-picchu"]),
+      items: [
+        {
+          label: L(typedLocale, { es: "Disponibilidad 2027", en: "Availability 2027", ja: "2027年の空き状況" }),
+          href: "/disponibilidad-machu-picchu-2027",
+        },
+        ...toTourLinks(["machu-picchu"]),
+      ],
       viewAllHref: "/tours",
       viewAllLabel: mx.nav.viewAll,
     },
