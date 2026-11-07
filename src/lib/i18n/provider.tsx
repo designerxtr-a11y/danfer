@@ -26,9 +26,9 @@ export function I18nProvider({
     // El middleware de next-intl redirige según NEXT_LOCALE: si sigue en "en",
     // ir a /tours devuelve a /en/tours y el cambio a español no funciona.
     document.cookie = `NEXT_LOCALE=${l}; path=/; max-age=31536000; samesite=lax`;
-    // Route to /en or back to / based on locale
-    const path = window.location.pathname.replace(/^\/en/, "");
-    window.location.href = l === "en" ? `/en${path || "/"}` : path || "/";
+    // ES va sin prefijo; EN y JA con /en y /ja
+    const path = window.location.pathname.replace(/^\/(en|ja)(?=\/|$)/, "");
+    window.location.href = l === "es" ? path || "/" : `/${l}${path || "/"}`;
   }, []);
 
   return (

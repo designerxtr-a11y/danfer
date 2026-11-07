@@ -13,7 +13,7 @@ const COPY = {
     tooltipBody: "Escríbenos por WhatsApp y un asesor te responde en minutos.",
     status: "En línea · responde en minutos",
     intro: "¡Hola! 👋 Soy parte del equipo de",
-    introEnd: "¿En qué te ayudo? Elige una opción rápida:",
+    introEnd: ". ¿En qué te ayudo? Elige una opción rápida:",
     hoursLabel: "Horario hoy",
     hours: "Lun-Vie 8am - 8pm · Sáb 9am - 6pm",
     close: "Cerrar",
@@ -45,7 +45,7 @@ const COPY = {
     tooltipBody: "Message us on WhatsApp and an advisor replies in minutes.",
     status: "Online · replies in minutes",
     intro: "Hi! 👋 I'm part of the team at",
-    introEnd: "How can I help? Pick a quick option:",
+    introEnd: ". How can I help? Pick a quick option:",
     hoursLabel: "Today's hours",
     hours: "Mon-Fri 8am - 8pm · Sat 9am - 6pm",
     close: "Close",
@@ -72,6 +72,39 @@ const COPY = {
       },
     ],
   },
+  // UI en japonés; los mensajes prellenados quedan en inglés (el equipo responde en inglés).
+  ja: {
+    tooltipTitle: "お困りですか？",
+    tooltipBody: "WhatsAppでメッセージをお送りください。担当者が数分でお返事します。",
+    status: "オンライン・数分で返信",
+    intro: "こんにちは！こちらは",
+    introEnd: "です。ご用件をお選びください：",
+    hoursLabel: "本日の営業時間",
+    hours: "月〜金 8:00〜20:00・土 9:00〜18:00",
+    close: "閉じる",
+    open: "WhatsAppで問い合わせる",
+    quickReplies: [
+      {
+        label: "マチュピチュツアーについて",
+        message:
+          "Hi Danfer Tours! 👋 I'm interested in the Machu Picchu tour — could you tell me more about dates and prices?",
+      },
+      {
+        label: "インカ道 4日間",
+        message:
+          "Hi Danfer Tours! 👋 I'd like info about the 4-day Inca Trail — availability, price and what's included.",
+      },
+      {
+        label: "パッケージを作りたい",
+        message:
+          "Hi Danfer Tours! 👋 I'll be in Cusco for several days and want to build a package (Machu Picchu + Sacred Valley + more). Can you help?",
+      },
+      {
+        label: "その他のお問い合わせ",
+        message: "Hi Danfer Tours! 👋 I'd like information about a tour in Cusco.",
+      },
+    ],
+  },
 } as const;
 
 const WhatsAppIcon = (p: React.SVGProps<SVGSVGElement>) => (
@@ -85,7 +118,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const { locale } = useI18n();
-  const t = COPY[locale === "en" ? "en" : "es"];
+  const t = COPY[locale];
 
   // Mostrar el tooltip "Pregúntanos por WhatsApp" después de 3 segundos
   useEffect(() => {
@@ -182,7 +215,7 @@ export function WhatsAppButton({ phone }: { phone: string }) {
             <div className="p-4 bg-[#ECE5DD]">
               <div className="bg-white rounded-2xl rounded-tl-sm p-3 shadow-sm max-w-[85%]">
                 <p className="text-sm text-night leading-snug">
-                  {t.intro} <strong>Danfer Tours Cusco</strong>. {t.introEnd}
+                  {t.intro} <strong>Danfer Tours Cusco</strong>{t.introEnd}
                 </p>
               </div>
             </div>

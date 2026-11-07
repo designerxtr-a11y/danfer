@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
+import { L } from "@/lib/i18n/pick";
 
 export const InstagramIcon = (p: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
@@ -30,6 +31,13 @@ const PeruFlag = (p: React.SVGProps<SVGSVGElement>) => (
     <rect width="2" height="4" fill="#D91023" />
     <rect x="2" width="2" height="4" fill="#fff" />
     <rect x="4" width="2" height="4" fill="#D91023" />
+  </svg>
+);
+
+const JapanFlag = (p: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 6 4" {...p}>
+    <rect width="6" height="4" fill="#fff" />
+    <circle cx="3" cy="2" r="1.2" fill="#BC002D" />
   </svg>
 );
 
@@ -252,6 +260,17 @@ export function Navbar({
             >
               <USFlag className="w-4 h-3 rounded-sm" />
             </button>
+            <button
+              onClick={() => locale !== "ja" && setLocale("ja")}
+              aria-label="日本語"
+              className={`grid place-items-center w-7 h-7 rounded-full transition ${
+                locale === "ja"
+                  ? "ring-2 ring-gold"
+                  : "opacity-50 hover:opacity-100"
+              }`}
+            >
+              <JapanFlag className="w-4 h-3 rounded-sm ring-1 ring-black/10" />
+            </button>
           </div>
           <a
             href="https://www.tiktok.com/@danfertourscusco"
@@ -286,7 +305,7 @@ export function Navbar({
             href="/tours"
             className="hidden lg:inline-flex items-center whitespace-nowrap rounded-full bg-gold px-5 py-2 text-night text-sm font-semibold hover:bg-gold-bright hover:shadow-glow transition"
           >
-            {locale === "en" ? "Book now" : "Reservar"}
+            {L(locale, { es: "Reservar", en: "Book now", ja: "予約する" })}
           </Link>
 
           {/* Mobile hamburger */}
@@ -437,7 +456,7 @@ export function Navbar({
                   onClick={() => setMobileOpen(false)}
                   className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-night font-semibold hover:bg-gold-bright transition"
                 >
-                  {locale === "en" ? "Book your tour" : "Reservar tu tour"}
+                  {L(locale, { es: "Reservar tu tour", en: "Book your tour", ja: "ツアーを予約する" })}
                 </Link>
               </motion.div>
             </motion.nav>
@@ -471,6 +490,17 @@ export function Navbar({
                   }`}
                 >
                   <USFlag className="w-5 h-3.5 rounded-sm" />
+                </button>
+                <button
+                  onClick={() => locale !== "ja" && setLocale("ja")}
+                  aria-label="日本語"
+                  className={`grid place-items-center w-8 h-8 rounded-full transition ${
+                    locale === "ja"
+                      ? "ring-2 ring-gold"
+                      : "opacity-50"
+                  }`}
+                >
+                  <JapanFlag className="w-5 h-3.5 rounded-sm" />
                 </button>
               </div>
               <div className="flex items-center gap-5 text-white/80">
