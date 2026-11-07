@@ -26,7 +26,7 @@ const MOUNTAIN_HOURS = ["07:00", "08:00", "09:00", "10:00"];
 export const ROUTES: Mp2027Route[] = [
   {
     id: "1A", circuit: 1, mountain: true, hours: MOUNTAIN_HOURS,
-    photo: "/images/rutas-mp/1a.jpg", photoCredit: "EnriqueGuia, CC BY-SA 4.0 (Wikimedia Commons)",
+    photo: "/images/rutas-mp/1a.jpg",
     name: { es: "Montaña Machupicchu", en: "Machupicchu Mountain", ja: "マチュピチュ山" },
     desc: { es: "Subida larga con la vista más alta de la ciudadela y el valle.", en: "Long climb to the highest viewpoint over the citadel and valley.", ja: "長い登りで、遺跡と谷を一番高い所から見渡せます。" },
   },
