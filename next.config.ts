@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
     globalNotFound: true,
+    // Fotos de pasaporte de /quote suben por server action (default 1MB).
+    // Vercel corta en 4.5MB por request; el cliente además comprime la foto.
+    serverActions: { bodySizeLimit: "4mb" },
   },
   // Ya no hay favicon.ico estático (era el placeholder del template y los
   // navegadores lo preferían sobre el /icon dinámico de Ajustes). Los

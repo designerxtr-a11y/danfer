@@ -11,6 +11,8 @@ const COPY = {
     done: "Received — thanks!",
     hint: "A clear photo or scan of your passport or ID (name, photo, document number).",
     traveler: (n: number) => `Traveler ${n}`,
+    tooBig: "This file is too large. Please send a smaller photo, or send it to us on WhatsApp.",
+    failed: "Upload failed. Please try again, or send the photo to us on WhatsApp.",
   },
   es: {
     uploadLabel: "Subir foto",
@@ -18,8 +20,35 @@ const COPY = {
     done: "¡Recibido, gracias!",
     hint: "Una foto o escaneo claro de tu pasaporte o DNI (nombre, foto, número de documento).",
     traveler: (n: number) => `Pasajero ${n}`,
+    tooBig: "El archivo es muy pesado. Envía una foto más liviana o mándanosla por WhatsApp.",
+    failed: "No se pudo subir. Inténtalo de nuevo o mándanos la foto por WhatsApp.",
   },
 };
+
+// Server actions arrive at Vercel with a ~4MB cap; phone photos are often bigger.
+const MAX_UPLOAD = 3.8 * 1024 * 1024;
+const MAX_SIDE = 2000;
+
+// Re-encode photos as JPEG (max 2000px) so they fit the upload limit while
+// keeping the passport legible. PDFs and images the browser can't decode
+// (e.g. HEIC outside Safari) are sent as-is.
+async function shrinkImage(file: File): Promise<File> {
+  if (!file.type.startsWith("image/") || file.size < 900 * 1024) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.85));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch {
+    return file;
+  }
+}
 
 function UploadSlot({
   token,
@@ -41,15 +70,26 @@ function UploadSlot({
     setStatus("uploading");
     setError(null);
 
-    const formData = new FormData();
-    formData.set("file", file);
-    const res = await uploadPassportPhoto(token, formData, index);
+    try {
+      const upload = await shrinkImage(file);
+      if (upload.size > MAX_UPLOAD) {
+        setStatus("error");
+        setError(t.tooBig);
+        return;
+      }
+      const formData = new FormData();
+      formData.set("file", upload);
+      const res = await uploadPassportPhoto(token, formData, index);
 
-    if (res.ok) {
-      setStatus("done");
-    } else {
+      if (res.ok) {
+        setStatus("done");
+      } else {
+        setStatus("error");
+        setError(res.error);
+      }
+    } catch {
       setStatus("error");
-      setError(res.error);
+      setError(t.failed);
     }
   }
 
