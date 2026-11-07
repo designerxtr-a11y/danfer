@@ -25,3 +25,15 @@ test("routes: 10 official routes, mountain routes morning only", () => {
     assert.ok(r.hours.every((h) => h <= "10:00"));
   }
 });
+
+import { demandOf, eventOn } from "./data.ts";
+
+test("demandOf classifies 2027 dates", () => {
+  assert.equal(demandOf("2027-06-24"), "event"); // Inti Raymi
+  assert.equal(demandOf("2027-03-26"), "event"); // Viernes Santo
+  assert.equal(demandOf("2027-06-05"), "highWeekend"); // sábado
+  assert.equal(demandOf("2027-06-08"), "high"); // martes
+  assert.equal(demandOf("2027-02-10"), "rainy");
+  assert.equal(demandOf("2027-11-10"), "regular");
+  assert.equal(eventOn("2027-07-28")?.es, "Fiestas Patrias");
+});

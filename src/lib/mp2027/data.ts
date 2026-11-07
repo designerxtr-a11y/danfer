@@ -105,3 +105,35 @@ export function isHighSeason(iso: string): boolean {
 export function routeById(id: string): Mp2027Route | undefined {
   return ROUTES.find((r) => r.id === id);
 }
+
+/**
+ * Demanda real esperada por fecha (sin inventar cupos):
+ * - event: festividades que se agotan primero
+ * - highWeekend: fin de semana en temporada alta
+ * - high: temporada alta (mayo–septiembre)
+ * - rainy: temporada de lluvias (enero–marzo), más tranquila
+ * - regular: resto del año
+ */
+export type Demand = "event" | "highWeekend" | "high" | "rainy" | "regular";
+
+const EVENTS: { from: string; to: string; name: T3 }[] = [
+  { from: "2027-01-01", to: "2027-01-03", name: { es: "Año Nuevo", en: "New Year", ja: "お正月" } },
+  { from: "2027-03-25", to: "2027-03-28", name: { es: "Semana Santa", en: "Holy Week", ja: "聖週間" } },
+  { from: "2027-06-20", to: "2027-06-26", name: { es: "Inti Raymi", en: "Inti Raymi", ja: "インティ・ライミ" } },
+  { from: "2027-07-26", to: "2027-07-31", name: { es: "Fiestas Patrias", en: "Peru's National Holidays", ja: "ペルー独立記念日" } },
+  { from: "2027-12-24", to: "2027-12-31", name: { es: "Navidad y Año Nuevo", en: "Christmas & New Year", ja: "クリスマス・年末" } },
+];
+
+export function eventOn(iso: string): T3 | null {
+  return EVENTS.find((e) => iso >= e.from && iso <= e.to)?.name ?? null;
+}
+
+export function demandOf(iso: string): Demand {
+  if (eventOn(iso)) return "event";
+  const m = Number(iso.slice(5, 7));
+  if (isHighSeason(iso)) {
+    const dow = new Date(iso + "T00:00:00Z").getUTCDay(); // 0 dom, 6 sáb
+    return dow === 0 || dow === 6 ? "highWeekend" : "high";
+  }
+  return m <= 3 ? "rainy" : "regular";
+}

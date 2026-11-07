@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { L } from "@/lib/i18n/pick";
-import { isHighSeason } from "@/lib/mp2027/data";
+import { isHighSeason, demandOf, eventOn, type Demand } from "@/lib/mp2027/data";
 import type { Locale } from "@/types/database";
 
 const WEEKDAYS: Record<Locale, string[]> = {
@@ -14,6 +14,25 @@ const WEEKDAYS: Record<Locale, string[]> = {
 const DATE_LOCALE: Record<Locale, string> = { es: "es-PE", en: "en-US", ja: "ja-JP" };
 
 const pad = (n: number) => String(n).padStart(2, "0");
+
+// Colores por demanda real (ver demandOf). "booked" = pre-reservas pagadas.
+const CELL: Record<Demand | "booked", string> = {
+  booked: "bg-terracotta text-white hover:bg-terracotta/85",
+  event: "bg-fuchsia-600 text-white hover:bg-fuchsia-700",
+  highWeekend: "bg-amber-400 text-night hover:bg-amber-500",
+  high: "bg-amber-100 text-night hover:bg-amber-200",
+  rainy: "bg-sky-100 text-night hover:bg-sky-200",
+  regular: "bg-emerald-50 text-night hover:bg-emerald-100",
+};
+
+const LEGEND: { key: Demand | "booked"; label: { es: string; en: string; ja: string } }[] = [
+  { key: "booked", label: { es: "Ya hay viajeros", en: "Travelers booked", ja: "予約あり" } },
+  { key: "event", label: { es: "Festividad: se agota primero", en: "Festival: sells out first", ja: "祭り・連休（早く売り切れ）" } },
+  { key: "highWeekend", label: { es: "Fin de semana temporada alta", en: "High-season weekend", ja: "ハイシーズンの週末" } },
+  { key: "high", label: { es: "Temporada alta", en: "High season", ja: "ハイシーズン" } },
+  { key: "regular", label: { es: "Temporada regular", en: "Regular season", ja: "通常シーズン" } },
+  { key: "rainy", label: { es: "Lluvias: más tranquilo", en: "Rainy: quieter", ja: "雨季（比較的すいている）" } },
+];
 
 export function Mp2027Calendar({
   locale,
@@ -78,29 +97,27 @@ export function Mp2027Calendar({
           const iso = `2027-${pad(month + 1)}-${pad(i + 1)}`;
           const selected = iso === value;
           const taken = booked[iso] ?? 0;
+          const kind: Demand | "booked" = taken ? "booked" : demandOf(iso);
+          const ev = eventOn(iso);
+          const tip = taken
+            ? L(locale, {
+                es: "Ya hay viajeros para esta fecha",
+                en: "Travelers already booked for this date",
+                ja: "この日はすでに予約があります",
+              })
+            : ev
+              ? L(locale, ev)
+              : undefined;
           return (
             <button
               key={iso}
               type="button"
               onClick={() => onChange(iso)}
               aria-pressed={selected}
-              title={
-                taken
-                  ? L(locale, {
-                      es: "Ya hay viajeros para esta fecha",
-                      en: "Travelers already booked for this date",
-                      ja: "この日はすでに予約があります",
-                    })
-                  : undefined
-              }
+              title={tip}
+              aria-label={tip ? `${i + 1} · ${tip}` : String(i + 1)}
               className={`relative h-10 sm:h-11 rounded-xl text-sm font-medium transition ${
-                selected
-                  ? "bg-gold text-night shadow-glow"
-                  : taken
-                    ? "bg-terracotta text-white hover:bg-terracotta/85"
-                    : high
-                      ? "bg-terracotta/8 text-night hover:bg-gold/30"
-                      : "bg-stone text-night hover:bg-gold/30"
+                selected ? "bg-night text-white ring-2 ring-gold shadow-glow" : CELL[kind]
               }`}
             >
               {i + 1}
@@ -112,20 +129,23 @@ export function Mp2027Calendar({
         })}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-night/55">
-        <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded bg-stone" />
-          {L(locale, { es: "Pre-reserva abierta", en: "Pre-booking open", ja: "事前予約受付中" })}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded bg-terracotta/20" />
-          {L(locale, { es: "Alta demanda", en: "High demand", ja: "混雑期" })}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded bg-terracotta" />
-          {L(locale, { es: "Ya hay viajeros para esta fecha", en: "Travelers already booked", ja: "予約あり" })}
-        </span>
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5 text-xs text-night/60">
+        {LEGEND.map((l) => (
+          <span key={l.key} className="inline-flex items-center gap-1.5">
+            <span className={`w-3 h-3 rounded shrink-0 ${CELL[l.key].split(" ")[0]}`} />
+            {L(locale, l.label)}
+          </span>
+        ))}
       </div>
+      {(() => {
+        const ev = Array.from({ length: daysInMonth }, (_, i) => eventOn(`2027-${pad(month + 1)}-${pad(i + 1)}`)).find(Boolean);
+        return ev ? (
+          <p className="mt-3 text-xs font-semibold text-fuchsia-700">
+            {L(locale, { es: "Este mes: ", en: "This month: ", ja: "今月：" })}
+            {L(locale, ev)}
+          </p>
+        ) : null;
+      })()}
     </div>
   );
 }
