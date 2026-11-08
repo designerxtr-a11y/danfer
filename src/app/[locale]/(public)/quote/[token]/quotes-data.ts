@@ -748,13 +748,13 @@ export const QUOTES: Record<string, Quote> = {
       {
         label: "Machu Picchu 2D/1N",
         detail:
-          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return tourist train, 1 night at Apu Inti hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
+          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return on The Voyager train, 1 night at Apu Inti hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
         unitPrice: 380,
       },
     ],
     includes: [
       "Day 1 · Sun Nov 29: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
-      "Outbound on Inca Rail The 360° train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am. Return by tourist train",
+      "Outbound on Inca Rail The 360° train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am. Return on Inca Rail The Voyager train",
       "Machu Picchu entrance ticket, purchased for you at the in-person sale in Aguas Calientes",
       "1 night at Apu Inti hotel in Aguas Calientes with breakfast",
       "Day 2 · Mon Nov 30: bus up and down to Machu Picchu",
