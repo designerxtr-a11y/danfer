@@ -728,7 +728,7 @@ export const QUOTES: Record<string, Quote> = {
     note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people (USD 380 per person). The third traveler pays separately.\n**Payment:** **50% deposit (USD 380)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 400.82**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco at **4:00 am** and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
-  // DT-1108-01 · Inca Rail Voyager 07:22 outbound. 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82.
+  // DT-1108-01 · Inca Rail The 360° 07:22 outbound. 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82.
   "machu-picchu-29-nov": {
     lang: "en",
     clientName: "traveler",
@@ -748,13 +748,13 @@ export const QUOTES: Record<string, Quote> = {
       {
         label: "Machu Picchu 2D/1N",
         detail:
-          "Hotel pickup in Cusco at 4:00 am, Inca Rail tourist train at 7:22 am, 1 night at Apu Inti hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
+          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return tourist train, 1 night at Apu Inti hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
         unitPrice: 380,
       },
     ],
     includes: [
       "Day 1 · Sun Nov 29: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
-      "Inca Rail tourist train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am, and return train",
+      "Outbound on Inca Rail The 360° train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am. Return by tourist train",
       "Machu Picchu entrance ticket, purchased for you at the in-person sale in Aguas Calientes",
       "1 night at Apu Inti hotel in Aguas Calientes with breakfast",
       "Day 2 · Mon Nov 30: bus up and down to Machu Picchu",
