@@ -736,7 +736,7 @@ export const QUOTES: Record<string, Quote> = {
     heroImage:
       "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
     heroImageAlt: "Machu Picchu citadel",
-    dates: "Nov 29 – 30, 2026",
+    dates: "Nov 28 – 29, 2026",
     duration: "2 days / 1 night",
     travelers: 2,
     currency: "$",
@@ -748,16 +748,16 @@ export const QUOTES: Record<string, Quote> = {
       {
         label: "Machu Picchu 2D/1N",
         detail:
-          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return on The Voyager train, 1 night at Apu Inti hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
+          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return on The Voyager train, 1 night at a good hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
         unitPrice: 380,
       },
     ],
     includes: [
-      "Day 1 · Sun Nov 29: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
+      "Day 1 · Sat Nov 28: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
       "Outbound on Inca Rail The 360° train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am. Return on Inca Rail The Voyager train",
       "Machu Picchu entrance ticket, purchased for you at the in-person sale in Aguas Calientes",
-      "1 night at Apu Inti hotel in Aguas Calientes with breakfast",
-      "Day 2 · Mon Nov 30: bus up and down to Machu Picchu",
+      "1 night at a good hotel in Aguas Calientes, with breakfast",
+      "Day 2 · Sun Nov 29: bus up and down to Machu Picchu",
       "Professional guide",
       "Return transportation Ollantaytambo – Cusco (arrival between 8:00 and 10:00 pm)",
     ],
