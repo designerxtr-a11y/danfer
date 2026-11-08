@@ -687,7 +687,7 @@ export const QUOTES: Record<string, Quote> = {
     note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people.\n**Payment:** **50% deposit (USD 380)** to secure the train, hotel and entrance tickets. Paying by **credit card adds 5%**, so the deposit charged online is **USD 399.00**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** the circuit and entry time depend on availability for Nov 10; we confirm them with you when we buy them.\n**To book:** full name, nationality and passport number of each traveler.\n**Important:** Machu Picchu tickets and train tickets **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
-  // DT-1107-01 · 2 of 3 travelers (the third pays separately). 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82, as told by WhatsApp.
+  // DT-1107-01 · 3 travelers on the same tour, each pays separately with their own link (-2, -3 are aliases below). 50% deposit USD 190 + PayPal fee (5.4% + 0.30) = 200.56.
   "machu-picchu-20-nov": {
     lang: "en",
     clientName: "traveler",
@@ -697,11 +697,11 @@ export const QUOTES: Record<string, Quote> = {
     heroImageAlt: "Machu Picchu citadel",
     dates: "Nov 20 – 21, 2026",
     duration: "2 days / 1 night",
-    travelers: 2,
+    travelers: 1,
     currency: "$",
     acceptsPaypal: true,
     depositPercent: 50,
-    paypalChargeOverride: 400.82,
+    paypalChargeOverride: 200.56,
     itinerary: [],
     items: [
       {
@@ -725,7 +725,7 @@ export const QUOTES: Record<string, Quote> = {
       "Huayna Picchu (optional, extra cost)",
       "Tips and personal expenses",
     ],
-    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people (USD 380 per person). The third traveler pays separately.\n**Payment:** **50% deposit (USD 380)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 400.82**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco at **4:00 am** and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
+    note: "Prices in **US dollars (USD)**. Total: **USD 380** for 1 person. The other travelers on this tour pay separately, each with their own link.\n**Payment:** **50% deposit (USD 190)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 200.56**. The **remaining 50% (USD 190) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco at **4:00 am** and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
   // DT-1108-01 · Inca Rail The 360° 07:22 outbound. 50% deposit USD 380 + 5% PayPal/card fee = 399.00.
@@ -956,6 +956,10 @@ export const QUOTES: Record<string, Quote> = {
     note: "Precio en **dólares (US$)**. Pago del **100% por PayPal**, que acepta **tarjeta de crédito o débito** (PayPal agrega su comisión).",
   },
 };
+
+// DT-1107-01: same tour and price for the other two travelers.
+QUOTES["machu-picchu-20-nov-2"] = QUOTES["machu-picchu-20-nov"];
+QUOTES["machu-picchu-20-nov-3"] = QUOTES["machu-picchu-20-nov"];
 
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
   return item.perTraveler === false ? item.unitPrice : item.unitPrice * travelers;
