@@ -730,14 +730,14 @@ export const QUOTES: Record<string, Quote> = {
 
   // DT-1108-01 · Inca Rail The 360° 07:22 outbound. 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82.
   "machu-picchu-29-nov": {
-    lang: "en",
-    clientName: "traveler",
+    lang: "es",
+    clientName: "viajero",
     destination: "Machu Picchu",
     heroImage:
       "https://pgzrzvvdrldlwiyopqgh.supabase.co/storage/v1/object/public/tour-images/hero/machu-picchu-1789092177202.webp",
-    heroImageAlt: "Machu Picchu citadel",
-    dates: "Nov 28 – 29, 2026",
-    duration: "2 days / 1 night",
+    heroImageAlt: "Ciudadela de Machu Picchu",
+    dates: "28 – 29 nov, 2026",
+    duration: "2 días / 1 noche",
     travelers: 2,
     currency: "$",
     acceptsPaypal: true,
@@ -748,25 +748,25 @@ export const QUOTES: Record<string, Quote> = {
       {
         label: "Machu Picchu 2D/1N",
         detail:
-          "Hotel pickup in Cusco at 4:00 am, Inca Rail The 360° train at 7:22 am, return on The Voyager train, 1 night at a good hotel in Aguas Calientes with breakfast, bus up and down, entrance ticket, professional guide and return to Cusco",
+          "Recojo en su hotel de Cusco a las 4:00 a. m., tren Inca Rail The 360° a las 7:22 a. m., retorno en tren The Voyager, 1 noche en un buen hotel en Aguas Calientes con desayuno, bus de subida y bajada, entrada, guía profesional y retorno a Cusco",
         unitPrice: 380,
       },
     ],
     includes: [
-      "Day 1 · Sat Nov 28: hotel pickup in Cusco at 4:00 am and transportation to Ollantaytambo",
-      "Outbound on Inca Rail The 360° train: Ollantaytambo 7:22 am, arriving in Aguas Calientes at 8:48 am. Return on Inca Rail The Voyager train",
-      "Machu Picchu entrance ticket, purchased for you at the in-person sale in Aguas Calientes",
-      "1 night at a good hotel in Aguas Calientes, with breakfast",
-      "Day 2 · Sun Nov 29: bus up and down to Machu Picchu",
-      "Professional guide",
-      "Return transportation Ollantaytambo – Cusco (arrival between 8:00 and 10:00 pm)",
+      "Día 1 · sáb 28 nov: recojo en su hotel de Cusco a las 4:00 a. m. y traslado a Ollantaytambo",
+      "Ida en tren Inca Rail The 360°: Ollantaytambo 7:22 a. m., llegada a Aguas Calientes 8:48 a. m. Retorno en tren Inca Rail The Voyager",
+      "Entrada a Machu Picchu, comprada por nosotros en la venta presencial de Aguas Calientes",
+      "1 noche en un buen hotel en Aguas Calientes, con desayuno",
+      "Día 2 · dom 29 nov: bus de subida y bajada a Machu Picchu",
+      "Guía profesional",
+      "Traslado de retorno Ollantaytambo – Cusco (llegada entre las 8:00 y las 10:00 p. m.)",
     ],
     excludes: [
-      "Lunch and dinner",
-      "Huayna Picchu (optional, extra cost)",
-      "Tips and personal expenses",
+      "Almuerzo y cena",
+      "Huayna Picchu (opcional, costo adicional)",
+      "Propinas y gastos personales",
     ],
-    note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people (USD 380 per person).\n**Payment:** **50% deposit (USD 380)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 400.82**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco very early and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
+    note: "Precios en **dólares (US$)**. Total: **US$ 760** por 2 personas (US$ 380 por persona).\n**Pago:** **adelanto del 50% (US$ 380)** para asegurar el tren y el hotel. Los pagos con **PayPal o tarjeta de crédito** tienen una comisión (5.4% + US$ 0.30), así que el adelanto que se cobra en línea es de **US$ 400.82**. El **50% restante (US$ 380) se paga al llegar a Cusco**.\n**Entrada:** las entradas en línea para estas fechas están agotadas, por eso salimos muy temprano de Cusco y conseguimos sus entradas en la **venta presencial de Aguas Calientes**, pernoctando allá. El circuito y la hora de ingreso dependen de la disponibilidad de ese día, y el tren de regreso se reserva según su hora de ingreso.\n**Para reservar:** nombre completo, nacionalidad, fecha de nacimiento y número de pasaporte de cada viajero.\n**Importante:** los boletos de tren y el hotel **no se pueden cambiar ni reembolsar una vez comprados**.\nLleven su **pasaporte original** (se revisa en el tren y en la entrada).",
   },
 
   "verity-chloe-easter": {
