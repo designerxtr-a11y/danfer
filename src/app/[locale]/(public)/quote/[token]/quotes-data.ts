@@ -728,7 +728,7 @@ export const QUOTES: Record<string, Quote> = {
     note: "Prices in **US dollars (USD)**. Total: **USD 760** for 2 people (USD 380 per person). The third traveler pays separately.\n**Payment:** **50% deposit (USD 380)** to secure the train and hotel. Payments by **PayPal or credit card** have a processing fee (5.4% + USD 0.30), so the deposit charged online is **USD 400.82**. The **remaining 50% (USD 380) is paid on arrival in Cusco**.\n**Entrance ticket:** online tickets for these dates are sold out, so we leave Cusco at **4:00 am** and get your tickets at the **in-person sale in Aguas Calientes**, staying overnight there. The circuit and entry time depend on availability that day, and the return train is booked according to your entry time.\n**To book:** full name, nationality, date of birth and passport number of each traveler.\n**Important:** train tickets and hotel **can't be rescheduled or refunded once purchased**.\nBring your **original passport** (it is checked on the train and at the entrance).",
   },
 
-  // DT-1108-01 · Inca Rail The 360° 07:22 outbound. 50% deposit USD 380 + PayPal fee (5.4% + 0.30) = 400.82.
+  // DT-1108-01 · Inca Rail The 360° 07:22 outbound. 50% deposit USD 380 + 5% PayPal/card fee = 399.00.
   "machu-picchu-29-nov": {
     lang: "es",
     clientName: "viajero",
@@ -742,7 +742,7 @@ export const QUOTES: Record<string, Quote> = {
     currency: "$",
     acceptsPaypal: true,
     depositPercent: 50,
-    paypalChargeOverride: 400.82,
+    paypalChargeOverride: 399,
     itinerary: [],
     items: [
       {
@@ -766,7 +766,7 @@ export const QUOTES: Record<string, Quote> = {
       "Huayna Picchu (opcional, costo adicional)",
       "Propinas y gastos personales",
     ],
-    note: "Precios en **dólares (US$)**. Total: **US$ 760** por 2 personas (US$ 380 por persona).\n**Pago:** **adelanto del 50% (US$ 380)** para asegurar el tren y el hotel. Los pagos con **PayPal o tarjeta de crédito** tienen una comisión (5.4% + US$ 0.30), así que el adelanto que se cobra en línea es de **US$ 400.82**. El **50% restante (US$ 380) se paga al llegar a Cusco**.\n**Entrada:** las entradas en línea para estas fechas están agotadas, por eso salimos muy temprano de Cusco y conseguimos sus entradas en la **venta presencial de Aguas Calientes**, pernoctando allá. El circuito y la hora de ingreso dependen de la disponibilidad de ese día, y el tren de regreso se reserva según su hora de ingreso.\n**Para reservar:** nombre completo, nacionalidad, fecha de nacimiento y número de pasaporte de cada viajero.\n**Importante:** los boletos de tren y el hotel **no se pueden cambiar ni reembolsar una vez comprados**.\nLleven su **pasaporte original** (se revisa en el tren y en la entrada).",
+    note: "Precios en **dólares (US$)**. Total: **US$ 760** por 2 personas (US$ 380 por persona).\n**Pago:** **adelanto del 50% (US$ 380)** para asegurar el tren y el hotel. Los pagos con **PayPal o tarjeta de crédito** tienen una comisión del **5%**, así que el adelanto que se cobra en línea es de **US$ 399.00**. El **50% restante (US$ 380) se paga al llegar a Cusco**.\n**Entrada:** las entradas en línea para estas fechas están agotadas, por eso salimos muy temprano de Cusco y conseguimos sus entradas en la **venta presencial de Aguas Calientes**, pernoctando allá. El circuito y la hora de ingreso dependen de la disponibilidad de ese día, y el tren de regreso se reserva según su hora de ingreso.\n**Para reservar:** nombre completo, nacionalidad, fecha de nacimiento y número de pasaporte de cada viajero.\n**Importante:** los boletos de tren y el hotel **no se pueden cambiar ni reembolsar una vez comprados**.\nLleven su **pasaporte original** (se revisa en el tren y en la entrada).",
   },
 
   "verity-chloe-easter": {
