@@ -132,6 +132,11 @@ export async function generateMetadata({ params }: PageProps) {
         ? `旅行のお見積もり：${quote.destination}、${quote.dates}`
         : `Private travel quote: ${quote.destination}, ${quote.dates}.`;
 
+  // WhatsApp no muestra miniatura con WebP: para Machu Picchu usamos un JPG 1200x630.
+  const ogImage = quote.heroImage.includes("/hero/machu-picchu-")
+    ? "https://danfertourscusco.com/og/quote-machu-picchu.jpg"
+    : quote.heroImage;
+
   return {
     title,
     description,
@@ -139,8 +144,8 @@ export async function generateMetadata({ params }: PageProps) {
     // but still gets its own title/image so the WhatsApp preview isn't the
     // site's generic marketing card.
     robots: { index: false, follow: false },
-    openGraph: { title, description, images: [quote.heroImage] },
-    twitter: { card: "summary_large_image", title, description, images: [quote.heroImage] },
+    openGraph: { title, description, images: [ogImage] },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
   };
 }
 
