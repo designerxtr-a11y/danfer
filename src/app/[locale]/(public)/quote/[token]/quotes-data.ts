@@ -961,6 +961,17 @@ export const QUOTES: Record<string, Quote> = {
 QUOTES["machu-picchu-20-nov-2"] = QUOTES["machu-picchu-20-nov"];
 QUOTES["machu-picchu-20-nov-3"] = QUOTES["machu-picchu-20-nov"];
 
+// Kazuki y Miku · saldo del tour 9–10 nov: USD 380 + 5% tarjeta = 399.00.
+QUOTES["machu-picchu-9-nov-balance"] = {
+  ...QUOTES["machu-picchu-9-nov"],
+  depositPercent: undefined,
+  paypalChargeOverride: 399,
+  items: [
+    { label: "Remaining balance · Machu Picchu 2D/1N", detail: "Nov 9 – 10, 2026 · 2 people", unitPrice: 380, perTraveler: false },
+  ],
+  note: "Prices in **US dollars (USD)**.\n**Remaining balance:** **USD 380** for your Machu Picchu tour on Nov 9 – 10 for 2 people (trip total USD 760; your USD 380 deposit has already been received).\nPaying by **credit card adds 5%**, so the amount charged online is **USD 399.00**.\nYour passports have already been received, so there is no need to upload them again.",
+};
+
 export function itemSubtotal(item: QuoteItem, travelers: number): number {
   return item.perTraveler === false ? item.unitPrice : item.unitPrice * travelers;
 }
