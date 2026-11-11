@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { CalendarCheck, ShieldCheck, Ticket } from "lucide-react";
 import { L, toLocale } from "@/lib/i18n/pick";
 import { getSettings, normalizeWhatsApp } from "@/lib/queries/settings";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema } from "@/lib/seo/schema";
-import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { buildAlternates, ogLocale } from "@/lib/seo/alternates";
-import { TripadvisorRating } from "@/components/tours/tripadvisor-badge";
 import type { Locale } from "@/types/database";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Mp2027Booking } from "./booking";
@@ -97,48 +94,35 @@ export default async function Mp2027Page({ params }: { params: Promise<{ locale:
     { name: L(lc, { es: "Entradas 2027", en: "Tickets 2027", ja: "2027年チケット" }), url: PATH },
   ];
   const faqList = faqs(lc);
+  // Momento en que se leyeron las reservas pagadas (la página se regenera cada 10 min).
+  const updatedLabel = new Date().toLocaleString(lc === "es" ? "es-PE" : lc === "ja" ? "ja-JP" : "en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Lima",
+  });
 
   return (
-    <div className="pt-24 md:pt-32 pb-16 md:pb-24">
+    <div className="pb-16 md:pb-24">
       <JsonLd data={[breadcrumbSchema(crumbs), faqSchema(faqList)]} />
 
+      <Mp2027Booking
+        locale={lc}
+        paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+        whatsapp={normalizeWhatsApp(settings.whatsapp)}
+        booked={booked}
+        updatedLabel={updatedLabel}
+        title={L(lc, H1)}
+        subtitle={L(lc, {
+          es: "Disponibilidad 2027 día por día. Elige tu fecha y asegura tu entrada con tour.",
+          en: "2027 availability day by day. Pick your date and secure your ticket with a tour.",
+          ja: "2027年の空き状況を日ごとに確認。日付を選んでツアー付きチケットを確保。",
+        })}
+      />
+
       <section className="max-w-5xl mx-auto px-4 sm:px-6">
-        <Breadcrumbs items={crumbs} className="mb-4" />
-        <div className="text-center mb-8 md:mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full bg-gold/15 text-night px-4 py-1.5 text-sm font-semibold">
-            <Ticket className="w-4 h-4 text-gold" />
-            {L(lc, { es: "Pre-reserva abierta", en: "Pre-booking open", ja: "事前予約受付中" })}
-          </span>
-          <h1 className="mt-4 font-display text-3xl sm:text-5xl md:text-6xl text-night leading-tight">
-            {L(lc, H1)}
-          </h1>
-          <p className="mt-4 text-night/65 text-lg max-w-2xl mx-auto">
-            {L(lc, {
-              es: "Asegura tu fecha todo el 2027.",
-              en: "Secure your date anytime in 2027.",
-              ja: "2027年のご希望日を今すぐ確保。",
-            })}
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-night/70">
-            <TripadvisorRating locale={lc} />
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              {L(lc, { es: "Reembolso 100% si no hay cupo", en: "100% refund if unavailable", ja: "空きがなければ全額返金" })}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <CalendarCheck className="w-4 h-4 text-gold" />
-              {L(lc, { es: "Operador autorizado MINCETUR", en: "MINCETUR-licensed operator", ja: "MINCETUR認可の旅行会社" })}
-            </span>
-          </div>
-        </div>
-
-        <Mp2027Booking
-          locale={lc}
-          paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
-          whatsapp={normalizeWhatsApp(settings.whatsapp)}
-          booked={booked}
-        />
-
         <section className="mt-16">
           <h2 className="font-display text-2xl sm:text-3xl text-night mb-5">
             {L(lc, { es: "Preguntas frecuentes", en: "Frequently asked questions", ja: "よくある質問" })}

@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Check, CheckCircle2, Clock, Loader2, Plus, Mountain, Star, MessageCircle } from "lucide-react";
+import { CalendarDays, Check, CheckCircle2, Clock, Loader2, Minus, Plus, Mountain, Star, MessageCircle } from "lucide-react";
 import { L } from "@/lib/i18n/pick";
-import { ROUTES, PACKAGES, MAX_TRAVELERS, mp2027Total, routeById, packageById, hoursFor, type RouteId, type PackageId } from "@/lib/mp2027/data";
+import { ROUTES, PACKAGES, MAX_TRAVELERS, mp2027Total, routeById, packageById, hoursFor, slotsLeft, type RouteId, type PackageId } from "@/lib/mp2027/data";
 import type { Locale } from "@/types/database";
 import { Mp2027Calendar } from "./calendar";
+import { RoutesCarousel } from "./routes-carousel";
 import { TravelerCard, emptyTraveler, type TravelerDraft } from "./traveler-card";
 import { createMp2027Order, captureMp2027Order } from "./actions";
 
@@ -51,11 +52,21 @@ export function Mp2027Booking({
   paypalClientId,
   whatsapp,
   booked = {},
+  updatedLabel,
+  title,
+  subtitle,
+  intro,
 }: {
   locale: Locale;
   paypalClientId?: string;
   whatsapp: string;
   booked?: Record<string, number>;
+  updatedLabel?: string;
+  /** H1 sobre la foto. */
+  title: string;
+  subtitle?: string;
+  /** Bloque bajo la portada (migas, texto, prueba social), renderizado en el servidor. */
+  intro?: React.ReactNode;
 }) {
   const [draftId] = useState(() =>
     Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("")
@@ -74,17 +85,25 @@ export function Mp2027Booking({
 
   const r = route ? routeById(route) : undefined;
 
-  // Los pasos 2-6 aparecen recién al elegir fecha; la primera vez bajamos al paso 2.
+  // Los pasos 2-6 aparecen al elegir fecha. No bajamos solos: el calendario
+  // muestra los cupos del día y dos salidas (reservar o consultar por WhatsApp).
   function pickDate(d: string | null) {
-    const first = !date && d;
     setDate(d);
-    if (first) {
-      setTimeout(() => document.getElementById("mp-paso-2")?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
-    }
   }
+  function goToPackages() {
+    setTimeout(() => document.getElementById("mp-paso-2")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  }
+  const left = date ? slotsLeft(date, booked) : MAX_TRAVELERS;
   const pkg = packageById(pkgId)!;
   const hours = r ? hoursFor(r, pkg) : [];
   const totals = mp2027Total(travelers.length, pkgId);
+
+  function chooseRoute(id: RouteId) {
+    const x = routeById(id);
+    if (!x) return;
+    setRoute(id);
+    if (hour && !hoursFor(x, pkg).includes(hour)) setHour(null);
+  }
 
   function choosePackage(id: PackageId) {
     setPkgId(id);
@@ -97,6 +116,15 @@ export function Mp2027Booking({
     if (!date) m.push(L(locale, { es: "Elige una fecha", en: "Pick a date", ja: "日付を選択" }));
     if (!route) m.push(L(locale, { es: "Elige una ruta", en: "Pick a route", ja: "ルートを選択" }));
     if (route && !hour) m.push(L(locale, { es: "Elige la hora de ingreso", en: "Pick an entry time", ja: "入場時間を選択" }));
+    if (date && travelers.length > left) {
+      m.push(
+        L(locale, {
+          es: `Para esa fecha solo quedan ${left} cupos de reserva: quita pasajeros o elige otro día`,
+          en: `Only ${left} booking spots are left for that date: remove travelers or pick another day`,
+          ja: `その日の予約枠は残り${left}名分です。人数を減らすか別の日を選んでください`,
+        })
+      );
+    }
     travelers.forEach((t, i) => {
       const n = i + 1;
       if (t.fullName.trim().length < 3 || t.docNumber.trim().length < 4 || t.nationality.trim().length < 2 || !t.birthDate) {
@@ -110,7 +138,7 @@ export function Mp2027Booking({
     if (wa.replace(/\D/g, "").length < 6) m.push(L(locale, { es: "Escribe tu WhatsApp", en: "Enter your WhatsApp", ja: "WhatsApp番号を入力" }));
     if (!accept) m.push(L(locale, { es: "Acepta la política de reserva", en: "Accept the booking policy", ja: "予約ポリシーに同意" }));
     return m;
-  }, [date, route, hour, travelers, email, wa, accept, locale]);
+  }, [date, route, hour, travelers, email, wa, accept, locale, left]);
 
   const ready = missing.length === 0;
   const readyRef = useRef(ready);
@@ -145,7 +173,7 @@ export function Mp2027Booking({
 
   if (paid) {
     return (
-      <div className="max-w-2xl mx-auto rounded-3xl border border-emerald-200 bg-white p-8 sm:p-10 text-center shadow-soft">
+      <div className="max-w-2xl mx-4 sm:mx-auto mt-28 md:mt-36 rounded-3xl border border-emerald-200 bg-white p-8 sm:p-10 text-center shadow-soft">
         <div className="w-20 h-20 rounded-full bg-emerald-100 grid place-items-center mx-auto mb-4">
           <CheckCircle2 className="w-10 h-10 text-emerald-600" />
         </div>
@@ -169,189 +197,223 @@ export function Mp2027Booking({
     );
   }
 
+  const waDate = `https://wa.me/${whatsapp}?text=${encodeURIComponent(
+    L(locale, {
+      es: `Hola Danfer Tours, quiero reservar Machu Picchu ${date ? `para el ${dateLabel}` : "en 2027"}, ${travelers.length} pasajero(s), ${pkg.name.es}. ¿Me confirman precio y qué incluye?`,
+      en: `Hi Danfer Tours, I'd like to book Machu Picchu ${date ? `for ${dateLabel}` : "in 2027"}, ${travelers.length} traveler(s), ${pkg.name.en}. Could you confirm the price and what's included?`,
+      ja: `Danfer Toursさん、マチュピチュを予約したいです（${date ? dateLabel : "2027年"}、${travelers.length}名、${pkg.name.ja}）。料金と内容を教えてください。`,
+    })
+  )}`;
+  const maxGuests = Math.min(MAX_TRAVELERS, left);
+  function setGuests(n: number) {
+    const k = Math.max(1, Math.min(maxGuests, n));
+    setTravelers((arr) => (k > arr.length ? [...arr, ...Array.from({ length: k - arr.length }, emptyTraveler)] : arr.slice(0, k)));
+  }
+  const label = "block text-[15px] font-semibold text-night mb-1.5";
+
   return (
-    <div className="space-y-12">
-      <Step n={1} title={L(locale, { es: "Elige tu fecha en 2027", en: "Pick your 2027 date", ja: "2027年の日付を選ぶ" })}>
-        <Mp2027Calendar locale={locale} value={date} onChange={pickDate} booked={booked} />
-        {!date && (
-          <p className="mt-4 text-center text-sm text-night/55">
-            {L(locale, {
-              es: "Elige un día para ver paquetes, rutas y precios.",
-              en: "Pick a day to see packages, routes and prices.",
-              ja: "日付を選ぶとプラン・ルート・料金が表示されます。",
-            })}
-          </p>
-        )}
-      </Step>
+    <>
+      {/* ───── Portada: foto + calendario + reserva ───── */}
+      <section className="relative isolate">
+        <Image
+          src="/images/rutas-mp/1b.jpg"
+          alt={L(locale, { es: "Machu Picchu visto desde la terraza superior", en: "Machu Picchu seen from the upper terrace", ja: "上部テラスから見たマチュピチュ" })}
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-night/55 via-night/15 to-night/35" aria-hidden />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-28 md:pt-36 pb-10 md:pb-14">
+          <h1 className="max-w-3xl font-display text-3xl sm:text-5xl text-white leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.55)]">
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="mt-2 max-w-2xl text-white text-base sm:text-lg [text-shadow:0_1px_8px_rgba(0,0,0,0.6)]">{subtitle}</p>
+          )}
 
-      {date && (
-      <div className="space-y-12 animate-[mpReveal_.4s_ease-out]">
-      <style>{`@keyframes mpReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
-
-      <Step n={2} id="mp-paso-2" title={L(locale, { es: "Elige tu paquete", en: "Choose your package", ja: "プランを選ぶ" })}>
-        <div className="grid md:grid-cols-3 gap-3 items-stretch">
-          {PACKAGES.map((p) => {
-            const sel = p.id === pkgId;
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => choosePackage(p.id)}
-                aria-pressed={sel}
-                className={`text-left rounded-2xl border p-4 transition ${
-                  sel ? "border-gold bg-gold/10 ring-2 ring-gold" : "border-night/10 bg-white hover:border-gold/60"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-semibold text-night">{L(locale, p.name)}</span>
-                  {L(locale, p.duration) !== L(locale, p.name) && (
-                    <span className="text-[11px] font-semibold rounded-full bg-night/5 text-night/70 px-2 py-0.5 shrink-0">
-                      {L(locale, p.duration)}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-1 font-display text-2xl text-gold">
-                  US$ {p.price}
-                  <span className="text-xs text-night/50 font-sans"> / {L(locale, { es: "persona", en: "person", ja: "1名" })}</span>
-                </div>
-                <p className="mt-2 text-sm text-night/70">{L(locale, p.desc)}</p>
-              </button>
-            );
-          })}
-        </div>
-        <div key={pkg.id} className="mt-3 rounded-2xl border border-gold/40 bg-gold/5 p-4 sm:p-5">
-          <div className="text-[11px] uppercase tracking-wider text-night/50 font-semibold">
-            {L(locale, { es: "Incluye", en: "Includes", ja: "含まれるもの" })} · {L(locale, pkg.name)}
-          </div>
-          <ul className="mt-2 grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
-            {pkg.includes.map((inc) => (
-              <li key={inc.es} className="flex gap-2 text-sm text-night/80 leading-snug">
-                <Check className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
-                {L(locale, inc)}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 pt-3 border-t border-night/10 text-xs text-night/55">
-            <span className="font-semibold">{L(locale, { es: "No incluye:", en: "Not included:", ja: "含まれないもの：" })}</span>{" "}
-            {L(locale, pkg.excludes)}
-          </p>
-        </div>
-        <p className="mt-3 text-xs text-night/55">
-          {L(locale, {
-            es: "La fecha del calendario es el día que entras a Machu Picchu.",
-            en: "The calendar date is the day you enter Machu Picchu.",
-            ja: "カレンダーの日付はマチュピチュに入場する日です。",
-          })}
-        </p>
-      </Step>
-
-      <Step n={3} title={L(locale, { es: "Ruta y hora de ingreso", en: "Route and entry time", ja: "ルートと入場時間" })}>
-        <div className="space-y-6">
-          {([1, 2, 3] as const).map((c) => (
-            <div key={c}>
-              <div className="text-xs uppercase tracking-[0.2em] text-gold font-semibold mb-2">
-                {L(locale, { es: `Circuito ${c}`, en: `Circuit ${c}`, ja: `サーキット${c}` })}
-              </div>
-              <div className="grid sm:grid-cols-2 gap-3 items-start">
-                {ROUTES.filter((x) => x.circuit === c).map((x) => {
-                  const sel = x.id === route;
-                  return (
-                    <button
-                      key={x.id}
-                      type="button"
-                      onClick={() => {
-                        setRoute(x.id);
-                        if (hour && !hoursFor(x, pkg).includes(hour)) setHour(null);
-                      }}
-                      aria-pressed={sel}
-                      className={`text-left rounded-2xl border p-4 transition ${
-                        sel ? "border-gold bg-gold/10 ring-2 ring-gold" : "border-night/10 bg-white hover:border-gold/60"
-                      }`}
-                    >
-                      {x.photo && (
-                        <div className="relative -mx-4 -mt-4 mb-3 aspect-[16/9] overflow-hidden rounded-t-2xl">
-                          <Image src={x.photo} alt={L(locale, x.name)} fill sizes="(min-width:640px) 400px, 100vw" className="object-cover" />
-                          <span className="absolute bottom-0 inset-x-0 bg-night/60 text-white text-[11px] px-3 py-1.5">
-                            {x.photoCredit
-                              ? `${L(locale, { es: "Vista de referencia", en: "Reference view", ja: "参考写真" })} · ${L(locale, { es: "Foto", en: "Photo", ja: "写真" })}: ${x.photoCredit}`
-                              : L(locale, {
-                                  es: `Foto tomada con el boleto Ruta ${x.id}`,
-                                  en: `Photo taken with the Route ${x.id} ticket`,
-                                  ja: `ルート${x.id}のチケットで撮影`,
-                                })}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-xs font-bold rounded-md bg-night text-white px-1.5 py-0.5">{x.id}</span>
-                        <span className="font-semibold text-night">{L(locale, x.name)}</span>
-                        {x.recommended && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">
-                            <Star className="w-3 h-3" />
-                            {L(locale, { es: "Recomendada", en: "Recommended", ja: "おすすめ" })}
-                          </span>
-                        )}
-                        {x.mountain && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-terracotta bg-terracotta/10 rounded-full px-2 py-0.5">
-                            <Mountain className="w-3 h-3" />
-                            {L(locale, { es: "Cupos muy limitados", en: "Very limited spots", ja: "枠わずか" })}
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-1.5 text-sm text-night/60">{L(locale, x.desc)}</p>
-                      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-night/5 text-night/70 px-2 py-0.5">
-                          <Clock className="w-3 h-3" />
-                          {L(locale, { es: "aprox.", en: "approx.", ja: "約" })} {x.time}
-                        </span>
-                        <span className={`rounded-full px-2 py-0.5 ${LEVEL_STYLE[x.level]}`}>
-                          {L(locale, LEVEL_LABEL[x.level])}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-[13px] text-night/70 leading-snug">
-                        <span className="font-semibold text-night">{L(locale, { es: "Ten en cuenta:", en: "Keep in mind:", ja: "ポイント：" })}</span>{" "}
-                        {L(locale, x.tip)}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="mt-6 md:mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,330px)] items-start">
+            <div className="min-w-0">
+              <Mp2027Calendar locale={locale} value={date} onChange={pickDate} booked={booked} />
+              <RoutesCarousel locale={locale} />
             </div>
-          ))}
 
-          {r && (
-            <div className="rounded-2xl bg-stone p-4 sm:p-5">
-              <div className="text-sm font-semibold text-night mb-3">
-                {L(locale, { es: "Hora de ingreso preferida", en: "Preferred entry time", ja: "希望入場時間" })}
+            <div className="rounded-xl bg-white p-5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.45)]">
+              <h2 className="text-2xl font-semibold text-night">
+                {L(locale, { es: "Tu reserva", en: "Booking", ja: "ご予約" })}
+              </h2>
+
+              <div className="mt-4">
+                <span className={label}>{L(locale, { es: "Fecha de ingreso", en: "Entry date", ja: "入場日" })}</span>
+                <div className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2.5 ${date ? "border-night/30 text-night" : "border-night/20 text-night/50"}`}>
+                  <span>{date ? dateLabel : L(locale, { es: "Elige un día en el calendario", en: "Pick a day on the calendar", ja: "カレンダーで日付を選択" })}</span>
+                  <CalendarDays className="w-5 h-5 shrink-0 text-night/50" />
+                </div>
+                {date && (
+                  <p className="mt-1.5 text-sm font-medium text-green-700">
+                    {booked[date]
+                      ? L(locale, {
+                          es: `Quedan ${left} cupos de reserva ese día`,
+                          en: `${left} booking spots left that day`,
+                          ja: `この日の予約枠：残り${left}名`,
+                        })
+                      : L(locale, {
+                          es: `${left} cupos de reserva para ese día`,
+                          en: `${left} booking spots for that day`,
+                          ja: `この日の予約枠：${left}名`,
+                        })}
+                  </p>
+                )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                {hours.map((h) => (
+
+              <div className="mt-4">
+                <span className={label}>{L(locale, { es: "Pasajeros", en: "Number of guests", ja: "人数" })}</span>
+                <div className="flex items-stretch rounded-md border border-night/20 overflow-hidden">
                   <button
-                    key={h}
                     type="button"
-                    onClick={() => setHour(h)}
-                    aria-pressed={h === hour}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                      h === hour ? "bg-gold text-night" : "bg-white text-night hover:bg-gold/30"
-                    }`}
+                    onClick={() => setGuests(travelers.length - 1)}
+                    disabled={travelers.length <= 1}
+                    aria-label={L(locale, { es: "Quitar pasajero", en: "Remove guest", ja: "人数を減らす" })}
+                    className="w-11 grid place-items-center bg-night/5 text-night disabled:text-night/25 hover:bg-night/10 transition"
                   >
-                    {h}
+                    <Minus className="w-4 h-4" />
                   </button>
-                ))}
+                  <span className="flex-1 py-2.5 text-center text-night tabular-nums">{travelers.length}</span>
+                  <button
+                    type="button"
+                    onClick={() => setGuests(travelers.length + 1)}
+                    disabled={travelers.length >= maxGuests}
+                    aria-label={L(locale, { es: "Agregar pasajero", en: "Add guest", ja: "人数を増やす" })}
+                    className="w-11 grid place-items-center bg-night/5 text-night disabled:text-night/25 hover:bg-night/10 transition"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-              <p className="mt-3 text-xs text-night/55">
+
+              <fieldset className="mt-4">
+                <legend className={label}>{L(locale, { es: "Paquete", en: "Package", ja: "プラン" })}</legend>
+                <div className="space-y-2">
+                  {PACKAGES.map((p) => (
+                    <label key={p.id} className="flex items-center gap-2.5 cursor-pointer text-night">
+                      <input
+                        type="radio"
+                        name="mp-pkg"
+                        checked={p.id === pkgId}
+                        onChange={() => choosePackage(p.id)}
+                        className="w-[18px] h-[18px] accent-green-600"
+                      />
+                      <span className="flex-1">{L(locale, p.name)}</span>
+                      <span className="text-night/70 tabular-nums">US${p.price}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div key={pkg.id} className="mt-3 rounded-md bg-green-50 px-3 py-2.5">
+                <div className="text-xs font-semibold text-night">
+                  {L(locale, { es: "Incluye", en: "Includes", ja: "含まれるもの" })}
+                </div>
+                <ul className="mt-1.5 space-y-1">
+                  {pkg.includes.map((inc) => (
+                    <li key={inc.es} className="flex gap-1.5 text-[13px] text-night/80 leading-snug">
+                      <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-green-600" />
+                      {L(locale, inc)}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-night/55">
+                  <span className="font-semibold">{L(locale, { es: "No incluye:", en: "Not included:", ja: "含まれないもの：" })}</span>{" "}
+                  {L(locale, pkg.excludes)}
+                </p>
+              </div>
+
+              <div className="mt-4 grid grid-cols-[1.6fr_1fr] gap-2">
+                <label className="block">
+                  <span className={label}>{L(locale, { es: "Ruta", en: "Route", ja: "ルート" })}</span>
+                  <select
+                    value={route ?? ""}
+                    onChange={(e) => chooseRoute(e.target.value as RouteId)}
+                    className="w-full rounded-md border border-night/20 bg-white px-2.5 py-2.5 text-night"
+                  >
+                    <option value="" disabled>
+                      {L(locale, { es: "Elige tu ruta", en: "Choose a route", ja: "ルートを選択" })}
+                    </option>
+                    {([1, 2, 3] as const).map((c) => (
+                      <optgroup key={c} label={L(locale, { es: `Circuito ${c}`, en: `Circuit ${c}`, ja: `サーキット${c}` })}>
+                        {ROUTES.filter((x) => x.circuit === c).map((x) => (
+                          <option key={x.id} value={x.id}>
+                            {x.id} · {L(locale, x.name)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className={label}>{L(locale, { es: "Hora", en: "Time", ja: "時間" })}</span>
+                  <select
+                    value={hour ?? ""}
+                    onChange={(e) => setHour(e.target.value)}
+                    disabled={!r}
+                    className="w-full rounded-md border border-night/20 bg-white px-2.5 py-2.5 text-night disabled:bg-night/5 disabled:text-night/40"
+                  >
+                    <option value="" disabled>
+                      --:--
+                    </option>
+                    {hours.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <p className="mt-1.5 text-xs text-night/55">
                 {L(locale, {
-                  es: "La hora exacta se confirma al comprar tu boleto. Si tu hora no está disponible, te ofrecemos la más cercana.",
-                  en: "The exact time is confirmed when we buy your ticket. If your time isn't available, we'll offer the closest one.",
-                  ja: "正確な時間はチケット購入時に確定します。ご希望の時間が取れない場合は、一番近い時間をご提案します。",
+                  es: "La hora exacta se confirma al comprar tu boleto.",
+                  en: "The exact time is confirmed when we buy your ticket.",
+                  ja: "正確な時間はチケット購入時に確定します。",
                 })}
               </p>
-            </div>
-          )}
-        </div>
-      </Step>
 
-      <Step n={4} title={L(locale, { es: "Pasajeros", en: "Travelers", ja: "旅行者" })}>
+              <div className="mt-4 flex items-baseline justify-between border-t border-night/10 pt-3">
+                <span className="text-sm text-night/60">
+                  US${pkg.price} × {travelers.length}
+                </span>
+                <span className="text-2xl font-semibold text-night tabular-nums">US${totals.subtotal.toLocaleString("en-US")}</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={date ? goToPackages : undefined}
+                disabled={!date}
+                className="mt-4 w-full rounded-md bg-green-600 py-3 text-lg font-medium text-white hover:bg-green-700 disabled:bg-green-600/45 disabled:cursor-not-allowed transition"
+              >
+                {L(locale, { es: "Reservar", en: "Book now", ja: "予約する" })}
+              </button>
+              <a
+                href={waDate}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-[#128C4B] hover:underline"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {L(locale, { es: "Consultar por WhatsApp", en: "Ask on WhatsApp", ja: "WhatsAppで問い合わせ" })}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      {intro}
+
+      {date && (
+      <div className="mt-12 space-y-12 animate-[mpReveal_.4s_ease-out]">
+      <style>{`@keyframes mpReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
+
+      <Step n={2} id="mp-paso-2" title={L(locale, { es: "Pasajeros", en: "Travelers", ja: "旅行者" })}>
         <div className="space-y-4">
           {travelers.map((t, i) => (
             <TravelerCard
@@ -364,7 +426,7 @@ export function Mp2027Booking({
               onRemove={i > 0 && i === travelers.length - 1 ? () => setTravelers((arr) => arr.slice(0, -1)) : undefined}
             />
           ))}
-          {travelers.length < MAX_TRAVELERS && (
+          {travelers.length < Math.min(MAX_TRAVELERS, left) && (
             <button
               type="button"
               onClick={() => setTravelers((arr) => [...arr, emptyTraveler()])}
@@ -377,7 +439,7 @@ export function Mp2027Booking({
         </div>
       </Step>
 
-      <Step n={5} title={L(locale, { es: "Datos de contacto", en: "Contact details", ja: "連絡先" })}>
+      <Step n={3} title={L(locale, { es: "Datos de contacto", en: "Contact details", ja: "連絡先" })}>
         <div className="grid sm:grid-cols-2 gap-4 rounded-2xl border border-night/10 bg-white p-5 sm:p-6">
           <label className="block">
             <span className="text-xs uppercase tracking-wider text-night/50">Email</span>
@@ -400,7 +462,7 @@ export function Mp2027Booking({
         </div>
       </Step>
 
-      <Step n={6} title={L(locale, { es: "Resumen y pago", en: "Summary and payment", ja: "確認とお支払い" })}>
+      <Step n={4} title={L(locale, { es: "Resumen y pago", en: "Summary and payment", ja: "確認とお支払い" })}>
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-night/10 bg-white p-5 sm:p-6 text-sm">
             <dl className="space-y-2">
@@ -467,7 +529,8 @@ export function Mp2027Booking({
       </Step>
       </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -505,11 +568,15 @@ function PaypalButtons({
       ja: "お支払いを完了できませんでした。もう一度お試しいただくか、WhatsAppでご連絡ください。",
     });
 
+    // En desarrollo React monta el efecto dos veces: sin este control el SDK
+    // dibuja dos veces y lanza "container element removed from DOM".
+    let cancelled = false;
+    let buttons: { render: (el: HTMLElement) => unknown; close?: () => unknown } | null = null;
+
     function render() {
-      if (!window.paypal || !ref.current) return;
+      if (cancelled || buttons || !window.paypal || !ref.current) return;
       ref.current.innerHTML = "";
-      window.paypal
-        .Buttons({
+      buttons = window.paypal.Buttons({
           style: { layout: "vertical", color: "gold", shape: "pill", label: "pay" },
           createOrder: async () => {
             cb.current.onError(null);
@@ -536,15 +603,23 @@ function PaypalButtons({
             if (!cb.current.canPay()) return; // ya se mostró el aviso de datos faltantes
             cb.current.onError(fail);
           },
-        })
-        .render(ref.current);
+        });
+      Promise.resolve(buttons.render(ref.current)).catch(() => {});
       setLoading(false);
     }
+
+    const cleanup = () => {
+      cancelled = true;
+      script?.removeEventListener("load", render);
+      try {
+        Promise.resolve(buttons?.close?.()).catch(() => {});
+      } catch {}
+    };
 
     if (script) {
       if (window.paypal) render();
       else script.addEventListener("load", render);
-      return;
+      return cleanup;
     }
     script = document.createElement("script");
     script.id = id;
@@ -552,6 +627,7 @@ function PaypalButtons({
     script.addEventListener("load", render);
     script.addEventListener("error", () => cb.current.onError(fail));
     document.body.appendChild(script);
+    return cleanup;
   }, [clientId, locale]);
 
   return (

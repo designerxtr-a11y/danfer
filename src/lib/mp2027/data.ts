@@ -141,7 +141,7 @@ export const PACKAGES: Mp2027Package[] = [
     id: "fullday", price: 320, tourSlug: "machu-picchu-full-day", minHour: "10:00",
     duration: t3("1 día", "1 day", "日帰り"),
     includes: MP_CORE,
-    excludes: t3("Comidas, propinas, Huayna Picchu (extra)", "Meals, tips, Huayna Picchu (extra)", "食事、チップ、ワイナピチュ（追加料金）"),
+    excludes: t3("Comidas, propinas", "Meals, tips", "食事、チップ"),
     name: { es: "Full Day", en: "Full Day", ja: "日帰り" },
     desc: t3("Ida y vuelta a Machu Picchu el mismo día, en tren turístico desde Ollantaytambo.", "Same-day round trip to Machu Picchu by tourist train from Ollantaytambo.", "オリャンタイタンボから観光列車で行く日帰りマチュピチュ。"),
   },
@@ -149,7 +149,7 @@ export const PACKAGES: Mp2027Package[] = [
     id: "2d1n", price: 380, tourSlug: "machu-picchu-2d-1n",
     duration: t3("2 días / 1 noche", "2 days / 1 night", "1泊2日"),
     includes: [...MP_CORE, HOTEL],
-    excludes: t3("Almuerzo y cena, propinas, Huayna Picchu (extra)", "Lunch and dinner, tips, Huayna Picchu (extra)", "昼食・夕食、チップ、ワイナピチュ（追加料金）"),
+    excludes: t3("Almuerzo y cena, propinas", "Lunch and dinner, tips", "昼食・夕食、チップ"),
     name: { es: "2 días / 1 noche", en: "2 days / 1 night", ja: "1泊2日" },
     desc: t3("Llegas a Aguas Calientes el día anterior, duermes ahí y entras temprano, sin apuro.", "Arrive in Aguas Calientes the day before, stay overnight and enter early, unhurried.", "前日にアグアスカリエンテスへ。1泊して翌朝ゆっくり入場。"),
   },
@@ -227,6 +227,40 @@ const EVENTS: { from: string; to: string; name: T3 }[] = [
   { from: "2027-07-26", to: "2027-07-31", name: { es: "Fiestas Patrias", en: "Peru's National Holidays", ja: "ペルー独立記念日" } },
   { from: "2027-12-24", to: "2027-12-31", name: { es: "Navidad y Año Nuevo", en: "Christmas & New Year", ja: "クリスマス・年末" } },
 ];
+
+/** Festividades de 2027 (para accesos rápidos del calendario). */
+export const EVENTS_2027 = EVENTS;
+
+/**
+ * Cupos de PRE-RESERVA que Danfer acepta por día de ingreso. Es un límite
+ * propio de la agencia (no el aforo oficial): en fechas de más demanda se
+ * aceptan menos, porque ahí es más difícil conseguir la entrada al abrir la venta.
+ * El servidor lo hace cumplir en createMp2027Order.
+ */
+export function dailySlots(iso: string): number {
+  const d = demandOf(iso);
+  // El cupo varía día a día dentro de un rango por temporada. Es fijo por fecha
+  // (mismo valor en servidor y cliente), no aleatorio en cada carga.
+  const [min, max] = d === "event" || d === "highWeekend" ? [2, 5] : d === "high" ? [5, 10] : [7, 12];
+  return min + (dayHash(iso) % (max - min + 1));
+}
+
+/** Hash entero estable de una fecha ISO (para repartir los cupos por día). */
+function dayHash(iso: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < iso.length; i++) {
+    h ^= iso.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  h ^= h >>> 13;
+  h = Math.imul(h, 0x5bd1e995);
+  return (h ^ (h >>> 15)) >>> 0;
+}
+
+/** Cupos de pre-reserva que quedan en una fecha, dado lo ya pagado. */
+export function slotsLeft(iso: string, booked: Record<string, number> = {}): number {
+  return Math.max(0, dailySlots(iso) - (booked[iso] ?? 0));
+}
 
 export function eventOn(iso: string): T3 | null {
   return EVENTS.find((e) => iso >= e.from && iso <= e.to)?.name ?? null;

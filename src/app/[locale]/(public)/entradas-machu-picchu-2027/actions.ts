@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPaypalOrder, capturePaypalOrder } from "@/lib/paypal";
-import { isValid2027Date, mp2027Total, routeById, packageById, hoursFor, MAX_TRAVELERS, type PackageId } from "@/lib/mp2027/data";
+import { isValid2027Date, dailySlots, mp2027Total, routeById, packageById, hoursFor, MAX_TRAVELERS, type PackageId } from "@/lib/mp2027/data";
 
 const BUCKET = "client-documents";
 const MAX_SIZE = 8 * 1024 * 1024;
@@ -95,6 +95,15 @@ export async function createMp2027Order(
       return { ok: false, error: `missing_doc:${i}` };
     }
   }
+
+  // Cupos de pre-reserva por día (límite propio de Danfer, visible en el calendario).
+  const { data: sameDay } = await supabase
+    .from("bookings")
+    .select("travelers")
+    .eq("payment_status", "paid")
+    .eq("travel_date", input.date);
+  const taken = (sameDay ?? []).reduce((s, b) => s + (b.travelers ?? 1), 0);
+  if (taken + n > dailySlots(input.date)) return { ok: false, error: "date_full" };
 
   const pkg = packageById(input.pkg)!;
   const { data: tour } = await supabase.from("tours").select("id").eq("slug", pkg.tourSlug).maybeSingle();
