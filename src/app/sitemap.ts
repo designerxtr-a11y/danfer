@@ -26,21 +26,23 @@ function withLangs(
   enAvailable = true,
   // true solo si la página tiene interfaz/contenido japonés propio
   jaAvailable = false
-): Entry {
-  return {
-    url: `${SITE}${path}`,
-    lastModified,
-    changeFrequency,
-    priority,
-    alternates: {
-      languages: {
-        es: `${SITE}${path}`,
-        ...(enAvailable && { en: `${SITE}/en${path}` }),
-        ...(jaAvailable && { ja: `${SITE}/ja${path === "/" ? "" : path}` }),
-        "x-default": `${SITE}${path}`,
-      },
-    },
+): Entry[] {
+  const tail = path === "/" ? "" : path;
+  const languages = {
+    es: `${SITE}${path}`,
+    ...(enAvailable && { en: `${SITE}/en${tail}` }),
+    ...(jaAvailable && { ja: `${SITE}/ja${tail}` }),
+    "x-default": `${SITE}${path}`,
   };
+  const entry = (url: string): Entry => ({ url, lastModified, changeFrequency, priority, alternates: { languages } });
+  // Cada idioma con contenido propio va como <url> aparte (mismos alternates):
+  // solo con hreflang Google casi no volvía a rastrear las versiones /en.
+  // Las versiones sin traducción NO entran: canonicalizan a otro idioma.
+  return [
+    entry(languages.es),
+    ...(enAvailable ? [entry(`${SITE}/en${tail}`)] : []),
+    ...(jaAvailable ? [entry(`${SITE}/ja${tail}`)] : []),
+  ];
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -60,23 +62,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
-    withLangs("/", 1.0, "daily", STATIC_LASTMOD, true, true),
-    withLangs("/tours", 0.9, "daily", STATIC_LASTMOD, true, true),
-    withLangs("/destinos", 0.9, "weekly", STATIC_LASTMOD, true, true),
-    withLangs("/blog", 0.8, "weekly", STATIC_LASTMOD, true, true),
-    withLangs("/entradas-machu-picchu-2027", 0.9, "weekly", new Date("2026-11-10"), true, true),
-    withLangs("/sobre-nosotros", 0.5, "monthly"),
-    withLangs("/contacto", 0.4, "yearly", STATIC_LASTMOD, true, true),
-    withLangs("/terminos", 0.3, "yearly"),
-    withLangs("/privacidad", 0.3, "yearly"),
-    withLangs("/cancelacion", 0.3, "yearly"),
+    ...withLangs("/", 1.0, "daily", STATIC_LASTMOD, true, true),
+    ...withLangs("/tours", 0.9, "daily", STATIC_LASTMOD, true, true),
+    ...withLangs("/destinos", 0.9, "weekly", STATIC_LASTMOD, true, true),
+    ...withLangs("/blog", 0.8, "weekly", STATIC_LASTMOD, true, true),
+    ...withLangs("/entradas-machu-picchu-2027", 0.9, "weekly", new Date("2026-11-10"), true, true),
+    ...withLangs("/sobre-nosotros", 0.5, "monthly"),
+    ...withLangs("/contacto", 0.4, "yearly", STATIC_LASTMOD, true, true),
+    ...withLangs("/terminos", 0.3, "yearly"),
+    ...withLangs("/privacidad", 0.3, "yearly"),
+    ...withLangs("/cancelacion", 0.3, "yearly"),
   ];
 
-  const destinationPages: MetadataRoute.Sitemap = listDestinations().map((d) =>
+  const destinationPages: MetadataRoute.Sitemap = listDestinations().flatMap((d) =>
     withLangs(`/destinos/${d.slug}`, 0.85, "weekly")
   );
 
-  const tourPages: MetadataRoute.Sitemap = (tours ?? []).map((tour) =>
+  const tourPages: MetadataRoute.Sitemap = (tours ?? []).flatMap((tour) =>
     withLangs(
       `/tours/${tour.slug}`,
       0.8,
@@ -92,7 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // apunta a otra genera "Duplicate, submitted URL not selected as canonical"
   // en Search Console.
 
-  const blogPages: MetadataRoute.Sitemap = (posts ?? []).map((p) => {
+  const blogPages: MetadataRoute.Sitemap = (posts ?? []).flatMap((p) => {
     const enAvailable = Boolean(p.title?.en && p.body_md?.en);
     return withLangs(
       `/blog/${p.slug}`,

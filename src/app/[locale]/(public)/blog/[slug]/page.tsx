@@ -185,6 +185,20 @@ export default async function BlogPostPage({ params }: PageProps) {
   const waHref = postWhatsAppHref(whatsapp, postTitle, lc);
   const mdxComponents = {
     ...headingComponents,
+    // Enlaces internos del cuerpo: con el Link de next-intl salen con el prefijo
+    // del idioma (/en/blog/...). Antes los posts en inglés enlazaban a la versión
+    // en español, y las páginas /en casi no recibían enlaces internos.
+    a: ({ href = "", children, ...rest }: React.ComponentProps<"a">) => {
+      if (/^\/(?!\/)/.test(href)) {
+        const path = href.replace(/^\/(en|ja)(?=\/|$)/, "") || "/";
+        return <Link href={path}>{children}</Link>;
+      }
+      return (
+        <a href={href} {...rest}>
+          {children}
+        </a>
+      );
+    },
     WhatsAppCta: (props: { title?: string; children?: React.ReactNode }) => (
       <WhatsAppCta {...props} href={waHref} locale={lc} />
     ),
