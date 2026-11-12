@@ -188,8 +188,8 @@ export async function captureMp2027Order(orderId: string): Promise<{ ok: true; c
   }
 }
 
-// ── Pre-reserva SIN pago: para quien todavía no quiere dar pasaporte ni pagar.
-// Queda en Consultas del admin y se continúa por WhatsApp. No descuenta cupos.
+// ── Solicitud de contacto: no reserva nada ni descuenta cupos. Queda en
+// Consultas del admin y se continúa por WhatsApp (la reserva se asegura con el adelanto).
 const holdSchema = z.object({
   name: z.string().trim().min(2).max(120),
   whatsapp: z.string().trim().min(6).max(30),
@@ -215,7 +215,7 @@ export async function createMp2027Hold(raw: Mp2027HoldInput): Promise<{ ok: true
 
   const pkg = packageById(v.pkg)!;
   const message = [
-    "PRE-RESERVA MACHU PICCHU 2027 (sin pago)",
+    "SOLICITUD MACHU PICCHU 2027 (escribir por WhatsApp)",
     `Fecha: ${v.date}`,
     `Paquete: ${pkg.name.es} (US$${pkg.price} por persona)`,
     `Pasajeros: ${v.travelers}`,

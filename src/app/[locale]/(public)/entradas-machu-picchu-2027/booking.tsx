@@ -82,7 +82,7 @@ export function Mp2027Booking({
   const [accept, setAccept] = useState(false);
   const [paid, setPaid] = useState<string | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
-  // Pre-reserva sin pago (nombre + WhatsApp): baja la barrera para quien recién mira.
+  // Solicitud de contacto (nombre + WhatsApp) para quien todavía no está listo para pagar.
   const [holdOpen, setHoldOpen] = useState(false);
   const [holdName, setHoldName] = useState("");
   const [holdWa, setHoldWa] = useState("");
@@ -413,17 +413,17 @@ export function Mp2027Booking({
                   : L(locale, { es: "Consultar por WhatsApp", en: "Ask on WhatsApp", ja: "WhatsAppで問い合わせ" })}
               </a>
 
-              {/* Separar la fecha sin pagar: solo nombre y WhatsApp. */}
+              {/* Solicitud de contacto: solo nombre y WhatsApp (no reserva nada). */}
               {holdSent ? (
                 <div className="mt-4 rounded-lg bg-emerald-50 p-4 text-sm text-night">
                   <p className="font-semibold text-emerald-800">
-                    {L(locale, { es: "¡Fecha separada!", en: "Date on hold!", ja: "日付を仮押さえしました！" })}
+                    {L(locale, { es: "¡Solicitud recibida!", en: "Request received!", ja: "リクエストを受け付けました！" })}
                   </p>
                   <p className="mt-1 text-night/70">
                     {L(locale, {
-                      es: "Te escribimos por WhatsApp para confirmar tu reserva. No pagas nada hasta que todo esté confirmado.",
-                      en: "We'll message you on WhatsApp to confirm your booking. You pay nothing until everything is confirmed.",
-                      ja: "WhatsAppでご予約の確認をご連絡します。すべて確定するまでお支払いは不要です。",
+                      es: "Te escribimos por WhatsApp con la disponibilidad de tu fecha y los pasos para reservar. La reserva queda asegurada con el pago del adelanto.",
+                      en: "We'll message you on WhatsApp with availability for your date and how to book. Your booking is secured once the deposit is paid.",
+                      ja: "ご希望日の空き状況と予約手順をWhatsAppでご連絡します。デポジットのお支払いをもって予約確定となります。",
                     })}
                   </p>
                   <a
@@ -443,7 +443,7 @@ export function Mp2027Booking({
                   disabled={!date}
                   className="mt-3 w-full text-sm font-semibold text-night/70 underline underline-offset-4 hover:text-night disabled:no-underline disabled:text-night/35 disabled:cursor-not-allowed"
                 >
-                  {L(locale, { es: "Separar mi fecha sin pagar", en: "Hold my date without paying", ja: "支払いなしで日付を仮押さえ" })}
+                  {L(locale, { es: "Prefiero que me escriban", en: "Please contact me", ja: "連絡を希望する" })}
                 </button>
               ) : (
                 <form
@@ -479,9 +479,9 @@ export function Mp2027Booking({
                 >
                   <p className="text-xs text-night/60">
                     {L(locale, {
-                      es: "Separamos tu fecha y te escribimos por WhatsApp. Sin pago y sin datos de pasaporte por ahora.",
-                      en: "We hold your date and message you on WhatsApp. No payment and no passport details for now.",
-                      ja: "日付を仮押さえし、WhatsAppでご連絡します。今はお支払いもパスポート情報も不要です。",
+                      es: "Déjanos tu nombre y WhatsApp y te escribimos con la disponibilidad de tu fecha y los pasos para reservar.",
+                      en: "Leave your name and WhatsApp and we'll message you with availability for your date and how to book.",
+                      ja: "お名前とWhatsApp番号を残していただければ、空き状況と予約手順をご連絡します。",
                     })}
                   </p>
                   <input
@@ -527,7 +527,7 @@ export function Mp2027Booking({
                     className="flex w-full items-center justify-center gap-2 rounded-md bg-night py-2.5 text-sm font-semibold text-white hover:bg-night/90 disabled:opacity-60 transition"
                   >
                     {holdBusy && <Loader2 className="w-4 h-4 animate-spin" />}
-                    {L(locale, { es: "Separar mi fecha", en: "Hold my date", ja: "日付を仮押さえ" })}
+                    {L(locale, { es: "Enviar solicitud", en: "Send request", ja: "リクエストを送信" })}
                   </button>
                 </form>
               )}
