@@ -9,7 +9,7 @@ import type { Locale } from "@/types/database";
 import { Mp2027Calendar } from "./calendar";
 import { RoutesCarousel } from "./routes-carousel";
 import { TravelerCard, emptyTraveler, type TravelerDraft } from "./traveler-card";
-import { createMp2027Order, captureMp2027Order } from "./actions";
+import { createMp2027Order, captureMp2027Order, createMp2027Hold } from "./actions";
 
 declare global {
   interface Window {
@@ -82,6 +82,15 @@ export function Mp2027Booking({
   const [accept, setAccept] = useState(false);
   const [paid, setPaid] = useState<string | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
+  // Pre-reserva sin pago (nombre + WhatsApp): baja la barrera para quien recién mira.
+  const [holdOpen, setHoldOpen] = useState(false);
+  const [holdName, setHoldName] = useState("");
+  const [holdWa, setHoldWa] = useState("");
+  const [holdEmail, setHoldEmail] = useState("");
+  const [holdTrap, setHoldTrap] = useState("");
+  const [holdBusy, setHoldBusy] = useState(false);
+  const [holdSent, setHoldSent] = useState(false);
+  const [holdError, setHoldError] = useState<string | null>(null);
 
   const r = route ? routeById(route) : undefined;
 
@@ -396,11 +405,132 @@ export function Mp2027Booking({
                 href={waDate}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-[#128C4B] hover:underline"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-md bg-[#25D366] py-3 text-base font-semibold text-white hover:bg-[#1fb857] transition"
               >
-                <MessageCircle className="w-4 h-4" />
-                {L(locale, { es: "Consultar por WhatsApp", en: "Ask on WhatsApp", ja: "WhatsAppで問い合わせ" })}
+                <MessageCircle className="w-5 h-5" />
+                {date
+                  ? L(locale, { es: "Consultar disponibilidad por WhatsApp", en: "Check availability on WhatsApp", ja: "WhatsAppで空き状況を確認" })
+                  : L(locale, { es: "Consultar por WhatsApp", en: "Ask on WhatsApp", ja: "WhatsAppで問い合わせ" })}
               </a>
+
+              {/* Separar la fecha sin pagar: solo nombre y WhatsApp. */}
+              {holdSent ? (
+                <div className="mt-4 rounded-lg bg-emerald-50 p-4 text-sm text-night">
+                  <p className="font-semibold text-emerald-800">
+                    {L(locale, { es: "¡Fecha separada!", en: "Date on hold!", ja: "日付を仮押さえしました！" })}
+                  </p>
+                  <p className="mt-1 text-night/70">
+                    {L(locale, {
+                      es: "Te escribimos por WhatsApp para confirmar tu reserva. No pagas nada hasta que todo esté confirmado.",
+                      en: "We'll message you on WhatsApp to confirm your booking. You pay nothing until everything is confirmed.",
+                      ja: "WhatsAppでご予約の確認をご連絡します。すべて確定するまでお支払いは不要です。",
+                    })}
+                  </p>
+                  <a
+                    href={waDate}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex items-center gap-2 font-semibold text-[#128C4B] hover:underline"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    {L(locale, { es: "Escribirnos ahora", en: "Message us now", ja: "今すぐメッセージ" })}
+                  </a>
+                </div>
+              ) : !holdOpen ? (
+                <button
+                  type="button"
+                  onClick={() => setHoldOpen(true)}
+                  disabled={!date}
+                  className="mt-3 w-full text-sm font-semibold text-night/70 underline underline-offset-4 hover:text-night disabled:no-underline disabled:text-night/35 disabled:cursor-not-allowed"
+                >
+                  {L(locale, { es: "Separar mi fecha sin pagar", en: "Hold my date without paying", ja: "支払いなしで日付を仮押さえ" })}
+                </button>
+              ) : (
+                <form
+                  className="mt-4 space-y-2.5 rounded-lg border border-night/10 bg-stone/60 p-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!date || holdBusy) return;
+                    setHoldBusy(true);
+                    setHoldError(null);
+                    const res = await createMp2027Hold({
+                      name: holdName,
+                      whatsapp: holdWa,
+                      email: holdEmail,
+                      date,
+                      pkg: pkgId,
+                      travelers: travelers.length,
+                      route: route ?? "",
+                      hour: hour ?? "",
+                      lang: locale,
+                      website: holdTrap,
+                    });
+                    setHoldBusy(false);
+                    if (res.ok) setHoldSent(true);
+                    else
+                      setHoldError(
+                        L(locale, {
+                          es: "Revisa tu nombre y tu WhatsApp e intenta de nuevo.",
+                          en: "Please check your name and WhatsApp and try again.",
+                          ja: "お名前とWhatsApp番号をご確認のうえ、もう一度お試しください。",
+                        })
+                      );
+                  }}
+                >
+                  <p className="text-xs text-night/60">
+                    {L(locale, {
+                      es: "Separamos tu fecha y te escribimos por WhatsApp. Sin pago y sin datos de pasaporte por ahora.",
+                      en: "We hold your date and message you on WhatsApp. No payment and no passport details for now.",
+                      ja: "日付を仮押さえし、WhatsAppでご連絡します。今はお支払いもパスポート情報も不要です。",
+                    })}
+                  </p>
+                  <input
+                    className={input}
+                    required
+                    minLength={2}
+                    autoComplete="name"
+                    placeholder={L(locale, { es: "Tu nombre", en: "Your name", ja: "お名前" })}
+                    value={holdName}
+                    onChange={(e) => setHoldName(e.target.value)}
+                  />
+                  <input
+                    className={input}
+                    required
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder={L(locale, { es: "WhatsApp con código de país", en: "WhatsApp with country code", ja: "WhatsApp（国番号から）" })}
+                    value={holdWa}
+                    onChange={(e) => setHoldWa(e.target.value)}
+                  />
+                  <input
+                    className={input}
+                    type="email"
+                    autoComplete="email"
+                    placeholder={L(locale, { es: "Email (opcional)", en: "Email (optional)", ja: "メール（任意）" })}
+                    value={holdEmail}
+                    onChange={(e) => setHoldEmail(e.target.value)}
+                  />
+                  {/* trampa para bots: invisible para personas */}
+                  <input
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                    value={holdTrap}
+                    onChange={(e) => setHoldTrap(e.target.value)}
+                  />
+                  {holdError && <p className="text-xs text-rose-700">{holdError}</p>}
+                  <button
+                    type="submit"
+                    disabled={holdBusy}
+                    className="flex w-full items-center justify-center gap-2 rounded-md bg-night py-2.5 text-sm font-semibold text-white hover:bg-night/90 disabled:opacity-60 transition"
+                  >
+                    {holdBusy && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {L(locale, { es: "Separar mi fecha", en: "Hold my date", ja: "日付を仮押さえ" })}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

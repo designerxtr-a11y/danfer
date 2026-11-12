@@ -187,3 +187,50 @@ export async function captureMp2027Order(orderId: string): Promise<{ ok: true; c
     return { ok: false, error: e instanceof Error ? e.message : "PayPal error" };
   }
 }
+
+// ── Pre-reserva SIN pago: para quien todavía no quiere dar pasaporte ni pagar.
+// Queda en Consultas del admin y se continúa por WhatsApp. No descuenta cupos.
+const holdSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  whatsapp: z.string().trim().min(6).max(30),
+  email: z.string().trim().max(160).optional().default(""),
+  date: z.string().refine(isValid2027Date),
+  pkg: z.enum(["fullday", "2d1n", "2d1n-valle"]),
+  travelers: z.number().int().min(1).max(MAX_TRAVELERS),
+  route: z.string().max(4).optional().default(""),
+  hour: z.string().max(5).optional().default(""),
+  lang: z.enum(["es", "en", "ja"]),
+  /** Campo trampa: invisible para personas, los bots lo rellenan. */
+  website: z.string().optional().default(""),
+});
+
+export type Mp2027HoldInput = z.input<typeof holdSchema>;
+
+export async function createMp2027Hold(raw: Mp2027HoldInput): Promise<{ ok: true } | Fail> {
+  const parsed = holdSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: "invalid_input" };
+  const v = parsed.data;
+  if (v.website) return { ok: true }; // bot: se responde ok pero no se guarda
+  if (v.email && !/^\S+@\S+\.\S+$/.test(v.email)) return { ok: false, error: "invalid_email" };
+
+  const pkg = packageById(v.pkg)!;
+  const message = [
+    "PRE-RESERVA MACHU PICCHU 2027 (sin pago)",
+    `Fecha: ${v.date}`,
+    `Paquete: ${pkg.name.es} (US$${pkg.price} por persona)`,
+    `Pasajeros: ${v.travelers}`,
+    v.route ? `Ruta: ${v.route}${v.hour ? ` · ${v.hour}` : ""}` : "Ruta: por definir",
+    `WhatsApp: ${v.whatsapp}`,
+    `Idioma de la web: ${v.lang}`,
+  ].join("\n");
+
+  const { error } = await createAdminClient().from("inquiries").insert({
+    name: v.name,
+    email: v.email || "",
+    phone: v.whatsapp,
+    message,
+    status: "new",
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
